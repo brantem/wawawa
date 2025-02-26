@@ -4,7 +4,7 @@ import type { Item } from 'types';
 
 export default function Hero({ item, children }: React.PropsWithChildren<{ item?: Item }>) {
   return (
-    <div className="relative h-[500px] overflow-hidden rounded-xl border border-neutral-900 bg-neutral-900">
+    <div className="relative h-[500px] overflow-hidden rounded-t-xl bg-neutral-900">
       {item ? (
         <>
           <img
@@ -18,7 +18,7 @@ export default function Hero({ item, children }: React.PropsWithChildren<{ item?
           />
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 to-neutral-950/50" />
 
-          <Logo src={item.logoUrl} className="absolute bottom-8 left-8 max-h-[125px] max-w-[375px]" />
+          <Logo src={item.logoUrl} alt={item.name} className="absolute bottom-8 left-8 max-h-[125px] max-w-[375px]" />
         </>
       ) : null}
 
