@@ -10,7 +10,9 @@ type HeroProps = React.PropsWithChildren<{
 
 export default function Hero({ item, isLoading, children }: HeroProps) {
   return (
-    <div className={cn('relative h-[500px] overflow-hidden rounded-t-xl bg-neutral-900', isLoading && 'animate-pulse')}>
+    <div
+      className={cn('relative h-[500px] overflow-hidden rounded-t-3xl bg-neutral-900', isLoading && 'animate-pulse')}
+    >
       {item ? (
         <>
           <img
@@ -19,7 +21,7 @@ export default function Hero({ item, isLoading, children }: HeroProps) {
               img.onload = () => img.classList.remove('opacity-0');
             }}
             src={item.backgroundUrl}
-            className="absolute top-0 right-0 left-0 size-full object-cover opacity-0 transition-opacity"
+            className="absolute inset-0 size-full object-cover opacity-0 transition-opacity"
             fetchPriority="high"
           />
 

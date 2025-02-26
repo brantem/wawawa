@@ -6,6 +6,12 @@ const moviesUrl = `https://v3-cinemeta.strem.io/catalog/movie/top/search=${somet
 const seriesUrl = `https://v3-cinemeta.strem.io/catalog/series/top/search=${something}.json`;
 ```
 
+#### Genre
+
+```
+https://v3-cinemeta.strem.io/manifest.json/series/top?genre=Crime
+```
+
 ### List
 
 ```ts

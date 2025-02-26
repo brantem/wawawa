@@ -8,6 +8,8 @@ import type { Meta } from 'types';
 import { metaToItem } from 'lib/helpers';
 import { getRandomInt } from './helpers';
 
+// TODO: search, genre
+
 export default function Home() {
   const { movies, series, isLoading } = useData();
 
