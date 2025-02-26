@@ -13,6 +13,8 @@ export function metaToItem(meta: Meta) {
     posterUrl: meta.poster,
     backgroundUrl: meta.background,
     name: meta.name,
-    release: meta.releaseInfo,
+    release: meta.releaseInfo.replace('–', ' - '),
+    runtime: meta.runtime,
+    rating: meta.imdbRating,
   };
 }

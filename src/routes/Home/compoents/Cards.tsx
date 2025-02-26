@@ -59,7 +59,21 @@ function Card({ item }: { item: Item & { url: string } }) {
 
       <div className="mt-2">
         <h4 className="truncate font-medium">{item.name}</h4>
-        <span className="mt-1 text-sm text-neutral-500">{item.release}</span>
+        <div className="mt-1 flex items-center gap-2 text-sm text-neutral-500">
+          <span>{item.release.split(' - ')[0] /* only short the first release year */}</span>
+          {item.runtime && (
+            <>
+              <div className="size-1 rounded-full bg-neutral-600" />
+              <span>{item.runtime}</span>
+            </>
+          )}
+          {item.rating && (
+            <>
+              <div className="size-1 rounded-full bg-neutral-600" />
+              <span>{item.rating}</span>
+            </>
+          )}
+        </div>
       </div>
     </Link>
   );

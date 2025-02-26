@@ -3,9 +3,11 @@ export type Meta = {
   type: 'movie' | 'series';
   name: string;
   releaseInfo: string;
+  runtime: string;
   logo: string;
   poster: string;
   background: string;
+  imdbRating: string;
 };
 
 export type Item = {
@@ -15,4 +17,6 @@ export type Item = {
   backgroundUrl: string;
   name: string;
   release: string;
+  runtime: string;
+  rating: string;
 };
