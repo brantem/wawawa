@@ -56,7 +56,7 @@ export default function Logo({ src, alt, className, ...props }: LogoProps) {
     };
     img.onerror = () => setUrl('MISSING');
     img.src = `${import.meta.env.VITE_PROXY_URL}/?url=${encodeURIComponent(src.replace('/logo/medium', '/logo/small'))}`;
-  }, []);
+  }, [src]);
 
   if (!url) return;
   if (url === 'MISSING') return <span className={cn('text-3xl font-semibold', className)}>{alt}</span>;

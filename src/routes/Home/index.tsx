@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import useSWR from 'swr';
 
 import Hero from 'components/Hero';
@@ -10,10 +11,11 @@ import { getRandomInt } from './helpers';
 export default function Home() {
   const { movies, series, isLoading } = useData();
 
-  const hero = (() => {
+  const hero = useMemo(() => {
+    if (isLoading) return null;
     const items = getRandomInt(0, 1) ? movies : series;
     return items[getRandomInt(0, items.length - 1)];
-  })();
+  }, [isLoading]);
 
   return (
     <div className="px-4">
