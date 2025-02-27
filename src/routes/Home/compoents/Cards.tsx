@@ -1,17 +1,24 @@
 import { Link } from 'react-router';
 
 import type { Item } from 'types';
+import { cn } from 'lib/helpers';
 
 type CardsProps = {
   title: string;
   baseUrl: string;
   items: Item[];
   isLoading: boolean;
+  view: 'grid' | 'horizontal';
 };
 
-export default function Cards({ title, baseUrl, items, isLoading }: CardsProps) {
+export default function Cards({ view, ...props }: CardsProps) {
+  if (view === 'horizontal') return <Horizontal {...props} />;
+  return <Grid {...props} />;
+}
+
+function Grid({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
   return (
-    <div>
+    <div className="px-8">
       <h2 className="text-xl font-semibold">{title}</h2>
 
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -23,9 +30,42 @@ export default function Cards({ title, baseUrl, items, isLoading }: CardsProps) 
   );
 }
 
-function SkeletonCard() {
+function Horizontal({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
   return (
-    <div>
+    <div className="flex flex-col gap-8">
+      <h2 className="ml-8 text-xl font-semibold">{title}</h2>
+
+      <div className="relative">
+        <div className="absolute top-0 bottom-0 -left-8 z-10 w-8 bg-gradient-to-r from-neutral-950 to-transparent" />
+
+        <div className="no-scrollbar -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
+          <div className="snap-start scroll-mx-8" />
+          {isLoading
+            ? [...new Array(5)].map((_, i) => (
+                <SkeletonCard
+                  key={i}
+                  className="w-[calc(100%/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-8"
+                />
+              ))
+            : items.map((item) => (
+                <Card
+                  key={item.id}
+                  className="w-[calc(100%/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-8"
+                  item={{ ...item, url: `${baseUrl}/${item.id}` }}
+                />
+              ))}
+          <div className="snap-start scroll-mx-8" />
+        </div>
+
+        <div className="absolute top-0 -right-8 bottom-0 z-10 w-8 bg-gradient-to-l from-neutral-950 to-transparent" />
+      </div>
+    </div>
+  );
+}
+
+function SkeletonCard({ className }: { className?: string }) {
+  return (
+    <div className={className}>
       <div className="aspect-[2/3] w-full animate-pulse rounded-md bg-neutral-900" />
 
       <div className="mt-3">
@@ -36,9 +76,9 @@ function SkeletonCard() {
   );
 }
 
-function Card({ item }: { item: Item & { url: string } }) {
+function Card({ className, item }: { className?: string; item: Item & { url: string } }) {
   return (
-    <Link to={item.url} className="group rounded-md transition-colors outline-none">
+    <Link to={item.url} className={cn('group rounded-md transition-colors outline-none', className)}>
       <div className="aspect-[2/3] w-full overflow-hidden rounded-md bg-neutral-900 outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3">
         {item.posterUrl ? (
           <img

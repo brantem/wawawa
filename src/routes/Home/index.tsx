@@ -29,12 +29,13 @@ export default function Home() {
               type="text"
               className="w-2/4 rounded-full border border-neutral-200 bg-white px-6 py-3 text-neutral-950 outline-none"
               placeholder="Titles"
+              onClick={() => alert('TODO')}
             />
           </div>
         </Hero>
 
-        <Cards title="Movies" baseUrl="/movies" items={movies} isLoading={isLoading} />
-        <Cards title="Series" baseUrl="/series" items={series} isLoading={isLoading} />
+        <Cards title="Movies" baseUrl="/movies" items={movies} isLoading={isLoading} view="horizontal" />
+        <Cards title="Series" baseUrl="/series" items={series} isLoading={isLoading} view="grid" />
       </div>
     </div>
   );
