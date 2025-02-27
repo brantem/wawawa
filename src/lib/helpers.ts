@@ -19,7 +19,7 @@ export function metaToItem(meta: Meta) {
     cast: meta.cast || [],
   };
   if (meta.type === 'series') {
-    item.episodes = meta.videos.map((video) => ({
+    item.items = meta.videos.map((video) => ({
       ...pick(video, ['id', 'season', 'episode', 'name', 'description']),
       thumbnailUrl: video.thumbnail,
     }));

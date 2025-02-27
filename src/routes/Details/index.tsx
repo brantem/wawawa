@@ -1,11 +1,14 @@
 import useSWR from 'swr';
 import { useParams } from 'react-router';
+import { PlayIcon } from '@heroicons/react/20/solid';
 
 import Hero from 'components/Hero';
+import Episodes from './components/Episodes';
 
 import { metaToItem } from 'lib/helpers';
+import { getTotalSeasons } from './helpers';
 
-// TODO: list of episodes, play & resume
+// TODO: play & resume, list of other movies/series?
 
 export default function Details() {
   let params = useParams<{ type: 'movies' | 'series'; id: string }>();
@@ -21,8 +24,12 @@ export default function Details() {
     <div className="mx-auto max-w-5xl py-8">
       <Hero item={data} isLoading={isLoading}>
         {data ? (
-          <button className="absolute right-8 bottom-8 rounded-full border border-neutral-200 bg-white px-6 py-2 font-semibold text-neutral-950 hover:bg-neutral-100">
-            Play
+          <button
+            className="absolute right-8 bottom-8 flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-2 pr-6 pl-5 font-semibold text-neutral-950 hover:bg-neutral-100"
+            onClick={() => alert('TODO')}
+          >
+            <PlayIcon className="size-5" />
+            <span>Play</span>
           </button>
         ) : null}
       </Hero>
@@ -34,9 +41,7 @@ export default function Details() {
             {data.type === 'series' ? (
               <>
                 <div className="size-1.25 rounded-full bg-neutral-600" />
-                <Seasons>
-                  {data.episodes.reduce((max, episode) => (episode.season > max ? episode.season : max), 1)}
-                </Seasons>
+                <Seasons>{getTotalSeasons(data.items)}</Seasons>
               </>
             ) : null}
             {data.runtime ? (
@@ -74,6 +79,8 @@ export default function Details() {
           ) : null}
 
           <p className="text-lg">{data.description}</p>
+
+          {data.type === 'series' && <Episodes items={data.items} />}
         </div>
       ) : null}
     </div>

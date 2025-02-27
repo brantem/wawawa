@@ -12,9 +12,9 @@ type CardsProps = {
 export default function Cards({ title, baseUrl, items, isLoading }: CardsProps) {
   return (
     <div>
-      <h2 className="mb-4 text-xl font-medium">{title}</h2>
+      <h2 className="text-xl font-semibold">{title}</h2>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {isLoading
           ? [...new Array(5)].map((_, i) => <SkeletonCard key={i} />)
           : items.map((item) => <Card key={item.id} item={{ ...item, url: `${baseUrl}/${item.id}` }} />)}

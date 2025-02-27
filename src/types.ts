@@ -13,10 +13,10 @@ type BaseMeta = {
   cast: string[];
 };
 
-type MetaMovie = BaseMeta & {
+export type MetaMovie = BaseMeta & {
   type: 'movie';
 };
-type MetaSeries = BaseMeta & {
+export type MetaSeries = BaseMeta & {
   type: 'series';
   videos: {
     id: string;
@@ -38,11 +38,14 @@ type BaseItem = Pick<Meta, 'id' | 'name' | 'description' | 'runtime' | 'genres' 
   rating: string | null;
 };
 
-export type Item =
-  | (BaseItem & { type: 'movie' })
-  | (BaseItem & {
-      type: 'series';
-      episodes: (Pick<MetaSeries['videos'][number], 'id' | 'season' | 'episode' | 'name' | 'description'> & {
-        thumbnailUrl: string;
-      })[];
-    });
+export type ItemMovie = BaseItem & {
+  type: 'movie';
+};
+export type ItemSeries = BaseItem & {
+  type: 'series';
+  items: (Pick<MetaSeries['videos'][number], 'id' | 'season' | 'episode' | 'name' | 'description'> & {
+    thumbnailUrl: string;
+  })[];
+};
+
+export type Item = ItemMovie | ItemSeries;
