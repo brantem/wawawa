@@ -12,8 +12,8 @@ export default function Streams({ item }: { item: Item }) {
   if (!groups.length) return;
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="sticky top-0 z-10 -my-4 flex items-center justify-between gap-8 bg-neutral-950 py-4">
+    <div>
+      <div className="sticky top-0 z-10 -my-4 flex items-center justify-between gap-4 bg-neutral-950 py-4">
         <h2 className="text-xl font-semibold">Streams</h2>
 
         <select
@@ -29,16 +29,7 @@ export default function Streams({ item }: { item: Item }) {
         </select>
       </div>
 
-      <div className="flex flex-col gap-2">
-        {streams
-          .filter((stream) => (group ? stream.group === group : stream.group === groups[0]))
-          .map((stream, i) => (
-            <a
-              key={stream.id}
-              href={`/watch/${stream.id}`}
-              className="group flex items-center rounded-md bg-neutral-900 hover:bg-white hover:text-neutral-950"
-            >
-              <div className="min-w-15 px-3 text-center text-lg font-semibold tabular-nums">{i + 1}</div>
+      <div className="mt-4 flex flex-col gap-2">
 
               <div className="flex-1 truncate py-2">
                 <span className="font-medium">{stream.title}</span>

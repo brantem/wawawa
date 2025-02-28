@@ -18,8 +18,8 @@ export default function Episodes({ items }: EpisodesProps) {
   const _items = items.filter((item) => item.season === season);
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="sticky top-0 z-10 -my-4 flex items-center justify-between gap-8 bg-neutral-950 py-4">
+    <div>
+      <div className="sticky top-0 z-10 -my-4 flex items-center justify-between gap-4 bg-neutral-950 py-4">
         <h2 className="flex items-center gap-2 text-xl font-semibold">
           <span>Episodes</span>
           <span className="text-neutral-500">{_items.length}</span>
@@ -48,7 +48,7 @@ export default function Episodes({ items }: EpisodesProps) {
       </div>
 
       {view === 'vertical' ? (
-        <div className="flex flex-col gap-6">
+        <div className="mt-4 flex flex-col gap-6 pt-1.25">
           {_items.map((item) => (
             <a key={item.id} href="#" className="group relative flex gap-4" onClick={() => alert('TODO')}>
               <Thumbnail
@@ -119,7 +119,7 @@ function Name({ isWatched, children }: NameProps) {
 
 function Horizontal({ items }: EpisodesProps) {
   return (
-    <div className="relative">
+    <div className="relative mt-4">
       <div className="absolute top-0 bottom-0 -left-8 z-10 w-8 bg-gradient-to-r from-neutral-950 to-transparent" />
 
       <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">

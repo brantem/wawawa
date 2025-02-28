@@ -32,10 +32,10 @@ function Grid({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
 
 function Horizontal({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
   return (
-    <div className="flex flex-col gap-8">
+    <div>
       <h2 className="ml-8 text-xl font-semibold">{title}</h2>
 
-      <div className="relative">
+      <div className="relative mt-4">
         <div className="absolute top-0 bottom-0 -left-8 z-10 w-8 bg-gradient-to-r from-neutral-950 to-transparent" />
 
         <div className="no-scrollbar -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
