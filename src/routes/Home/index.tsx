@@ -23,7 +23,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <Hero item={hero}>
+      <Hero item={hero} isLogoALink>
         <div className="relative flex h-full flex-col items-center justify-center gap-4">
           <h1 className="text-center text-3xl font-semibold">What would you like to watch?</h1>
           <input

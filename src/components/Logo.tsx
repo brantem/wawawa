@@ -4,13 +4,13 @@ import { cn } from 'lib/helpers';
 
 type LogoProps = Omit<React.ComponentPropsWithoutRef<'img'>, 'src'> & {
   src: string;
-  alt: string;
+  title: string;
 };
 
 // The original logo is a transparent image with a fixed size, but the actual logo dimensions vary. Many images have
 // significant transparent padding around the logo itself. This component trims the transparent edges to return only
 // the logo content without the excess padding.
-export default function Logo({ src, alt, className, ...props }: LogoProps) {
+export default function Logo({ src, title, className, ...props }: LogoProps) {
   const [url, setUrl] = useState('');
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function Logo({ src, alt, className, ...props }: LogoProps) {
   }, [src]);
 
   if (!url) return;
-  if (url === 'MISSING') return <span className={cn('text-3xl font-semibold', className)}>{alt}</span>;
+  if (url === 'MISSING') return <span className={cn('text-3xl font-semibold', className)}>{title}</span>;
   return (
     <img
       ref={(img) => {
@@ -67,6 +67,7 @@ export default function Logo({ src, alt, className, ...props }: LogoProps) {
         img.onload = () => img.classList.remove('opacity-0');
       }}
       src={url}
+      title={title}
       className={cn('opacity-0 transition-opacity', className)}
       {...props}
       fetchPriority="high"
