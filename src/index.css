@@ -14,3 +14,14 @@
     scrollbar-width: none;
   }
 }
+
+[data-media-player] {
+  --video-border-radius: 0;
+}
+
+.vds-menu-button,
+.vds-airplay-button,
+.vds-google-cast-button,
+.vds-download-button {
+  display: none !important;
+}
