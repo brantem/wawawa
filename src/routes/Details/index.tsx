@@ -3,20 +3,21 @@ import { useParams } from 'react-router';
 import { PlayIcon } from '@heroicons/react/20/solid';
 
 import Hero from 'components/Hero';
+import Streams from './components/Streams';
 import Episodes from './components/Episodes';
 
+import * as constants from 'constants';
 import { metaToItem } from 'lib/helpers';
 import { getTotalSeasons } from './helpers';
 
 // TODO: play & resume, list of other movies/series?
 
 export default function Details() {
-  let params = useParams<{ type: 'movies' | 'series'; id: string }>();
-
+  const params = useParams<{ type: 'movies' | 'series'; id: string }>();
   const { data, isLoading } = useSWR(params, async ({ type, id }) => {
     let t = type as string;
     if (type === 'movies') t = 'movie';
-    const res = await fetch(`https://v3-cinemeta.strem.io/meta/${t}/${id}.json`);
+    const res = await fetch(`${constants.CINEMETA_V3_BASE_URL}/meta/${t}/${id}.json`);
     return metaToItem((await res.json()).meta);
   });
 
@@ -80,6 +81,7 @@ export default function Details() {
 
           <p className="text-lg">{data.description}</p>
 
+          {data.type === 'movie' && <Streams item={data} />}
           {data.type === 'series' && <Episodes items={data.items} />}
         </div>
       ) : null}

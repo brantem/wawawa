@@ -5,6 +5,7 @@ import Hero from 'components/Hero';
 import Cards from './compoents/Cards';
 
 import type { Meta } from 'types';
+import * as constants from 'constants';
 import { metaToItem } from 'lib/helpers';
 import { getRandomInt } from './helpers';
 
@@ -42,7 +43,7 @@ export default function Home() {
 }
 
 const fetcher = async (url: string) => {
-  const res = await fetch(`https://cinemeta-catalogs.strem.io/top/catalog${url}`);
+  const res = await fetch(`${constants.CINEMETA_CATALOGS_BASE_URL}/top/catalog${url}`);
   return res.json();
 };
 

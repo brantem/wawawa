@@ -34,7 +34,7 @@ export default function Episodes({ items }: EpisodesProps) {
           </button>
 
           <select
-            className="appearance-none rounded-full border border-neutral-200 bg-white px-4 py-1 font-semibold text-neutral-950 outline-none hover:bg-neutral-100"
+            className="appearance-none rounded-full border border-neutral-200 bg-white px-3 py-1 text-center font-semibold text-neutral-950 outline-none hover:bg-neutral-100"
             value={season}
             onChange={(e) => setSeason(parseInt(e.target.value))}
           >
