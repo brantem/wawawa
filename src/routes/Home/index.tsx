@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import Layout from 'components/layouts/Default';
 import Hero from 'components/Hero';
 import Cards from './compoents/Cards';
 
@@ -21,24 +22,22 @@ export default function Home() {
   }, [isLoading]);
 
   return (
-    <div className="px-4">
-      <div className="mx-auto flex max-w-5xl flex-col gap-16 py-8">
-        <Hero item={hero}>
-          <div className="relative flex h-full flex-col items-center justify-center gap-4">
-            <h1 className="text-center text-3xl font-semibold">What would you like to watch?</h1>
-            <input
-              type="text"
-              className="w-2/4 rounded-full border border-neutral-200 bg-white px-6 py-3 text-neutral-950 outline-none"
-              placeholder="Titles"
-              onClick={() => alert('TODO')}
-            />
-          </div>
-        </Hero>
+    <Layout>
+      <Hero item={hero}>
+        <div className="relative flex h-full flex-col items-center justify-center gap-4">
+          <h1 className="text-center text-3xl font-semibold">What would you like to watch?</h1>
+          <input
+            type="text"
+            className="w-2/4 rounded-full border border-neutral-200 bg-white px-6 py-3 text-neutral-950 outline-none"
+            placeholder="Titles"
+            onClick={() => alert('TODO')}
+          />
+        </div>
+      </Hero>
 
-        <Cards title="Movies" baseUrl="/movies" items={movies} isLoading={isLoading} view="horizontal" />
-        <Cards title="Series" baseUrl="/series" items={series} isLoading={isLoading} view="grid" />
-      </div>
-    </div>
+      <Cards title="Movies" baseUrl="/movies" items={movies} isLoading={isLoading} view="horizontal" />
+      <Cards title="Series" baseUrl="/series" items={series} isLoading={isLoading} view="grid" />
+    </Layout>
   );
 }
 

@@ -9,7 +9,7 @@ type BaseMeta = {
   background: string;
   imdbRating?: string;
   genres: string[];
-  director: string | null;
+  director: string[] | null;
   cast: string[];
 };
 
@@ -22,20 +22,28 @@ export type MetaSeries = BaseMeta & {
     id: string;
     season: number;
     episode: number;
-    name: string;
-    description: string;
+    name?: string;
+    title?: string;
+    description?: string;
+    overview?: string;
     thumbnail: string;
+    released: string;
   }[];
 };
 
 export type Meta = MetaMovie | MetaSeries;
 
-type BaseItem = Pick<Meta, 'id' | 'name' | 'description' | 'runtime' | 'genres' | 'director' | 'cast'> & {
+type BaseItem = Pick<Meta, 'id' | 'runtime'> & {
+  title: string;
+  synopsis: string;
   logoUrl: string;
   posterUrl: string;
   backgroundUrl: string;
   release: string;
   rating: string | null;
+  genres: string[];
+  directors: string[];
+  casts: string[];
 };
 
 export type ItemMovie = BaseItem & {
@@ -43,7 +51,9 @@ export type ItemMovie = BaseItem & {
 };
 export type ItemSeries = BaseItem & {
   type: 'series';
-  items: (Pick<MetaSeries['videos'][number], 'id' | 'season' | 'episode' | 'name' | 'description'> & {
+  items: (Pick<MetaSeries['videos'][number], 'id' | 'season' | 'episode' | 'released'> & {
+    title: string;
+    synopsis: string;
     thumbnailUrl: string;
   })[];
 };

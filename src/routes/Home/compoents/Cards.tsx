@@ -18,7 +18,7 @@ export default function Cards({ view, ...props }: CardsProps) {
 
 function Grid({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
   return (
-    <div className="px-8">
+    <div className="p-8">
       <h2 className="text-xl font-semibold">{title}</h2>
 
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -32,13 +32,13 @@ function Grid({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
 
 function Horizontal({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
   return (
-    <div>
-      <h2 className="ml-8 text-xl font-semibold">{title}</h2>
+    <div className="p-8">
+      <h2 className="text-xl font-semibold">{title}</h2>
 
       <div className="relative mt-4">
         <div className="absolute top-0 bottom-0 -left-8 z-10 w-8 bg-gradient-to-r from-neutral-950 to-transparent" />
 
-        <div className="no-scrollbar -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
+        <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
           <div className="snap-start scroll-mx-8" />
           {isLoading
             ? [...new Array(5)].map((_, i) => (
@@ -78,7 +78,7 @@ function SkeletonCard({ className }: { className?: string }) {
 
 function Card({ className, item }: { className?: string; item: Item & { url: string } }) {
   return (
-    <Link to={item.url} className={cn('group rounded-md transition-colors outline-none', className)}>
+    <Link to={item.url} className={cn('group rounded-md transition-colors outline-none', className)} title={item.title}>
       <div className="aspect-[2/3] w-full overflow-hidden rounded-md bg-neutral-900 outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3">
         {item.posterUrl ? (
           <img
@@ -92,13 +92,13 @@ function Card({ className, item }: { className?: string; item: Item & { url: str
           />
         ) : (
           <div className="flex size-full items-center justify-center rounded-md border border-neutral-800 p-2 text-center font-medium">
-            {item.name}
+            {item.title}
           </div>
         )}
       </div>
 
       <div className="mt-2">
-        <h4 className="truncate font-medium">{item.name}</h4>
+        <h4 className="truncate font-medium">{item.title}</h4>
         <div className="mt-1 flex items-center gap-2 text-sm text-neutral-500">
           <span>{item.release.split(' - ')[0] /* only short the first release year */}</span>
           {item.runtime ? (

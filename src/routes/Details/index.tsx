@@ -1,11 +1,13 @@
+import { useMemo } from 'react';
 import useSWR from 'swr';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { PlayIcon } from '@heroicons/react/20/solid';
 
+import Layout from 'components/layouts/Default';
 import Hero from 'components/Hero';
-import Streams from './components/Streams';
 import Episodes from './components/Episodes';
 
+import { Item } from 'types';
 import * as constants from 'constants';
 import { metaToItem } from 'lib/helpers';
 import { getTotalSeasons } from './helpers';
@@ -13,79 +15,94 @@ import { getTotalSeasons } from './helpers';
 // TODO: play & resume, list of other movies/series?
 
 export default function Details() {
+  const { item, isLoading } = useData();
+
+  return (
+    <Layout>
+      <Hero item={item} isLoading={isLoading}>
+        {item ? <PlayButton item={item} /> : null}
+      </Hero>
+
+      {item ? (
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center gap-2 text-lg text-neutral-500">
+            <Release>{item.release}</Release>
+            {item.type === 'series' ? (
+              <>
+                <div className="size-1.25 rounded-full bg-neutral-600" />
+                <Seasons>{getTotalSeasons(item.items)}</Seasons>
+              </>
+            ) : null}
+            {item.runtime ? (
+              <>
+                <div className="size-1.25 rounded-full bg-neutral-600" />
+                <span>{item.runtime}</span>
+              </>
+            ) : null}
+            {item.rating ? (
+              <>
+                <div className="size-1.25 rounded-full bg-neutral-600" />
+                <span>{item.rating}</span>
+              </>
+            ) : null}
+          </div>
+
+          {item.directors.length || item.casts.length || item.genres.length ? (
+            <div className="flex flex-col gap-2 text-sm">
+              {item.directors.length ? (
+                <span>
+                  <span className="text-neutral-500">Director:</span> {item.directors.join(', ')}
+                </span>
+              ) : null}
+              {item.casts.length ? (
+                <span>
+                  <span className="text-neutral-500">Cast:</span> {item.casts.join(', ')}
+                </span>
+              ) : null}
+              {item.genres.length ? (
+                <span>
+                  <span className="text-neutral-500">Genres:</span> {item.genres.join(', ')}
+                </span>
+              ) : null}
+            </div>
+          ) : null}
+
+          <p className="text-lg">{item.synopsis}</p>
+
+          {item.type === 'series' ? <Episodes items={item.items} /> : null}
+        </div>
+      ) : null}
+    </Layout>
+  );
+}
+
+function useData() {
   const params = useParams<{ type: 'movies' | 'series'; id: string }>();
-  const { data, isLoading } = useSWR(params, async ({ type, id }) => {
+  const { data: item, isLoading } = useSWR(params, async ({ type, id }) => {
     let t = type as string;
     if (type === 'movies') t = 'movie';
     const res = await fetch(`${constants.CINEMETA_V3_BASE_URL}/meta/${t}/${id}.json`);
     return metaToItem((await res.json()).meta);
   });
 
+  return { item, isLoading };
+}
+
+function PlayButton({ item }: { item: Item }) {
+  const to = useMemo(() => {
+    if (item.type === 'movie') return 'watch';
+    // TODO: resume last episode if unfinished, otherwise play next
+    return `watch/${item.items.find((item) => item.season === 1 && item.episode === 1)!.id}`;
+  }, [item]);
+
   return (
-    <div className="mx-auto max-w-5xl py-8">
-      <Hero item={data} isLoading={isLoading}>
-        {data ? (
-          <button
-            className="absolute right-8 bottom-8 flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-2 pr-6 pl-5 font-semibold text-neutral-950 hover:bg-neutral-100"
-            onClick={() => alert('TODO')}
-          >
-            <PlayIcon className="size-5" />
-            <span>Play</span>
-          </button>
-        ) : null}
-      </Hero>
-
-      {data ? (
-        <div className="flex flex-col gap-8 p-8">
-          <div className="flex items-center gap-2 text-lg text-neutral-500">
-            <Release>{data.release}</Release>
-            {data.type === 'series' ? (
-              <>
-                <div className="size-1.25 rounded-full bg-neutral-600" />
-                <Seasons>{getTotalSeasons(data.items)}</Seasons>
-              </>
-            ) : null}
-            {data.runtime ? (
-              <>
-                <div className="size-1.25 rounded-full bg-neutral-600" />
-                <span>{data.runtime}</span>
-              </>
-            ) : null}
-            {data.rating ? (
-              <>
-                <div className="size-1.25 rounded-full bg-neutral-600" />
-                <span>{data.rating}</span>
-              </>
-            ) : null}
-          </div>
-
-          {data.director || data.cast.length || data.genres.length ? (
-            <div className="flex flex-col gap-2 text-sm">
-              {data.director ? (
-                <span>
-                  <span className="text-neutral-500">Director:</span> {data.director}
-                </span>
-              ) : null}
-              {data.cast.length ? (
-                <span>
-                  <span className="text-neutral-500">Cast:</span> {data.cast.join(', ')}
-                </span>
-              ) : null}
-              {data.genres.length ? (
-                <span>
-                  <span className="text-neutral-500">Genres:</span> {data.genres.join(', ')}
-                </span>
-              ) : null}
-            </div>
-          ) : null}
-
-          <p className="text-lg">{data.description}</p>
-
-          {data.type === 'movie' && <Streams item={data} />}
-          {data.type === 'series' && <Episodes items={data.items} />}
-        </div>
-      ) : null}
-    </div>
+    <Link
+      className="absolute right-8 bottom-8 flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-2 pr-6 pl-5 font-semibold text-neutral-950 hover:bg-neutral-100"
+      to={to}
+    >
+      <PlayIcon className="size-5" />
+      <span>Play</span>
+    </Link>
   );
 }
 

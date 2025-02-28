@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.2.0",
     "@vidstack/react": "^1.12.13",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
     "just-pick": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

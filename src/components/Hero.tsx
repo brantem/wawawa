@@ -27,7 +27,7 @@ export default function Hero({ item, isLoading, children }: HeroProps) {
 
           <Logo
             src={item.logoUrl}
-            alt={item.name}
+            alt={item.title}
             className="absolute bottom-8 left-8 z-10 max-h-[125px] max-w-[375px]"
           />
         </>

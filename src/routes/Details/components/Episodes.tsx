@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import { PlayIcon } from '@heroicons/react/24/solid';
 import { ListBulletIcon, ViewColumnsIcon, CheckCircleIcon } from '@heroicons/react/16/solid';
+import dayjs from 'dayjs';
 
 import type { ItemSeries } from 'types';
 import { getTotalSeasons } from '../helpers';
@@ -20,7 +22,7 @@ export default function Episodes({ items }: EpisodesProps) {
   return (
     <div>
       <div className="sticky top-0 z-10 -my-4 flex items-center justify-between gap-4 bg-neutral-950 py-4">
-        <h2 className="flex items-center gap-2 text-xl font-semibold">
+        <h2 className="fontsemibold flex items-center gap-2 text-xl">
           <span>Episodes</span>
           <span className="text-neutral-500">{_items.length}</span>
         </h2>
@@ -34,7 +36,7 @@ export default function Episodes({ items }: EpisodesProps) {
           </button>
 
           <select
-            className="appearance-none rounded-full border border-neutral-200 bg-white px-3 py-1 text-center font-semibold text-neutral-950 outline-none hover:bg-neutral-100"
+            className="appearance-none rounded-full border border-neutral-200 bg-white px-4 py-1 text-center font-semibold text-neutral-950 outline-none hover:bg-neutral-100"
             value={season}
             onChange={(e) => setSeason(parseInt(e.target.value))}
           >
@@ -49,21 +51,27 @@ export default function Episodes({ items }: EpisodesProps) {
 
       {view === 'vertical' ? (
         <div className="mt-4 flex flex-col gap-6 pt-1.25">
-          {_items.map((item) => (
-            <a key={item.id} href="#" className="group relative flex gap-4" onClick={() => alert('TODO')}>
-              <Thumbnail
-                className="aspect-video h-[150px] shrink-0"
-                src={item.thumbnailUrl.replace('/w780.jpg', '/w300.jpg')}
-                height={150}
-              />
+          {_items.map((item) => {
+            const isUpcoming = dayjs(item.released).isAfter(new Date());
+            return (
+              <Card key={item.id} to={`watch/${item.id}`} className="relative flex gap-4" isUpcoming={isUpcoming}>
+                <Thumbnail
+                  className="aspect-video h-[150px] shrink-0"
+                  src={item.thumbnailUrl.replace('/w780.jpg', '/w300.jpg')}
+                  height={150}
+                  isUpcoming={isUpcoming}
+                />
 
-              <div className="pt-1">
-                <span className="text-xs font-semibold text-neutral-500 uppercase">Episode {item.episode}</span>
-                <Name isWatched={item.episode === 1}>{item.name}</Name>
-                <p className="line-clamp-3 text-sm text-neutral-400">{item.description}</p>
-              </div>
-            </a>
-          ))}
+                <div className="flex-1 pt-1">
+                  <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
+                  <Title isWatched={item.episode === 1}>{item.title}</Title>
+                  <p className="line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
+                    {item.synopsis}
+                  </p>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       ) : null}
 
@@ -72,18 +80,32 @@ export default function Episodes({ items }: EpisodesProps) {
   );
 }
 
+type CardProps = React.PropsWithChildren<{
+  to: string;
+  className: string;
+  isUpcoming: boolean;
+}>;
+
+function Card({ className, to, isUpcoming, ...props }: CardProps) {
+  if (isUpcoming) return <div className={className} {...props} />;
+  return <Link to={to} className={cn('group', className)} {...props} />;
+}
+
 type ThumbnailProps = {
-  src: string;
+  isUpcoming: boolean;
   className?: string;
+  src: string;
   height: number;
   width?: number;
 };
 
-function Thumbnail({ className, ...props }: ThumbnailProps) {
+function Thumbnail({ isUpcoming, className, ...props }: ThumbnailProps) {
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-md bg-neutral-900 outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3',
+        'relative overflow-hidden rounded-md bg-neutral-900',
+        !isUpcoming &&
+          'outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3',
         className,
       )}
     >
@@ -96,23 +118,39 @@ function Thumbnail({ className, ...props }: ThumbnailProps) {
         className="absolute inset-0 size-full object-cover object-center opacity-0 transition-opacity"
       />
 
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-        <PlayIcon className="size-16" />
-      </div>
+      {!isUpcoming ? (
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+          <PlayIcon className="size-16" />
+        </div>
+      ) : null}
     </div>
   );
 }
 
-type NameProps = {
+function Episode({ isUpcoming, children }: { isUpcoming: boolean; children: number }) {
+  return (
+    <div className="flex items-center gap-2 text-xs font-semibold text-neutral-500 uppercase">
+      <span>Episode {children}</span>
+      {isUpcoming ? (
+        <>
+          <div className="size-1 rounded-full bg-neutral-600" />
+          <span>Upcoming</span>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+type TitleProps = {
   isWatched: boolean;
   children: string;
 };
 
-function Name({ isWatched, children }: NameProps) {
+function Title({ isWatched, children }: TitleProps) {
   return (
     <div className="mt-1 flex items-center gap-1.5">
       <h4 className="truncate font-medium">{children}</h4>
-      {isWatched && <CheckCircleIcon className="size-4 text-neutral-500" />}
+      {isWatched ? <CheckCircleIcon className="size-4 text-neutral-500" /> : null}
     </div>
   );
 }
@@ -124,26 +162,32 @@ function Horizontal({ items }: EpisodesProps) {
 
       <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
         <div className="snap-start scroll-mx-8" />
-        {items.map((item) => (
-          <a
-            key={item.id}
-            href="#"
-            className="group w-[304px] shrink-0 snap-start scroll-mx-8"
-            onClick={() => alert('TODO')}
-          >
-            <Thumbnail
-              className="h-[171px] w-[304px]"
-              src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
-              height={171}
-              width={304}
-            />
-            <div className="mt-2">
-              <span className="text-xs font-semibold text-neutral-500 uppercase">Episode {item.episode}</span>
-              <Name isWatched={item.episode === 1}>{item.name}</Name>
-              <p className="mt-0.5 line-clamp-3 text-sm text-neutral-400">{item.description}</p>
-            </div>
-          </a>
-        ))}
+        {items.map((item) => {
+          const isUpcoming = dayjs(item.released).isAfter(new Date());
+          return (
+            <Card
+              key={item.id}
+              to={`watch/${item.id}`}
+              className="w-[304px] shrink-0 snap-start scroll-mx-8"
+              isUpcoming={isUpcoming}
+            >
+              <Thumbnail
+                className="h-[171px] w-[304px]"
+                src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
+                height={171}
+                width={304}
+                isUpcoming={isUpcoming}
+              />
+              <div className="mt-2">
+                <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
+                <Title isWatched={item.episode === 1}>{item.title}</Title>
+                <p className="mt-0.5 line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
+                  {item.synopsis}
+                </p>
+              </div>
+            </Card>
+          );
+        })}
         <div className="snap-start scroll-mx-8" />
       </div>
 
