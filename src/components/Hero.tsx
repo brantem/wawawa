@@ -42,7 +42,7 @@ export default function Hero({ item, isLoading, isLogoALink, children }: HeroPro
             fetchPriority="high"
           />
 
-          {isLogoALink ? <Link to={`${item.type}/${item.id}`}>{renderLogo()}</Link> : renderLogo()}
+          {isLogoALink ? <Link to={`/${item.type}/${item.id}`}>{renderLogo()}</Link> : renderLogo()}
         </>
       ) : null}
       <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 to-neutral-950/50" />

@@ -44,7 +44,7 @@ function Grid({ baseUrl, items, isLoading }: Omit<ItemsProps, 'title' | 'view'>)
     <div className="mt-4 grid grid-cols-5 gap-6">
       {isLoading
         ? [...new Array(5)].map((_, i) => <SkeletonCard key={i} />)
-        : items.map((item) => <Card key={item.id} item={{ ...item, url: `${baseUrl}/${item.id}` }} />)}
+        : items.map((item) => <Card key={item.id} item={{ ...item, url: `/${baseUrl}/${item.id}` }} />)}
     </div>
   );
 }
@@ -64,7 +64,7 @@ function Horizontal({ baseUrl, items, isLoading }: Omit<ItemsProps, 'title' | 'v
               <Card
                 key={item.id}
                 className="w-[calc(100%/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-8"
-                item={{ ...item, url: `${baseUrl}/${item.id}` }}
+                item={{ ...item, url: `/${baseUrl}/${item.id}` }}
               />
             ))}
         <div className="snap-start scroll-mx-8" />
