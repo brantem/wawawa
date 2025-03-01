@@ -10,7 +10,7 @@ import { Item } from 'types';
 import { useData } from './hooks';
 import { getTotalSeasons } from './helpers';
 
-// TODO: play & resume, list of other movies/series?
+// TODO: not found state, play & resume, list of other movies/series?
 
 export default function Details() {
   const { item, isLoading } = useData();

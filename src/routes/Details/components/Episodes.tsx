@@ -8,6 +8,8 @@ import type { ItemSeries } from 'types';
 import { getTotalSeasons } from '../helpers';
 import { cn } from 'lib/helpers';
 
+// TODO: empty state
+
 type EpisodesProps = {
   items: ItemSeries['items'];
 };

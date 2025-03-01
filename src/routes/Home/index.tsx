@@ -9,6 +9,8 @@ import { useSearchValue, useData } from './hooks';
 import { cn } from 'lib/helpers';
 import { getRandomInt } from './helpers';
 
+// TODO: empty state
+
 export default function Home() {
   const isSearching = Boolean(useSearchValue());
 

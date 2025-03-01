@@ -6,6 +6,8 @@ import type { Stream } from '../types';
 import { useStreams } from '../hooks';
 import { cn } from 'lib/helpers';
 
+// TODO: empty state
+
 export default function Streams() {
   const { groups, streams, isLoading } = useStreams();
 
