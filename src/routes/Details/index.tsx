@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Link } from 'react-router';
+import { Fragment, useMemo } from 'react';
+import { Link, useParams } from 'react-router';
 import { PlayIcon } from '@heroicons/react/20/solid';
 
 import Layout from 'components/layouts/Default';
@@ -13,6 +13,7 @@ import { getTotalSeasons } from './helpers';
 // TODO: not found state, play & resume, list of other movies/series?
 
 export default function Details() {
+  const params = useParams();
   const { item, isLoading } = useData();
 
   return (
@@ -59,7 +60,15 @@ export default function Details() {
               ) : null}
               {item.genres.length ? (
                 <span>
-                  <span className="text-neutral-500">Genres:</span> {item.genres.join(', ')}
+                  <span className="text-neutral-500">Genres:</span>{' '}
+                  {item.genres.map((genre, i) => (
+                    <Fragment key={genre}>
+                      <Link to={`/${params.type}?genre=${genre}`} className="hover:underline">
+                        {genre}
+                      </Link>
+                      {i !== item.genres.length - 1 ? ', ' : null}
+                    </Fragment>
+                  ))}
                 </span>
               ) : null}
             </div>
@@ -93,7 +102,27 @@ function PlayButton({ item }: { item: Item }) {
 }
 
 function Release({ children }: { children: string }) {
-  return children.endsWith(' - ') ? <span>{children}Present</span> : <span>{children}</span>;
+  const params = useParams();
+
+  const renderYear = (year: string) => {
+    return (
+      <Link to={`/${params.type}?year=${year}`} className="hover:text-white hover:underline">
+        {year}
+      </Link>
+    );
+  };
+
+  if (!children.includes(' - ')) return <span>{renderYear(children.replace(' - ', ''))}</span>;
+  if (children.endsWith(' - ')) return <span>{renderYear(children.replace(' - ', ''))} - Present</span>;
+
+  const [start, end] = children.split(' - ');
+  if (start === end) return <span>{renderYear(start.replace(' - ', ''))}</span>;
+
+  return (
+    <span>
+      {renderYear(start)} - {renderYear(end)}
+    </span>
+  );
 }
 
 function Seasons({ children }: { children: number }) {

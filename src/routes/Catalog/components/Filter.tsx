@@ -18,7 +18,7 @@ export default function Filter() {
   return (
     <div>
       <Select
-        className="rounded-r-none pr-3"
+        className="rounded-r-none"
         value={value}
         onChange={(e) => {
           setSearchParams((prev) => {
@@ -41,7 +41,11 @@ export default function Filter() {
       </Select>
 
       <Select
-        className="-ml-px rounded-l-none pl-3"
+        className="-ml-px rounded-l-none"
+        value={(() => {
+          if (value === 'year') return searchParams.get('year') || options.year[0];
+          return searchParams.get('genre') || 'ALL';
+        })()}
         onChange={(e) => {
           setSearchParams((prev) => {
             switch (value) {
