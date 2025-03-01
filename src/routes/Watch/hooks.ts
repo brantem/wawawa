@@ -4,18 +4,18 @@ import useSWR from 'swr';
 import * as constants from 'constants';
 import type { Stream } from './types';
 
-type Raw = {
-  name: string;
-  title: string;
-  infoHash: string;
-  fileIdx: string;
-};
-
 export function useStreams() {
+  type Raw = {
+    name: string;
+    title: string;
+    infoHash: string;
+    fileIdx: string;
+  };
+
   const params = useParams<{ type: 'movies' | 'series'; id: string; episodeId?: string }>();
   const { data, isLoading } = useSWR<Raw[], any, typeof params>(params, async ({ type, id, episodeId }) => {
-    let _type = type === 'movies' ? 'movie' : type;
-    let _episodeId = episodeId ? `:${episodeId}` : '';
+    const _type = type === 'movies' ? 'movie' : type;
+    const _episodeId = episodeId ? `:${episodeId}` : '';
 
     const res = await fetch(`${constants.TORRENTIO_BASE_URL}/stream/${_type}/${id}${_episodeId}.json`);
     return (await res.json())?.streams || [];
