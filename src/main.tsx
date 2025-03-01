@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <Route index element={<Home />} />
         <Route path=":type/:id">
           <Route index element={<Details />} />
-          <Route path="watch/:streamId" element={<Watch />} />
+          <Route path="watch/*" element={<Watch />} />
         </Route>
       </Routes>
     </BrowserRouter>

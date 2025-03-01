@@ -8,7 +8,6 @@ export default function Player() {
   return (
     <MediaPlayer
       className="h-full"
-      streamType="on-demand"
       title="Sprite Fight"
       // non HLS
       src={{
@@ -17,6 +16,8 @@ export default function Player() {
       }}
       // HLS
       // src="https://files.vidstack.io/sprite-fight/hls/stream.m3u8"
+      streamType="on-demand"
+      autoPlay
     >
       <MediaProvider />
       <DefaultVideoLayout icons={defaultLayoutIcons} download={false} />

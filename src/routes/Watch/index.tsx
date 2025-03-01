@@ -1,10 +1,7 @@
-import Layout from 'components/layouts/Default';
-import Streams from './components/Streams';
+// import { useParams } from 'react-router';
+import Player from './components/Player';
 
 export default function Watch() {
-  return (
-    <Layout>
-      <Streams />
-    </Layout>
-  );
+  // const { '*': streamId } = useParams();
+  return <Player />;
 }
