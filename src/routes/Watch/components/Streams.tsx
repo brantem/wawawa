@@ -49,9 +49,8 @@ export default function Streams() {
           : streams
               .filter((stream) => (group ? stream.group === group : stream.group === groups[0]))
               .map((stream, i) => (
-                <a
+                <div
                   key={stream.id}
-                  href={`/watch/${stream.id}`}
                   className="group flex items-center rounded-md bg-neutral-900 hover:bg-white hover:text-neutral-950"
                 >
                   <div className="min-w-15 px-3 text-center text-lg font-semibold tabular-nums">{i + 1}</div>
@@ -72,7 +71,7 @@ export default function Streams() {
                   <div className="flex aspect-square size-15 h-full items-center justify-center opacity-0 group-hover:opacity-100">
                     <PlayIcon className="size-6" />
                   </div>
-                </a>
+                </div>
               ))}
       </div>
     </div>
@@ -107,8 +106,6 @@ export function useData() {
   const groups = new Set<string>();
   const streams: Stream[] = [];
   (data || []).forEach((stream) => {
-    if (stream.name === 'Torrentio') return;
-
     const group = stream.name.replace(/Torrentio\n/, '');
     groups.add(group);
 

@@ -35,8 +35,10 @@ export default function Home() {
         </div>
       </Hero>
 
-      <Cards title="Movies" baseUrl="/movies" items={movies} isLoading={isLoading} view="horizontal" />
-      <Cards title="Series" baseUrl="/series" items={series} isLoading={isLoading} view="grid" />
+      <div className="flex flex-col gap-16">
+        <Cards title="Movies" baseUrl="/movies" items={movies} isLoading={isLoading} view="horizontal" />
+        <Cards title="Series" baseUrl="/series" items={series} isLoading={isLoading} view="grid" />
+      </div>
     </Layout>
   );
 }

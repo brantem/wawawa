@@ -12,16 +12,20 @@ type CardsProps = {
 };
 
 export default function Cards({ view, ...props }: CardsProps) {
-  if (view === 'horizontal') return <Horizontal {...props} />;
-  return <Grid {...props} />;
+  return (
+    <>
+      {view === 'grid' ? <Grid {...props} /> : null}
+      {view === 'horizontal' ? <Horizontal {...props} /> : null}
+    </>
+  );
 }
 
 function Grid({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
   return (
-    <div className="p-8">
+    <div className="px-8">
       <h2 className="text-xl font-semibold">{title}</h2>
 
-      <div className="mt-4 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="mt-4 grid grid-cols-5 gap-6">
         {isLoading
           ? [...new Array(5)].map((_, i) => <SkeletonCard key={i} />)
           : items.map((item) => <Card key={item.id} item={{ ...item, url: `${baseUrl}/${item.id}` }} />)}
@@ -32,7 +36,7 @@ function Grid({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
 
 function Horizontal({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view'>) {
   return (
-    <div className="p-8">
+    <div className="px-8">
       <h2 className="text-xl font-semibold">{title}</h2>
 
       <div className="relative mt-4">

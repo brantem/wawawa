@@ -17,14 +17,14 @@ export default function Episodes({ items }: EpisodesProps) {
   const [season, setSeason] = useState(1);
 
   const seasons = getTotalSeasons(items);
-  const _items = items.filter((item) => item.season === season);
+  const $items = items.filter((item) => item.season === season);
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <div className="sticky top-0 z-10 -my-4 flex items-center justify-between gap-4 bg-neutral-950 py-4">
         <h2 className="fontsemibold flex items-center gap-2 text-xl">
           <span>Episodes</span>
-          <span className="text-neutral-500">{_items.length}</span>
+          <span className="text-neutral-500">{$items.length}</span>
         </h2>
 
         <div className="flex gap-2">
@@ -49,33 +49,8 @@ export default function Episodes({ items }: EpisodesProps) {
         </div>
       </div>
 
-      {view === 'vertical' ? (
-        <div className="mt-4 flex flex-col gap-6 pt-1.25">
-          {_items.map((item) => {
-            const isUpcoming = dayjs(item.released).isAfter(new Date());
-            return (
-              <Card key={item.id} to={`watch/${item.id}`} className="relative flex gap-4" isUpcoming={isUpcoming}>
-                <Thumbnail
-                  className="aspect-video h-[150px] shrink-0"
-                  src={item.thumbnailUrl.replace('/w780.jpg', '/w300.jpg')}
-                  height={150}
-                  isUpcoming={isUpcoming}
-                />
-
-                <div className="flex-1 pt-1">
-                  <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
-                  <Title isWatched={item.episode === 1}>{item.title}</Title>
-                  <p className="line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
-                    {item.synopsis}
-                  </p>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      ) : null}
-
-      {view === 'horizontal' ? <Horizontal items={_items} /> : null}
+      {view === 'vertical' ? <Vertical items={$items} /> : null}
+      {view === 'horizontal' ? <Horizontal items={$items} /> : null}
     </div>
   );
 }
@@ -155,9 +130,38 @@ function Title({ isWatched, children }: TitleProps) {
   );
 }
 
+function Vertical({ items }: EpisodesProps) {
+  return (
+    <div className="flex flex-col gap-6 pt-1.25">
+      {items.map((item) => {
+        const isUpcoming = dayjs(item.released).isAfter(new Date());
+        return (
+          <Card key={item.id} to={`watch/${item.id}`} className="relative flex gap-4" isUpcoming={isUpcoming}>
+            <Thumbnail
+              className="h-[171px] w-[304px]"
+              src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
+              height={171}
+              width={304}
+              isUpcoming={isUpcoming}
+            />
+
+            <div className="flex-1 pt-3">
+              <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
+              <Title isWatched={item.episode === 1}>{item.title}</Title>
+              <p className="line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
+                {item.synopsis}
+              </p>
+            </div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
 function Horizontal({ items }: EpisodesProps) {
   return (
-    <div className="relative mt-4">
+    <div className="relative pt-1.25">
       <div className="absolute top-0 bottom-0 -left-8 z-10 w-8 bg-gradient-to-r from-neutral-950 to-transparent" />
 
       <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
