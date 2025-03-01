@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router';
-import useSWR from 'swr';
+import { Link } from 'react-router';
 import { PlayIcon } from '@heroicons/react/24/solid';
 
-import * as constants from 'constants';
+import type { Stream } from '../types';
+import { useStreams } from '../hooks';
 import { cn } from 'lib/helpers';
 
 export default function Streams() {
-  const { groups, streams, isLoading } = useData();
+  const { groups, streams, isLoading } = useStreams();
 
   const [group, setGroup] = useState('');
 
@@ -47,57 +47,6 @@ export default function Streams() {
       </div>
     </div>
   );
-}
-
-type Raw = {
-  name: string;
-  title: string;
-  infoHash: string;
-  fileIdx: string;
-};
-
-type Stream = {
-  id: string;
-  group: string;
-  title: string;
-  seeders: string;
-  size: string;
-  origin: string;
-};
-
-export function useData() {
-  const params = useParams<{ type: 'movies' | 'series'; id: string; episodeId?: string }>();
-  const { data, isLoading } = useSWR<Raw[], any, typeof params>(params, async ({ type, id, episodeId }) => {
-    let _type = type === 'movies' ? 'movie' : type;
-    let _episodeId = episodeId ? `:${episodeId}` : '';
-
-    const res = await fetch(`${constants.TORRENTIO_BASE_URL}/stream/${_type}/${id}${_episodeId}.json`);
-    return (await res.json())?.streams || [];
-  });
-
-  const groups = new Set<string>();
-  const streams: Stream[] = [];
-  (data || []).forEach((stream) => {
-    const group = stream.name.replace(/Torrentio\n/, '');
-    groups.add(group);
-
-    const [title, info] = stream.title.split('\n👤');
-    const [, seeders, size, origin] = info.split('\n')[0].match(/^ (\d+) 💾 (.+) ⚙️ (.+)$/)!;
-    streams.push({
-      id: `${stream.infoHash}/${stream.fileIdx}`,
-      group,
-      title: title.replace('\n', ' '),
-      seeders,
-      size,
-      origin,
-    });
-  }, []);
-
-  return {
-    groups: Array.from(groups),
-    streams,
-    isLoading,
-  };
 }
 
 function getDisplayText(s: string) {

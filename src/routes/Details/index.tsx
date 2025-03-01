@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import useSWR from 'swr';
-import { Link, useParams } from 'react-router';
+import { Link } from 'react-router';
 import { PlayIcon } from '@heroicons/react/20/solid';
 
 import Layout from 'components/layouts/Default';
@@ -8,8 +7,7 @@ import Hero from 'components/Hero';
 import Episodes from './components/Episodes';
 
 import { Item } from 'types';
-import * as constants from 'constants';
-import { metaToItem } from 'lib/helpers';
+import { useData } from './hooks';
 import { getTotalSeasons } from './helpers';
 
 // TODO: play & resume, list of other movies/series?
@@ -74,18 +72,6 @@ export default function Details() {
       ) : null}
     </Layout>
   );
-}
-
-function useData() {
-  const params = useParams<{ type: 'movies' | 'series'; id: string }>();
-  const { data: item, isLoading } = useSWR(params, async ({ type, id }) => {
-    let _type = type === 'movies' ? 'movie' : type;
-
-    const res = await fetch(`${constants.CINEMETA_BASE_URL}/meta/${_type}/${id}.json`);
-    return metaToItem((await res.json()).meta);
-  });
-
-  return { item, isLoading };
 }
 
 function PlayButton({ item }: { item: Item }) {

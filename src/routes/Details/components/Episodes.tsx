@@ -57,6 +57,76 @@ export default function Episodes({ items }: EpisodesProps) {
   );
 }
 
+function Vertical({ items }: EpisodesProps) {
+  return (
+    <div className="flex flex-col gap-6 pt-1.25">
+      {items.map((item) => {
+        const isUpcoming = dayjs(item.released).isAfter(new Date());
+        return (
+          <Card key={item.id} to={`watch/${item.id}`} className="relative flex gap-4" isUpcoming={isUpcoming}>
+            <Thumbnail
+              className="h-[171px] w-[304px]"
+              src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
+              height={171}
+              width={304}
+              isUpcoming={isUpcoming}
+            />
+
+            <div className="flex-1 pt-3">
+              <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
+              <Title isWatched={item.episode === 1}>{item.title}</Title>
+              <p className="line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
+                {item.synopsis}
+              </p>
+            </div>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+function Horizontal({ items }: EpisodesProps) {
+  return (
+    <div className="relative pt-1.25">
+      <div className="absolute top-0 bottom-0 -left-8 z-10 w-3 bg-gradient-to-r from-neutral-950 to-transparent" />
+
+      <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
+        <div className="snap-start scroll-mx-8" />
+        {items.map((item) => {
+          const isUpcoming = dayjs(item.released).isAfter(new Date());
+          return (
+            <Card
+              key={item.id}
+              to={`watch/${item.id}`}
+              className="w-[304px] shrink-0 snap-start scroll-mx-8"
+              isUpcoming={isUpcoming}
+            >
+              <Thumbnail
+                className="h-[171px] w-[304px]"
+                src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
+                height={171}
+                width={304}
+                isUpcoming={isUpcoming}
+              />
+              <div className="mt-2">
+                <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
+                <Title isWatched={item.episode === 1}>{item.title}</Title>
+                <p className="mt-0.5 line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
+                  {item.synopsis}
+                </p>
+              </div>
+            </Card>
+          );
+        })}
+        <div className="snap-start scroll-mx-8" />
+      </div>
+
+      <div className="absolute top-0 -right-8 bottom-0 z-10 w-3 bg-gradient-to-l from-neutral-950 to-transparent" />
+    </div>
+  );
+}
+
 type CardProps = React.PropsWithChildren<{
   to: string;
   className: string;
@@ -131,76 +201,6 @@ function Title({ isWatched, children }: TitleProps) {
     <div className="mt-1 flex items-center gap-1.5">
       <h4 className="truncate font-medium">{children}</h4>
       {isWatched ? <CheckCircleIcon className="size-4 text-neutral-500" /> : null}
-    </div>
-  );
-}
-
-function Vertical({ items }: EpisodesProps) {
-  return (
-    <div className="flex flex-col gap-6 pt-1.25">
-      {items.map((item) => {
-        const isUpcoming = dayjs(item.released).isAfter(new Date());
-        return (
-          <Card key={item.id} to={`watch/${item.id}`} className="relative flex gap-4" isUpcoming={isUpcoming}>
-            <Thumbnail
-              className="h-[171px] w-[304px]"
-              src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
-              height={171}
-              width={304}
-              isUpcoming={isUpcoming}
-            />
-
-            <div className="flex-1 pt-3">
-              <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
-              <Title isWatched={item.episode === 1}>{item.title}</Title>
-              <p className="line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
-                {item.synopsis}
-              </p>
-            </div>
-          </Card>
-        );
-      })}
-    </div>
-  );
-}
-
-function Horizontal({ items }: EpisodesProps) {
-  return (
-    <div className="relative pt-1.25">
-      <div className="absolute top-0 bottom-0 -left-8 z-10 w-3 bg-gradient-to-r from-neutral-950 to-transparent" />
-
-      <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
-        <div className="snap-start scroll-mx-8" />
-        {items.map((item) => {
-          const isUpcoming = dayjs(item.released).isAfter(new Date());
-          return (
-            <Card
-              key={item.id}
-              to={`watch/${item.id}`}
-              className="w-[304px] shrink-0 snap-start scroll-mx-8"
-              isUpcoming={isUpcoming}
-            >
-              <Thumbnail
-                className="h-[171px] w-[304px]"
-                src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
-                height={171}
-                width={304}
-                isUpcoming={isUpcoming}
-              />
-              <div className="mt-2">
-                <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
-                <Title isWatched={item.episode === 1}>{item.title}</Title>
-                <p className="mt-0.5 line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
-                  {item.synopsis}
-                </p>
-              </div>
-            </Card>
-          );
-        })}
-        <div className="snap-start scroll-mx-8" />
-      </div>
-
-      <div className="absolute top-0 -right-8 bottom-0 z-10 w-3 bg-gradient-to-l from-neutral-950 to-transparent" />
     </div>
   );
 }
