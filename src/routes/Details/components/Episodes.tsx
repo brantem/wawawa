@@ -17,6 +17,7 @@ export default function Episodes({ items }: EpisodesProps) {
   const [season, setSeason] = useState(1);
 
   const seasons = getTotalSeasons(items);
+  const hasSpecial = items.some((item) => item.season === 0);
   const $items = items.filter((item) => item.season === season);
 
   return (
@@ -45,6 +46,7 @@ export default function Episodes({ items }: EpisodesProps) {
                 Season {i + 1}
               </option>
             ))}
+            {hasSpecial ? <option value="0">Special</option> : null}
           </select>
         </div>
       </div>
