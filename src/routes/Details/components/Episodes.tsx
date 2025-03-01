@@ -23,7 +23,7 @@ export default function Episodes({ items }: EpisodesProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="sticky top-0 z-10 -my-4 flex items-center justify-between gap-4 bg-neutral-950 py-4">
-        <h2 className="fontsemibold flex items-center gap-2 text-xl">
+        <h2 className="flex items-center gap-2 text-xl font-semibold">
           <span>Episodes</span>
           <span className="text-neutral-500">{$items.length}</span>
         </h2>
