@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { PlayIcon } from '@heroicons/react/24/solid';
 
+import Select from 'components/Select';
+
 import type { Stream } from '../types';
 import { useStreams } from '../hooks';
-import { cn } from 'lib/helpers';
 
 // TODO: empty state
 
@@ -18,11 +19,8 @@ export default function Streams() {
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-xl font-semibold">Select a Stream</h2>
 
-        <select
-          className={cn(
-            'appearance-none rounded-full border border-neutral-200 bg-white px-4 py-1 text-center font-semibold text-neutral-950 transition-opacity outline-none hover:bg-neutral-100',
-            !groups.length && 'opacity-0',
-          )}
+        <Select
+          className={!groups.length ? 'opacity-0' : undefined}
           value={group}
           onChange={(e) => setGroup(e.target.value)}
         >
@@ -31,7 +29,7 @@ export default function Streams() {
               {getDisplayText(group)}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div className="relative mt-2">

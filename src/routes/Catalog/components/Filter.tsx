@@ -1,6 +1,8 @@
 import { useSearchParams } from 'react-router';
 import useSWR from 'swr';
 
+import Select from 'components/Select';
+
 import * as constants from 'constants';
 import { useType } from '../hooks';
 
@@ -14,9 +16,9 @@ export default function Filter() {
   })();
 
   return (
-    <div className="font-semibold text-neutral-950">
-      <select
-        className="w-36 appearance-none rounded-l-full border border-neutral-200 bg-white py-1 pr-3 pl-4 text-center hover:bg-neutral-100 focus:relative"
+    <div>
+      <Select
+        className="rounded-r-none pr-3"
         value={value}
         onChange={(e) => {
           setSearchParams((prev) => {
@@ -36,10 +38,10 @@ export default function Filter() {
       >
         <option value="popularity">Popularity</option>
         <option value="year">Year</option>
-      </select>
+      </Select>
 
-      <select
-        className="-ml-px w-36 appearance-none rounded-r-full border border-neutral-200 bg-white py-1 pr-4 pl-3 text-center hover:bg-neutral-100"
+      <Select
+        className="-ml-px rounded-l-none pl-3"
         onChange={(e) => {
           setSearchParams((prev) => {
             switch (value) {
@@ -64,7 +66,7 @@ export default function Filter() {
             {option}
           </option>
         ))}
-      </select>
+      </Select>
     </div>
   );
 }

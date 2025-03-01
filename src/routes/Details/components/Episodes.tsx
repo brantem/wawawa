@@ -4,6 +4,8 @@ import { PlayIcon } from '@heroicons/react/24/solid';
 import { ListBulletIcon, ViewColumnsIcon, CheckCircleIcon } from '@heroicons/react/16/solid';
 import dayjs from 'dayjs';
 
+import Select from 'components/Select';
+
 import type { ItemSeries } from 'types';
 import { getTotalSeasons } from '../helpers';
 import { cn } from 'lib/helpers';
@@ -38,18 +40,14 @@ export default function Episodes({ items }: EpisodesProps) {
             {view === 'vertical' ? <ListBulletIcon className="size-4" /> : <ViewColumnsIcon className="size-4" />}
           </button>
 
-          <select
-            className="appearance-none rounded-full border border-neutral-200 bg-white px-4 py-1 text-center font-semibold text-neutral-950 outline-none hover:bg-neutral-100"
-            value={season}
-            onChange={(e) => setSeason(parseInt(e.target.value))}
-          >
+          <Select value={season} onChange={(e) => setSeason(parseInt(e.target.value))}>
             {[...new Array(seasons)].map((_, i) => (
               <option key={i} value={i + 1}>
                 Season {i + 1}
               </option>
             ))}
             {hasSpecial ? <option value="0">Special</option> : null}
-          </select>
+          </Select>
         </div>
       </div>
 
