@@ -17,7 +17,7 @@ export default function Details() {
 
   return (
     <Layout>
-      <Hero item={item} isLoading={isLoading}>
+      <Hero item={item} isLoading={isLoading} hasBackButton>
         {item ? <PlayButton item={item} /> : null}
       </Hero>
 
