@@ -79,9 +79,10 @@ export default function Details() {
 function useData() {
   const params = useParams<{ type: 'movies' | 'series'; id: string }>();
   const { data: item, isLoading } = useSWR(params, async ({ type, id }) => {
-    let t = type as string;
-    if (type === 'movies') t = 'movie';
-    const res = await fetch(`${constants.CINEMETA_V3_BASE_URL}/meta/${t}/${id}.json`);
+    let _type = type as string;
+    if (type === 'movies') _type = 'movie';
+
+    const res = await fetch(`${constants.CINEMETA_V3_BASE_URL}/meta/${_type}/${id}.json`);
     return metaToItem((await res.json()).meta);
   });
 
@@ -107,8 +108,7 @@ function PlayButton({ item }: { item: Item }) {
 }
 
 function Release({ children }: { children: string }) {
-  if (children.endsWith(' - ')) return <span>{children}Present</span>;
-  return <span>{children}</span>;
+  return children.endsWith(' - ') ? <span>{children}Present</span> : <span>{children}</span>;
 }
 
 function Seasons({ children }: { children: number }) {

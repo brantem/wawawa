@@ -62,8 +62,11 @@ type CardProps = React.PropsWithChildren<{
 }>;
 
 function Card({ className, to, isUpcoming, ...props }: CardProps) {
-  if (isUpcoming) return <div className={className} {...props} />;
-  return <Link to={to} className={cn('group', className)} {...props} />;
+  return isUpcoming ? (
+    <div className={className} {...props} />
+  ) : (
+    <Link to={to} className={cn('group', className)} {...props} />
+  );
 }
 
 type ThumbnailProps = {
