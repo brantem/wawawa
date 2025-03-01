@@ -68,11 +68,8 @@ type Stream = {
 export function useData() {
   const params = useParams<{ type: 'movies' | 'series'; id: string; episodeId?: string }>();
   const { data, isLoading } = useSWR<Raw[], any, typeof params>(params, async ({ type, id, episodeId }) => {
-    let _type = type as string;
-    if (type === 'movies') _type = 'movie';
-
-    let _episodeId = '';
-    if (episodeId) _episodeId = `:${episodeId}`;
+    let _type = type === 'movies' ? 'movie' : type;
+    let _episodeId = episodeId ? `:${episodeId}` : '';
 
     const res = await fetch(`${constants.TORRENTIO_BASE_URL}/stream/${_type}/${id}${_episodeId}.json`);
     return (await res.json())?.streams || [];

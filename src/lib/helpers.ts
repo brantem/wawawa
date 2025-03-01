@@ -22,7 +22,7 @@ export function metaToItem(meta: Meta) {
     directors: meta.director || [],
     casts: meta.cast || [],
   };
-  if (meta.type === 'series') {
+  if (meta.type === 'series' && meta.videos) {
     item.items = meta.videos.map((video) => {
       return {
         ...pick(video, ['season', 'episode', 'released']),

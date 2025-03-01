@@ -58,7 +58,9 @@ export default function Logo({ src, title, className, ...props }: LogoProps) {
     img.src = `${import.meta.env.VITE_PROXY_URL}/?url=${encodeURIComponent(src.replace('/logo/medium', '/logo/small'))}`;
   }, [src]);
 
-  return url ? (
+  return url === 'MISSING' ? (
+    <span className={cn('text-3xl font-semibold', className)}>{title}</span>
+  ) : url ? (
     <img
       ref={(img) => {
         if (!img) return;
@@ -70,7 +72,5 @@ export default function Logo({ src, title, className, ...props }: LogoProps) {
       {...props}
       fetchPriority="high"
     />
-  ) : url === 'MISSING' ? (
-    <span className={cn('text-3xl font-semibold', className)}>{title}</span>
   ) : null;
 }
