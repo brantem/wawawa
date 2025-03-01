@@ -8,7 +8,7 @@ export default function Search() {
       type="text"
       className="w-2/4 rounded-full border border-neutral-200 bg-white px-6 py-3 text-neutral-950 outline-none"
       placeholder="Titles"
-      defaultValue={searchParams.get('q') || ''}
+      value={searchParams.get('q') || ''}
       onChange={(e) => {
         setSearchParams(
           (prev) => {
@@ -20,7 +20,7 @@ export default function Search() {
             }
             return prev;
           },
-          { replace: true },
+          { replace: searchParams.has('q') },
         );
       }}
     />
