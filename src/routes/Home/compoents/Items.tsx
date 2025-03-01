@@ -1,8 +1,8 @@
-import { Link } from 'react-router';
 import { ArrowRightIcon } from '@heroicons/react/16/solid';
 
+import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
+
 import type { Item } from 'types';
-import { cn } from 'lib/helpers';
 
 type ItemsProps = {
   title: string;
@@ -43,8 +43,8 @@ function Grid({ baseUrl, items, isLoading }: Omit<ItemsProps, 'title' | 'view'>)
   return (
     <div className="mt-4 grid grid-cols-5 gap-6">
       {isLoading
-        ? [...new Array(5)].map((_, i) => <SkeletonCard key={i} />)
-        : items.map((item) => <Card key={item.id} item={{ ...item, url: `/${baseUrl}/${item.id}` }} />)}
+        ? [...new Array(5)].map((_, i) => <SkeletonItemCard key={i} />)
+        : items.map((item) => <ItemCard key={item.id} item={{ ...item, url: `${baseUrl}/${item.id}` }} />)}
     </div>
   );
 }
@@ -58,13 +58,16 @@ function Horizontal({ baseUrl, items, isLoading }: Omit<ItemsProps, 'title' | 'v
         <div className="snap-start scroll-mx-8" />
         {isLoading
           ? [...new Array(5)].map((_, i) => (
-              <SkeletonCard key={i} className="w-[calc(100%/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-8" />
+              <SkeletonItemCard
+                key={i}
+                className="w-[calc(100%/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-8"
+              />
             ))
           : items.map((item) => (
-              <Card
+              <ItemCard
                 key={item.id}
                 className="w-[calc(100%/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-8"
-                item={{ ...item, url: `/${baseUrl}/${item.id}` }}
+                item={{ ...item, url: `${baseUrl}/${item.id}` }}
               />
             ))}
         <div className="snap-start scroll-mx-8" />
@@ -72,61 +75,5 @@ function Horizontal({ baseUrl, items, isLoading }: Omit<ItemsProps, 'title' | 'v
 
       <div className="absolute top-0 -right-8 bottom-0 z-10 w-3 bg-gradient-to-l from-neutral-950 to-transparent" />
     </div>
-  );
-}
-
-function SkeletonCard({ className }: { className?: string }) {
-  return (
-    <div className={className}>
-      <div className="aspect-[2/3] w-full animate-pulse rounded-md bg-neutral-900" />
-
-      <div className="mt-3">
-        <div className="h-5 w-2/3 animate-pulse rounded bg-neutral-900" />
-        <div className="mt-2.5 h-3.5 w-1/3 animate-pulse rounded bg-neutral-900" />
-      </div>
-    </div>
-  );
-}
-
-function Card({ className, item }: { className?: string; item: Item & { url: string } }) {
-  return (
-    <Link to={item.url} className={cn('group rounded-md transition-colors outline-none', className)} title={item.title}>
-      <div className="aspect-[2/3] w-full overflow-hidden rounded-md bg-neutral-900 outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3">
-        {item.posterUrl ? (
-          <img
-            ref={(img) => {
-              if (!img) return;
-              img.onload = () => img.classList.remove('opacity-0');
-            }}
-            src={item.posterUrl}
-            className="size-full object-cover opacity-0 transition-opacity"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex size-full items-center justify-center rounded-md border border-neutral-800 p-2 text-center font-medium">
-            {item.title}
-          </div>
-        )}
-      </div>
-
-      <div className="mt-2">
-        <h4 className="truncate font-medium">{item.title}</h4>
-        <div className="mt-1 flex items-center gap-2 text-sm text-neutral-500">
-          <span>{item.release.split(' - ')[0] /* only short the first release year */}</span>
-          {item.runtime ? (
-            <>
-              <div className="size-1 rounded-full bg-neutral-600" />
-              <span>{item.runtime}</span>
-            </>
-          ) : null}
-          {item.rating ? (
-            <>
-              <div className="size-1 rounded-full bg-neutral-600" />
-              <span>{item.rating}</span>
-            </>
-          ) : null}
-        </div>
-      </div>
-    </Link>
   );
 }

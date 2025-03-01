@@ -8,6 +8,17 @@ const seriesUrl = `https://v3-cinemeta.strem.io/catalog/series/top/search=${some
 
 #### Filter
 
+- top
+  - genre
+  - search
+  - skip
+- year
+  - genre - required
+  - skip
+- imdbRating (Featured)
+  - genre
+  - skip
+
 ```txt
 data:
 https://v3-cinemeta.strem.io/manifest.json
