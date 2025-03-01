@@ -13,25 +13,25 @@ data:
 https://v3-cinemeta.strem.io/manifest.json
 
 by year:
-https://cinemeta-catalogs.strem.io/year/catalog/movie/year/genre=2025.json
+https://v3-cinemeta.strem.io/catalog/movie/year/genre=2025.json
 
 top:
 https://v3-cinemeta.strem.io/catalog/movie/top.json
 
 top by genre:
-https://cinemeta-catalogs.strem.io/top/catalog/movie/top/genre=Adventure.json
+https://v3-cinemeta.strem.io/catalog/movie/top/genre=Adventure.json
 
 featured:
-https://cinemeta-catalogs.strem.io/imdbRating/catalog/series/imdbRating.json
+https://v3-cinemeta.strem.io/catalog/series/imdbRating.json
 
 featured with genre:
-https://cinemeta-catalogs.strem.io/imdbRating/catalog/movie/imdbRating/genre=Adventure.json
+https://v3-cinemeta.strem.io/catalog/movie/imdbRating/genre=Adventure.json
 ```
 
 this endpoint supports pagination. to retrieve the next page, include `skip={total previous items}` in the query. for example:
 
 ```
-https://cinemeta-catalogs.strem.io/year/catalog/movie/year/skip=26&genre=2025.json
+https://v3-cinemeta.strem.io/catalog/movie/year/skip=26&genre=2025.json
 ```
 
 ### Streams
