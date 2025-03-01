@@ -16,7 +16,10 @@
 }
 
 [data-media-player] {
+  --video-border: 0;
   --video-border-radius: 0;
+
+  height: 100%;
 }
 
 .vds-menu-button,
@@ -24,4 +27,8 @@
 .vds-google-cast-button,
 .vds-download-button {
   display: none !important;
+}
+
+[data-media-player] video {
+  height: 100%;
 }
