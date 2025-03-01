@@ -42,7 +42,7 @@ export default function Home() {
 
 const fetcher = async ({ type, search }: { type: string; search: string }) => {
   const _search = search ? `/search=${search}` : '';
-  const res = await fetch(`${constants.CINEMETA_V3_BASE_URL}/catalog/${type}/top${_search}.json`);
+  const res = await fetch(`${constants.CINEMETA_BASE_URL}/catalog/${type}/top${_search}.json`);
   return res.json();
 };
 
