@@ -3,6 +3,7 @@ import { SWRConfig } from 'swr';
 import { BrowserRouter, Routes, Route } from 'react-router';
 
 import Home from 'routes/Home';
+import Catalog from 'routes/Catalog';
 import Details from 'routes/Details';
 import Watch from 'routes/Watch';
 
@@ -13,9 +14,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <BrowserRouter>
       <Routes>
         <Route index element={<Home />} />
-        <Route path=":type/:id">
-          <Route index element={<Details />} />
-          <Route path="watch/:episodeId?/*" element={<Watch />} />
+        <Route path=":type">
+          <Route index element={<Catalog />} />
+          <Route path=":id">
+            <Route index element={<Details />} />
+            <Route path="watch/:episodeId?/*" element={<Watch />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

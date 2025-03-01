@@ -1,25 +1,25 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import useSWR from 'swr';
 
 import Layout from 'components/layouts/Default';
 import Hero from 'components/Hero';
-import Cards from './compoents/Cards';
+import Items from './compoents/Items';
 
 import type { Meta } from 'types';
 import * as constants from 'constants';
 import { cn, metaToItem } from 'lib/helpers';
-import { getRandomInt } from './helpers';
 import { useDebounce } from 'lib/hooks';
-
-// TODO: genre
+import { getRandomInt } from './helpers';
 
 export default function Home() {
+  const isSearching = Boolean(useSearchValue());
+
   const { movies, series, isLoading } = useData();
 
   const hero = useMemo(() => {
     if (isLoading) return null;
-    const items = (getRandomInt(0, 1) ? movies : series).filter((item) => item.posterUrl && item.logoUrl);
+    const items = [...movies, ...series].filter((item) => item.posterUrl && item.logoUrl);
     return items[getRandomInt(0, items.length - 1)];
   }, [isLoading]);
 
@@ -33,11 +33,27 @@ export default function Home() {
       </Hero>
 
       <div className={cn('flex flex-col gap-16', series.rank > movies.rank && 'flex-col-reverse')}>
-        <Cards title="Movies" baseUrl="/movies" items={movies} isLoading={isLoading} view="grid" />
-        <Cards title="Series" baseUrl="/series" items={series} isLoading={isLoading} view="grid" />
+        <Items
+          title={isSearching ? 'Movies' : 'Popular Movies'}
+          baseUrl="/movies"
+          items={movies}
+          isLoading={isLoading}
+          view="horizontal"
+        />
+        <Items
+          title={isSearching ? 'Series' : 'Popular Series'}
+          baseUrl="/series"
+          items={series}
+          isLoading={isLoading}
+          view="horizontal"
+        />
       </div>
     </Layout>
   );
+}
+
+function useSearchValue() {
+  return useDebounce(useSearchParams()[0].get('q'), 500);
 }
 
 const fetcher = async ({ type, search }: { type: string; search: string }) => {
@@ -47,7 +63,7 @@ const fetcher = async ({ type, search }: { type: string; search: string }) => {
 };
 
 function useData() {
-  const search = useDebounce(useSearchParams()[0].get('q'), 500);
+  const search = useSearchValue();
 
   const movies = useSWR<{ metas: Meta[]; rank: number }>({ type: 'movie', search }, fetcher);
   const series = useSWR<{ metas: Meta[]; rank: number }>({ type: 'series', search }, fetcher);
