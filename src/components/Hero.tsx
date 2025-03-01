@@ -25,7 +25,10 @@ export default function Hero({ item, isLoading, isLogoALink, children }: HeroPro
 
   return (
     <div
-      className={cn('relative h-[500px] overflow-hidden rounded-t-3xl bg-neutral-900', isLoading && 'animate-pulse')}
+      className={cn(
+        'relative h-[500px] shrink-0 overflow-hidden rounded-t-3xl bg-neutral-900',
+        isLoading && 'animate-pulse',
+      )}
     >
       {item ? (
         <>

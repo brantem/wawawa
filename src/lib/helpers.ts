@@ -1,10 +1,11 @@
 import clsx, { type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import pick from 'just-pick';
 
 import type { Meta, Item } from 'types';
 
 export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs);
+  return twMerge(clsx(inputs));
 }
 
 export function metaToItem(meta: Meta) {
@@ -24,7 +25,8 @@ export function metaToItem(meta: Meta) {
   if (meta.type === 'series') {
     item.items = meta.videos.map((video) => {
       return {
-        ...pick(video, ['id', 'season', 'episode', 'released']),
+        ...pick(video, ['season', 'episode', 'released']),
+        id: video.id.split(':').slice(1).join(':'),
         title: video.name || video.title || '',
         synopsis: video.description || video.overview || '',
         thumbnailUrl: video.thumbnail,
