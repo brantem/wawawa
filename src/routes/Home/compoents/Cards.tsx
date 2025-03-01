@@ -40,7 +40,7 @@ function Horizontal({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view
       <h2 className="text-xl font-semibold">{title}</h2>
 
       <div className="relative mt-4">
-        <div className="absolute top-0 bottom-0 -left-8 z-10 w-8 bg-gradient-to-r from-neutral-950 to-transparent" />
+        <div className="absolute top-0 bottom-0 -left-8 z-10 w-3 bg-gradient-to-r from-neutral-950 to-transparent" />
 
         <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
           <div className="snap-start scroll-mx-8" />
@@ -61,7 +61,7 @@ function Horizontal({ title, baseUrl, items, isLoading }: Omit<CardsProps, 'view
           <div className="snap-start scroll-mx-8" />
         </div>
 
-        <div className="absolute top-0 -right-8 bottom-0 z-10 w-8 bg-gradient-to-l from-neutral-950 to-transparent" />
+        <div className="absolute top-0 -right-8 bottom-0 z-10 w-3 bg-gradient-to-l from-neutral-950 to-transparent" />
       </div>
     </div>
   );
