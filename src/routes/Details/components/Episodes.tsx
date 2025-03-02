@@ -64,7 +64,7 @@ function Vertical({ items }: EpisodesProps) {
       {items.map((item) => {
         const isUpcoming = dayjs(item.released).isAfter(new Date());
         return (
-          <Card key={item.id} to={`watch/${item.id}`} className="relative flex gap-4" isUpcoming={isUpcoming}>
+          <Card key={item.id} to={`${item.id}/watch`} className="relative flex gap-4" isUpcoming={isUpcoming}>
             <Thumbnail
               className="h-[171px] w-[304px]"
               src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
@@ -99,7 +99,7 @@ function Horizontal({ items }: EpisodesProps) {
           return (
             <Card
               key={item.id}
-              to={`watch/${item.id}`}
+              to={`${item.id}/watch`}
               className="w-[304px] shrink-0 snap-start scroll-mx-8"
               isUpcoming={isUpcoming}
             >

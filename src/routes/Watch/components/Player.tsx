@@ -69,30 +69,27 @@ function useStream() {
     )[];
   };
 
-  const { episodeId, '*': streamId } = useParams() as { episodeId: string; '*': string };
+  const { '*': streamId } = useParams() as { '*': string };
 
-  const { data, isLoading } = useSWR(
-    streamId.includes('/') ? streamId : `${episodeId}/${streamId}`,
-    async (streamId) => {
-      const mediaUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
-      const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURIComponent(mediaUrl)}`);
-      const probe: Probe = await res.json();
+  const { data, isLoading } = useSWR(streamId, async (streamId) => {
+    const mediaUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
+    const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURIComponent(mediaUrl)}`);
+    const probe: Probe = await res.json();
 
-      const capabilities = media.getCapabilities();
-      const isFormatSupported = capabilities.formats.some((format) => probe.format.name.includes(format));
-      const areStreamsSupported = probe.streams.every((stream) => {
-        if (stream.track === 'audio') {
-          return stream.channels <= capabilities.maxAudioChannels && capabilities.audioCodecs.includes(stream.codec);
-        } else if (stream.track === 'video') {
-          return capabilities.videoCodecs.includes(stream.codec);
-        }
-        return true;
-      });
+    const capabilities = media.getCapabilities();
+    const isFormatSupported = capabilities.formats.some((format) => probe.format.name.includes(format));
+    const areStreamsSupported = probe.streams.every((stream) => {
+      if (stream.track === 'audio') {
+        return stream.channels <= capabilities.maxAudioChannels && capabilities.audioCodecs.includes(stream.codec);
+      } else if (stream.track === 'video') {
+        return capabilities.videoCodecs.includes(stream.codec);
+      }
+      return true;
+    });
 
-      if (isFormatSupported && areStreamsSupported) return mediaUrl; // non HLS
-      return `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(mediaUrl)}`; // HLS
-    },
-  );
+    if (isFormatSupported && areStreamsSupported) return mediaUrl; // non HLS
+    return `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(mediaUrl)}`; // HLS
+  });
 
   return { src: data, isLoading };
 }

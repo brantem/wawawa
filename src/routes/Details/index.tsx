@@ -87,7 +87,7 @@ function PlayButton({ item }: { item: Item }) {
   const to = useMemo(() => {
     if (item.type === 'movie') return 'watch';
     // TODO: resume last episode if unfinished, otherwise play next
-    return `watch/${item.items.find((item) => item.season === 1 && item.episode === 1)!.id}`;
+    return `${item.items.find((item) => item.season === 1 && item.episode === 1)!.id}/watch`;
   }, [item]);
 
   return (
