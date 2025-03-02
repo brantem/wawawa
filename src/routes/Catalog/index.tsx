@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react';
 import { Link } from 'react-router';
 import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 
@@ -8,11 +9,31 @@ import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
 import { useData, useType } from './hooks';
 
 // TODO: cinemeta is a mess, try TMDB
-// TODO: infinite scroll, search (not possible), empty state
+// TODO: virtualized, search (not possible), empty state
 
 export default function Catalog() {
+  const observerRef = useRef<IntersectionObserver>(null);
+
   const type = useType();
-  const { data, isLoading } = useData();
+  const { data, isLoading, hasMore, loadMore, isLoadingMore } = useData();
+
+  const bottomRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (!hasMore || isLoadingMore) return;
+      if (observerRef.current) observerRef.current.disconnect();
+
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0].isIntersecting) return;
+          loadMore();
+        },
+        { rootMargin: '80%' },
+      );
+
+      if (node) observerRef.current.observe(node);
+    },
+    [loadMore, hasMore, isLoadingMore],
+  );
 
   return (
     <Layout className="flex flex-col gap-8">
@@ -31,11 +52,20 @@ export default function Catalog() {
         <Filter />
       </div>
 
-      <div className="grid grid-cols-5 gap-6 pb-8">
+      <div className="relative grid grid-cols-5 gap-6 pb-8">
         {isLoading
           ? [...new Array(5)].map((_, i) => <SkeletonItemCard key={i} />)
           : data.map((item) => <ItemCard key={item.id} item={{ ...item, url: `/${type}/${item.id}` }} />)}
+
+        {!isLoading && isLoadingMore
+          ? (() => {
+              const remainder = data.length % 5;
+              return [...new Array(remainder === 0 ? 5 : 5 - remainder)].map((_, i) => <SkeletonItemCard key={i} />);
+            })()
+          : null}
       </div>
+
+      <div ref={bottomRef} />
     </Layout>
   );
 }
