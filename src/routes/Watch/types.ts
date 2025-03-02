@@ -11,5 +11,6 @@ export type Stream = {
 export type Subtitle = {
   id: string;
   url: string;
-  label: string;
+  encoding: string;
+  lang: string;
 };

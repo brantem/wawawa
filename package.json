@@ -15,6 +15,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "just-pick": "^4.2.0",
+    "langs": "^2.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.2.0",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.8",
+    "@types/langs": "^2.0.5",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",

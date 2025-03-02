@@ -3,6 +3,7 @@ import { useParams } from 'react-router';
 import useSWR from 'swr';
 import { MediaPlayer, MediaProvider, Track } from '@vidstack/react';
 import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
+import langs from 'langs';
 
 import { Subtitle } from '../types';
 import * as constants from 'constants';
@@ -23,8 +24,8 @@ export default function Player() {
       {src ? (
         <MediaPlayer title={title} src={{ src, type: 'video/mp4' }} streamType="on-demand" autoPlay>
           <MediaProvider>
-            {subtitles.map((subtitle, i) => (
-              <Track key={subtitle.id} src={subtitle.url} kind="subtitles" label={subtitle.label} />
+            {subtitles.map(({ id, url, ...subtitle }) => (
+              <Track id={id} key={id} src={url} kind="subtitles" label={getLabel(subtitle.lang)} {...subtitle} />
             ))}
           </MediaProvider>
           <DefaultVideoLayout icons={defaultLayoutIcons} download={false} />
@@ -32,6 +33,10 @@ export default function Player() {
       ) : null}
     </div>
   );
+}
+
+function getLabel(lang: string) {
+  return (langs.where('2', lang) || langs.where('2T', lang) || langs.where('2B', lang))?.name || lang;
 }
 
 function useStreamId() {
@@ -126,6 +131,7 @@ function useSubtitles() {
   type Raw = {
     id: string;
     url: string;
+    SubEncoding: string;
     lang: string;
   };
 
@@ -137,12 +143,14 @@ function useSubtitles() {
   const stream = useStreams().streams.find((stream) => stream.id === streamId)!;
 
   const [subtitles, setSubtitles] = useState<Subtitle[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // TODO: yuck, find a way to avoid useEffect. useSWR didn't work unless timeout is disabled, or fetchOpensubHash gets
   // called twice.
   useEffect(() => {
-    if (!stream || subtitles !== null) return;
+    if (!stream || subtitles !== null || isLoading) return;
     (async () => {
+      setIsLoading(true);
       const { size, hash } = await fetchOpensubHash(atob(streamId));
 
       const searchParams = new URLSearchParams();
@@ -158,11 +166,16 @@ function useSubtitles() {
         raw.map((subtitle) => ({
           id: subtitle.id,
           url: `${constants.STREAMING_SERVER_BASE_URL}/subtitles.vtt?from=${subtitle.url}`,
-          label: subtitle.lang, // TODO: getDisplayText
+          encoding: subtitle.SubEncoding.toLowerCase(),
+          lang: subtitle.lang, // ISO 639-2
         })),
       );
+      setIsLoading(false);
     })();
   }, [stream]);
 
-  return { subtitles: subtitles || [] };
+  return {
+    subtitles: subtitles || [],
+    isLoading,
+  };
 }

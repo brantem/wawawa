@@ -9,6 +9,7 @@
         "clsx": "^2.1.1",
         "dayjs": "^1.11.13",
         "just-pick": "^4.2.0",
+        "langs": "^2.0.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-router": "^7.2.0",
@@ -17,6 +18,7 @@
       },
       "devDependencies": {
         "@tailwindcss/vite": "^4.0.8",
+        "@types/langs": "^2.0.5",
         "@types/react": "^19.0.10",
         "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react": "^4.3.4",
@@ -214,6 +216,8 @@
 
     "@types/estree": ["@types/estree@1.0.6", "", {}, "sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw=="],
 
+    "@types/langs": ["@types/langs@2.0.5", "", {}, "sha512-DIUKT4mkbTBxSrX6lmnQR888ObeFVVo1uNEqBH5/ddQHpnG4CA24DibpK7aO8QAcJEZUTcIx0F96TWuzVT9Z4g=="],
+
     "@types/react": ["@types/react@19.0.10", "", { "dependencies": { "csstype": "^3.0.2" } }, "sha512-JuRQ9KXLEjaUNjTWpzuR231Z2WpIwczOkBEIvbHNCzQefFIT0L8IqE6NV6ULLyC1SI/i234JnDoMkfg+RjQj2g=="],
 
     "@types/react-dom": ["@types/react-dom@19.0.4", "", { "peerDependencies": { "@types/react": "^19.0.0" } }, "sha512-4fSQ8vWFkg+TGhePfUzVmat3eC14TXYSsiiDSLI0dVLsrm9gZFABjPy/Qu6TKgl1tq1Bu1yDsuQgY3A3DOjCcg=="],
@@ -269,6 +273,8 @@
     "json5": ["json5@2.2.3", "", { "bin": { "json5": "lib/cli.js" } }, "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="],
 
     "just-pick": ["just-pick@4.2.0", "", {}, "sha512-m6bi0P/gFq5GEQJGYfHFsdod6fogViNIhsKbPBYavqF9SKFfMKPz7kf6ROL2PblkOdaib9vN/wJ7VXhCJre5Hw=="],
+
+    "langs": ["langs@2.0.0", "", {}, "sha512-v4pxOBEQVN1WBTfB1crhTtxzNLZU9HPWgadlwzWKISJtt6Ku/CnpBrwVy+jFv8StjxsPfwPFzO0CMwdZLJ0/BA=="],
 
     "lightningcss": ["lightningcss@1.29.1", "", { "dependencies": { "detect-libc": "^1.0.3" }, "optionalDependencies": { "lightningcss-darwin-arm64": "1.29.1", "lightningcss-darwin-x64": "1.29.1", "lightningcss-freebsd-x64": "1.29.1", "lightningcss-linux-arm-gnueabihf": "1.29.1", "lightningcss-linux-arm64-gnu": "1.29.1", "lightningcss-linux-arm64-musl": "1.29.1", "lightningcss-linux-x64-gnu": "1.29.1", "lightningcss-linux-x64-musl": "1.29.1", "lightningcss-win32-arm64-msvc": "1.29.1", "lightningcss-win32-x64-msvc": "1.29.1" } }, "sha512-FmGoeD4S05ewj+AkhTY+D+myDvXI6eL27FjHIjoyUkO/uw7WZD1fBVs0QxeYWa7E17CUHJaYX/RUGISCtcrG4Q=="],
 
