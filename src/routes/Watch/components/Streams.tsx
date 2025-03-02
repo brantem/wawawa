@@ -8,7 +8,7 @@ import Select from 'components/Select';
 import * as constants from 'constants';
 import type { Stream } from '../types';
 
-// TODO: empty state
+// TODO: empty state, support torbox (url)
 
 export default function Streams() {
   const { groups, streams, isLoading } = useStreams();
