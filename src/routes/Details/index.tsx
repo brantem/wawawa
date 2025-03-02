@@ -23,7 +23,7 @@ export default function Details() {
       </Hero>
 
       {item ? (
-        <div className="flex flex-col gap-8 px-8">
+        <div className="flex flex-col gap-8 px-8 pb-8">
           <div className="flex items-center gap-2 text-lg text-neutral-500">
             <Release>{item.release}</Release>
             {item.type === 'series' ? (

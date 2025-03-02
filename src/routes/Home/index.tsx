@@ -31,7 +31,7 @@ export default function Home() {
         </div>
       </Hero>
 
-      <div className={cn('flex flex-col gap-16', series.rank > movies.rank && 'flex-col-reverse')}>
+      <div className={cn('flex flex-col gap-16 pb-8', series.rank > movies.rank && 'flex-col-reverse')}>
         <Items
           title={isSearching ? 'Movies' : 'Popular Movies'}
           baseUrl="/movies"
