@@ -37,14 +37,12 @@ export default function Home() {
           baseUrl="/movies"
           items={movies}
           isLoading={isLoading}
-          view="horizontal"
         />
         <Items
           title={isSearching ? 'Series' : 'Popular Series'}
           baseUrl="/series"
           items={series}
           isLoading={isLoading}
-          view="horizontal"
         />
       </div>
     </Layout>
