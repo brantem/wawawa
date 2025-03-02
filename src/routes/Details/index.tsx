@@ -7,14 +7,14 @@ import Hero from 'components/Hero';
 import Episodes from './components/Episodes';
 
 import { Item } from 'types';
-import { useData } from './hooks';
+import { useItem } from 'lib/hooks';
 import { getTotalSeasons } from './helpers';
 
 // TODO: not found state, play & resume, list of other movies/series?
 
 export default function Details() {
   const params = useParams();
-  const { item, isLoading } = useData();
+  const { item, isLoading } = useItem();
 
   return (
     <Layout>

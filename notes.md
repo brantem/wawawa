@@ -160,7 +160,8 @@ const buildTorrentResult = {
 
 // check if streamable
 fetch(`${streamingServerURL}/hlsv2/probe?mediaURL=${encodeURIComponent(buildTorrentResult.url)}`);
-// withStreamingServer.js:351
+
+// check if HLS: withStreamingServer.js:351
 
 const convertStreamResultIfNotHLS = {
   mediaURL: buildTorrentResult.url,
