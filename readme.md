@@ -11,7 +11,8 @@ Client for streamio
 - [ ] Subtitle
 - [ ] Remember last stream and position
 - [ ] Replace Cinemeta with TMDB
-- [ ] Desktop
+- [ ] Responsive
+- [ ] Desktop app
 - [ ] Last watched
 - [ ] Addons
 - [ ] Watchlist
