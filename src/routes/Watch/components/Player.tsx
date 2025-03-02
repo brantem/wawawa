@@ -1,31 +1,42 @@
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import useSWR from 'swr';
-import { MediaPlayer, MediaProvider } from '@vidstack/react';
+import { MediaPlayer, MediaProvider, Track } from '@vidstack/react';
 import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
 
+import { Subtitle } from '../types';
 import * as constants from 'constants';
 import { useItem } from 'lib/hooks';
+import { useStreams } from '../hooks';
 import * as media from 'lib/media';
 
 import '@vidstack/react/player/styles/default/theme.css';
 import '@vidstack/react/player/styles/default/layouts/video.css';
 
-// TODO: support external subtitles
-
 export default function Player() {
   const title = useTitle();
   const { src } = useStream();
+  const { subtitles } = useSubtitles();
 
   return (
     <div className="size-full overflow-hidden bg-black">
       {src ? (
         <MediaPlayer title={title} src={{ src, type: 'video/mp4' }} streamType="on-demand" autoPlay>
-          <MediaProvider />
+          <MediaProvider>
+            {subtitles.map((subtitle, i) => (
+              <Track key={subtitle.id} src={subtitle.url} kind="subtitles" label={subtitle.label} />
+            ))}
+          </MediaProvider>
           <DefaultVideoLayout icons={defaultLayoutIcons} download={false} />
         </MediaPlayer>
       ) : null}
     </div>
   );
+}
+
+function useStreamId() {
+  const { '*': streamId } = useParams() as { '*': string };
+  return streamId;
 }
 
 function useTitle() {
@@ -69,11 +80,11 @@ function useStream() {
     )[];
   };
 
-  const { '*': streamId } = useParams() as { '*': string };
+  const rawStreamId = useStreamId();
+  const streamId = atob(decodeURIComponent(rawStreamId));
 
-  const { data, isLoading } = useSWR(atob(decodeURIComponent(streamId)), async (streamId) => {
+  const { data, isLoading } = useSWR(`/${rawStreamId}/stream`, async () => {
     // TODO: support magnet link
-
     if (/^https?:\/\//.test(streamId)) return streamId;
 
     const mediaUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
@@ -96,4 +107,62 @@ function useStream() {
   });
 
   return { src: data, isLoading };
+}
+
+async function fetchOpensubHash(streamId: string): Promise<{ size: number; hash: string }> {
+  let videoUrl;
+  if (/^https?:\/\//.test(streamId)) {
+    videoUrl = streamId;
+  } else {
+    videoUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
+  }
+
+  const res = await fetch(`${constants.STREAMING_SERVER_BASE_URL}/opensubHash?videoUrl=${encodeURI(videoUrl)}`);
+  const a = (await res.json()).result;
+  return a;
+}
+
+function useSubtitles() {
+  type Raw = {
+    id: string;
+    url: string;
+    lang: string;
+  };
+
+  const { type, id, episodeId } = useParams<{ type: 'movies' | 'series'; id: string; episodeId: string }>();
+  const _type = type === 'movies' ? 'movie' : type;
+  const _episodeId = episodeId ? `:${episodeId}` : '';
+
+  const streamId = decodeURIComponent(useStreamId());
+  const stream = useStreams().streams.find((stream) => stream.id === streamId)!;
+
+  const [subtitles, setSubtitles] = useState<Subtitle[] | null>(null);
+
+  // TODO: yuck, find a way to avoid useEffect. useSWR didn't work unless timeout is disabled, or fetchOpensubHash gets
+  // called twice.
+  useEffect(() => {
+    if (!stream || subtitles !== null) return;
+    (async () => {
+      const { size, hash } = await fetchOpensubHash(atob(streamId));
+
+      const searchParams = new URLSearchParams();
+      searchParams.set('filename', stream.filename);
+      searchParams.set('videoSize', size.toString());
+      searchParams.set('videoHash', hash);
+
+      const baseUrl = `${constants.OPENSUBTITLES_BASE_URL}/subtitles/${_type}/${id}${_episodeId}`;
+      const res = await fetch(`${baseUrl}/${searchParams.toString()}.json`);
+
+      const raw: Raw[] = (await res.json())?.subtitles || [];
+      setSubtitles(
+        raw.map((subtitle) => ({
+          id: subtitle.id,
+          url: `${constants.STREAMING_SERVER_BASE_URL}/subtitles.vtt?from=${subtitle.url}`,
+          label: subtitle.lang, // TODO: getDisplayText
+        })),
+      );
+    })();
+  }, [stream]);
+
+  return { subtitles: subtitles || [] };
 }

@@ -190,3 +190,52 @@ const convertStreamResultIfHLS = {
 };
 // next HTMLVideo.js:529 to HTMLVideo.js:539
 ```
+
+## Subtitle
+
+```sh
+http://127.0.0.1:11470/opensubHash?videoUrl=${buildTorrentResult.url}
+
+# response
+{
+  "error": null,
+  "result": {
+    "size": 653181768,
+    "hash": "141ed37922d9e40a"
+  }
+}
+```
+
+```sh
+https://opensubtitles-v3.strem.io/subtitles/${type}/${id}/filename=${stream.behaviorHints.filename}&videoSize=${result.size}&videoHash=${result.hash}$.json
+
+# response
+{
+  "subtitles": [
+    {
+      "id": "9194973",
+      "url": "https://subs5.strem.io/en/download/subencoding-stremio-utf8/src-api/file/1957766167",
+      "SubEncoding": "UTF-8",
+      "lang": "eng",
+      "m": "i",
+      "g": "1"
+    },
+    {
+      "id": "9194972",
+      "url": "https://subs5.strem.io/en/download/subencoding-stremio-utf8/src-api/file/1957766166",
+      "SubEncoding": "UTF-8",
+      "lang": "eng",
+      "m": "i",
+      "g": "1"
+    }
+  ]
+}
+```
+
+to use a subtitle:
+
+```ts
+<MediaProvider>
+  <Track src={`http://127.0.0.1:11470/subtitles.vtt?from=${subtitle.url}`} kind="subtitles" label={getDisplayText(subtitle.lang)} />
+</MediaProvider>
+```

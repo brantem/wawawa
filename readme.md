@@ -8,7 +8,7 @@ Client for streamio
 
 #### TODO
 
-- [ ] Subtitle
+- [x] Subtitle
 - [ ] Remember last stream and position
 - [ ] Replace Cinemeta with TMDB
 - [ ] Responsive
