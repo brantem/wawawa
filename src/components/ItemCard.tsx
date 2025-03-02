@@ -1,5 +1,7 @@
 import { Link } from 'react-router';
 
+import Img from 'components/Img';
+
 import type { Item } from 'types';
 import { cn } from 'lib/helpers';
 
@@ -8,15 +10,7 @@ export default function ItemCard({ className, item }: { className?: string; item
     <Link to={item.url} className={cn('group rounded-md transition-colors outline-none', className)} title={item.title}>
       <div className="aspect-[2/3] w-full overflow-hidden rounded-md bg-neutral-900 outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3">
         {item.posterUrl ? (
-          <img
-            ref={(img) => {
-              if (!img) return;
-              img.onload = () => img.classList.remove('opacity-0');
-            }}
-            src={item.posterUrl}
-            className="size-full object-cover opacity-0 transition-opacity"
-            loading="lazy"
-          />
+          <Img src={item.posterUrl} className="size-full object-cover" loading="lazy" />
         ) : (
           <div className="flex size-full items-center justify-center rounded-md border border-neutral-800 p-2 text-center font-medium">
             {item.title}

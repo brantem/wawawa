@@ -5,6 +5,7 @@ import { ListBulletIcon, ViewColumnsIcon, CheckCircleIcon } from '@heroicons/rea
 import dayjs from 'dayjs';
 
 import Select from 'components/Select';
+import Img from 'components/Img';
 
 import type { ItemSeries } from 'types';
 import { getTotalSeasons } from '../helpers';
@@ -159,14 +160,7 @@ function Thumbnail({ isUpcoming, className, ...props }: ThumbnailProps) {
         className,
       )}
     >
-      <img
-        {...props}
-        ref={(img) => {
-          if (!img) return;
-          img.onload = () => img.classList.remove('opacity-0');
-        }}
-        className="absolute inset-0 size-full object-cover object-center opacity-0 transition-opacity"
-      />
+      <Img {...props} className="absolute inset-0 size-full object-cover object-center" />
 
       {!isUpcoming ? (
         <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">

@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router';
 import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 
-import BackLink from 'components/BackLink';
+import Img from 'components/Img';
 import Logo from './Logo';
 
 import type { Item } from 'types';
@@ -53,15 +53,7 @@ export default function Hero({ item, isLoading, hasBackButton, isLogoALink, chil
 
       {item ? (
         <>
-          <img
-            ref={(img) => {
-              if (!img) return;
-              img.onload = () => img.classList.remove('opacity-0');
-            }}
-            src={item.backgroundUrl}
-            className="absolute inset-0 size-full object-cover opacity-0 transition-opacity"
-            fetchPriority="high"
-          />
+          <Img src={item.backgroundUrl} className="absolute inset-0 size-full object-cover" fetchPriority="high" />
 
           {isLogoALink ? <Link to={`/${item.type}/${item.id}`}>{renderLogo()}</Link> : renderLogo()}
         </>

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import Img from 'components/Img';
+
 import { cn } from 'lib/helpers';
 
 type LogoProps = Omit<React.ComponentPropsWithoutRef<'img'>, 'src'> & {
@@ -61,16 +63,6 @@ export default function Logo({ src, title, className, ...props }: LogoProps) {
   return url === 'MISSING' ? (
     <span className={cn('text-3xl font-semibold', className)}>{title}</span>
   ) : url ? (
-    <img
-      ref={(img) => {
-        if (!img) return;
-        img.onload = () => img.classList.remove('opacity-0');
-      }}
-      src={url}
-      title={title}
-      className={cn('opacity-0 transition-opacity', className)}
-      {...props}
-      fetchPriority="high"
-    />
+    <Img src={url} title={title} className={className} {...props} fetchPriority="high" />
   ) : null;
 }
