@@ -84,7 +84,7 @@ function useOptions() {
     }[];
   };
 
-  const { data, isLoading } = useSWR<Data>('manifest.json', async () => {
+  const { data, isLoading } = useSWR<Data>('/cinemeta/manifest.json', async () => {
     const res = await fetch(`${constants.CINEMETA_BASE_URL}/manifest.json`);
     return await res.json();
   });

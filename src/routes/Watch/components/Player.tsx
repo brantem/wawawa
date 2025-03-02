@@ -83,7 +83,7 @@ function useStream() {
   const rawStreamId = useStreamId();
   const streamId = atob(decodeURIComponent(rawStreamId));
 
-  const { data, isLoading } = useSWR(`/${rawStreamId}/stream`, async () => {
+  const { data, isLoading } = useSWR(`/stream/${rawStreamId}`, async () => {
     // TODO: support magnet link
     if (/^https?:\/\//.test(streamId)) return streamId;
 

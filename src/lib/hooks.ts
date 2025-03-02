@@ -22,10 +22,10 @@ export function useDebounce<T extends any>(value: T, delay: number): T {
 }
 
 export function useItem() {
-  const params = useParams<{ type: 'movies' | 'series'; id: string }>();
-  const { data: item, isLoading } = useSWR(params, async ({ type, id }) => {
-    const _type = type === 'movies' ? 'movie' : type;
+  const { type, id } = useParams<{ type: 'movies' | 'series'; id: string }>();
+  const _type = type === 'movies' ? 'movie' : type;
 
+  const { data: item, isLoading } = useSWR(`/${_type}/${id}`, async () => {
     const res = await fetch(`${constants.CINEMETA_BASE_URL}/meta/${_type}/${id}.json`);
     return metaToItem((await res.json()).meta);
   });
