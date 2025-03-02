@@ -54,9 +54,15 @@ export function useStreams() {
   type Raw = {
     name: string;
     title: string;
-    infoHash: string;
-    fileIdx: string;
-  };
+  } & (
+    | {
+        infoHash: string;
+        fileIdx: string;
+      }
+    | {
+        url: string;
+      }
+  );
 
   const params = useParams<{ type: 'movies' | 'series'; id: string; episodeId?: string }>();
   const { data, isLoading } = useSWR<Raw[], any, typeof params>(params, async ({ type, id, episodeId }) => {
@@ -76,7 +82,7 @@ export function useStreams() {
     const [title, info] = stream.title.split('\n👤');
     const [, seeders, size, origin] = info.split('\n')[0].match(/^ (\d+) 💾 (.+) ⚙️ (.+)$/)!;
     streams.push({
-      id: `${stream.infoHash}/${stream.fileIdx}`,
+      id: btoa('url' in stream ? stream.url : `${stream.infoHash}/${stream.fileIdx}`),
       group,
       title: title.replace('\n', ' '),
       seeders,
@@ -115,7 +121,7 @@ function SkeletonCard({ index }: { index: number }) {
 function Card({ index, stream }: { index: number; stream: Stream }) {
   return (
     <Link
-      to={stream.id}
+      to={encodeURIComponent(stream.id)}
       className="group flex items-center rounded-md bg-neutral-900 hover:bg-white hover:text-neutral-950"
       title={stream.title}
     >

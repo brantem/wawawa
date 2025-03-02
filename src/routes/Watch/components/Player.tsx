@@ -10,7 +10,7 @@ import * as media from 'lib/media';
 import '@vidstack/react/player/styles/default/theme.css';
 import '@vidstack/react/player/styles/default/layouts/video.css';
 
-// TODO: fix duplicate captions https://github.com/sampotts/plyr/issues/2520
+// TODO: support external subtitles
 
 export default function Player() {
   const title = useTitle();
@@ -71,9 +71,13 @@ function useStream() {
 
   const { '*': streamId } = useParams() as { '*': string };
 
-  const { data, isLoading } = useSWR(streamId, async (streamId) => {
+  const { data, isLoading } = useSWR(atob(decodeURIComponent(streamId)), async (streamId) => {
+    // TODO: support magnet link
+
+    if (/^https?:\/\//.test(streamId)) return streamId;
+
     const mediaUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
-    const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURIComponent(mediaUrl)}`);
+    const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURI(mediaUrl)}`);
     const probe: Probe = await res.json();
 
     const capabilities = media.getCapabilities();
@@ -88,7 +92,7 @@ function useStream() {
     });
 
     if (isFormatSupported && areStreamsSupported) return mediaUrl; // non HLS
-    return `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(mediaUrl)}`; // HLS
+    return `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURI(mediaUrl)}`; // HLS
   });
 
   return { src: data, isLoading };
