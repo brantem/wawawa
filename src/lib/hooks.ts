@@ -24,10 +24,13 @@ export function useDebounce<T extends any>(value: T, delay: number): T {
 export function useItem() {
   const { type, id } = useParams();
 
-  const { data: item, isLoading } = useSWR(`/${type}/${id}`, async () => {
+  const { data, isLoading } = useSWR(`/${type}/${id}`, async () => {
     const res = await fetch(`${constants.CINEMETA_BASE_URL}/meta/${type}/${id}.json`);
     return metaToItem((await res.json()).meta);
   });
 
-  return { item, isLoading };
+  return {
+    item: data || null,
+    isLoading,
+  };
 }

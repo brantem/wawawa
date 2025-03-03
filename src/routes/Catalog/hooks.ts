@@ -2,7 +2,7 @@ import { useParams, useSearchParams } from 'react-router';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 
-import { Meta } from 'types';
+import type { Meta } from 'types';
 import * as constants from 'constants';
 import { metaToItem } from 'lib/helpers';
 

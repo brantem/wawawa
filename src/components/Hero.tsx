@@ -1,7 +1,8 @@
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 
 import Img from 'components/Img';
+import BackButton from 'components/BackButton';
 import Logo from './Logo';
 
 import type { Item } from 'types';
@@ -15,9 +16,6 @@ type HeroProps = React.PropsWithChildren<{
 }>;
 
 export default function Hero({ item, isLoading, hasBackButton, isLogoALink, children }: HeroProps) {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const renderLogo = () => {
     if (!item) return;
     return (
@@ -37,18 +35,9 @@ export default function Hero({ item, isLoading, hasBackButton, isLogoALink, chil
       )}
     >
       {hasBackButton ? (
-        <Link
-          to="/"
-          className="absolute top-6 left-6 z-10 rounded-md stroke-white p-2 transition-colors hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950"
-          onClick={(e) => {
-            // go to `/` if user opened this page directly, otherwise go back
-            if (location.key === 'default') return;
-            e.preventDefault();
-            navigate(-1);
-          }}
-        >
+        <BackButton to="/" className="absolute top-6 left-6 z-10">
           <ArrowLeftIcon className="size-6 [&>path]:stroke-2" />
-        </Link>
+        </BackButton>
       ) : null}
 
       {item ? (

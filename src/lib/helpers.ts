@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import pick from 'just-pick';
 
 import type { Meta, Item } from 'types';
+import type { Stream } from 'types/storage';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -34,4 +35,10 @@ export function metaToItem(meta: Meta) {
     });
   }
   return item as Item;
+}
+
+export function getStreamProgress(stream: Stream | null | undefined) {
+  if (!stream || stream.duration === null || stream.time === null) return null;
+  if (!stream.time || !stream.duration) return 0;
+  return (stream.time / stream.duration) * 100;
 }

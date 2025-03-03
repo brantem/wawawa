@@ -4,22 +4,29 @@ import { PlayIcon } from '@heroicons/react/20/solid';
 
 import Layout from 'components/layouts/Default';
 import Hero from 'components/Hero';
+import Progress from 'components/Progress';
 import Episodes from './components/Episodes';
 
-import { Item } from 'types';
+import type { Item } from 'types';
+import type { Stream } from 'types/storage';
 import { useItem } from 'lib/hooks';
-import { getTotalSeasons } from './helpers';
+import { useStreams } from './hooks';
+import { getStreamProgress } from 'lib/helpers';
+import { getLastWatched, getTotalSeasons } from './helpers';
 
 // TODO: not found state, play & resume, list of other movies/series?
 
 export default function Details() {
   const params = useParams();
   const { item, isLoading } = useItem();
+  const { streams } = useStreams();
+
+  const lastWatched = getLastWatched(streams);
 
   return (
     <Layout>
       <Hero item={item} isLoading={isLoading} hasBackButton>
-        {item ? <PlayButton item={item} /> : null}
+        {item ? <PlayButton item={item} lastWatched={lastWatched} /> : null}
       </Hero>
 
       {item ? (
@@ -76,28 +83,46 @@ export default function Details() {
 
           <p className="text-lg">{item.synopsis}</p>
 
-          {item.type === 'series' ? <Episodes items={item.items} /> : null}
+          {item.type === 'series' ? <Episodes items={item.items} streams={streams} /> : null}
         </div>
       ) : null}
     </Layout>
   );
 }
 
-function PlayButton({ item }: { item: Item }) {
+function PlayButton({ item, lastWatched }: { item: Item; lastWatched: Stream | null }) {
   const to = useMemo(() => {
+    if (lastWatched) return lastWatched.url;
     if (item.type === 'movie') return 'watch';
-    // TODO: resume last episode if unfinished, otherwise play next
     return `${item.items.find((item) => item.season === 1 && item.episode === 1)!.id}/watch`;
   }, [item]);
 
+  let text = '';
+  if (lastWatched) {
+    if (item.type === 'movie') {
+      text = 'Resume';
+    } else {
+      const [_, season, episode] = lastWatched.id.match(/.+:(\d+):(\d+)/)!;
+      text = `Resume S${season}:E${episode}`;
+    }
+  } else {
+    text = 'Play';
+  }
+
+  const progress = getStreamProgress(lastWatched);
+
   return (
-    <Link
-      className="absolute right-8 bottom-8 flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-2 pr-6 pl-5 font-semibold text-neutral-950 hover:bg-neutral-100"
-      to={to}
-    >
-      <PlayIcon className="size-5" />
-      <span>Play</span>
-    </Link>
+    <div className="absolute right-8 bottom-8">
+      <Link
+        className="relative flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-2 pr-6 pl-5 font-semibold text-neutral-950 hover:bg-neutral-100"
+        to={to}
+      >
+        <PlayIcon className="size-5" />
+        <span>{text}</span>
+
+        {progress !== null ? <Progress value={progress} className="absolute right-6 -bottom-4 left-5" /> : null}
+      </Link>
+    </div>
   );
 }
 

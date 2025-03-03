@@ -6,6 +6,8 @@ import type { Stream, Subtitle } from './types';
 import * as constants from 'constants';
 import * as media from 'lib/media';
 import { useItem } from 'lib/hooks';
+import { getStreamProgress } from 'lib/helpers';
+import storage from 'lib/storage';
 
 export function useTitle() {
   const { episodeId } = useParams();
@@ -80,12 +82,34 @@ export function useStreams() {
   };
 }
 
+export function useSelectedStream() {
+  const { type, id, episodeId } = useParams();
+  const _episodeId = episodeId ? `:${episodeId}` : '';
+
+  const { data, isLoading } = useSWR(
+    `/${type}/${id}${_episodeId}/streams/selected`,
+    async () => {
+      const data = await storage.get('streams', `${id}${_episodeId}`);
+      if (!data) return null;
+
+      return {
+        id: decodeURIComponent(data.url.split('/').pop()!),
+        progress: getStreamProgress(data),
+      };
+    },
+    { revalidateIfStale: true },
+  );
+
+  return { selected: data, isLoading };
+}
+
 const HLSV2_BASE_URL = `${constants.STREAMING_SERVER_BASE_URL}/hlsv2`;
 
-export function useStream() {
+export function useVideo() {
   type Probe = {
     format: {
       name: string;
+      duration: number;
     };
     streams: (
       | {
@@ -112,10 +136,10 @@ export function useStream() {
 
   const { data, isLoading } = useSWR(`/stream/${rawStreamId}`, async () => {
     // TODO: support magnet link
-    if (/^https?:\/\//.test(streamId)) return streamId;
+    if (/^https?:\/\//.test(streamId)) return { src: streamId, duration: null };
 
     const mediaUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
-    const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURI(mediaUrl)}`);
+    const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURIComponent(mediaUrl)}`);
     const probe: Probe = await res.json();
 
     const capabilities = media.getCapabilities();
@@ -129,11 +153,16 @@ export function useStream() {
       return true;
     });
 
-    if (isFormatSupported && areStreamsSupported) return mediaUrl; // non HLS
-    return `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURI(mediaUrl)}`; // HLS
+    let src = mediaUrl; // non HLS
+    if (isFormatSupported && areStreamsSupported) {
+      // HLS
+      src = `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(mediaUrl)}`;
+    }
+
+    return { src, duration: probe.format.duration || null };
   });
 
-  return { src: data, isLoading };
+  return { ...data!, isLoading };
 }
 
 async function fetchOpensubHash(streamId: string): Promise<{ size: number; hash: string }> {
@@ -144,7 +173,9 @@ async function fetchOpensubHash(streamId: string): Promise<{ size: number; hash:
     videoUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
   }
 
-  const res = await fetch(`${constants.STREAMING_SERVER_BASE_URL}/opensubHash?videoUrl=${encodeURI(videoUrl)}`);
+  const res = await fetch(
+    `${constants.STREAMING_SERVER_BASE_URL}/opensubHash?videoUrl=${encodeURIComponent(videoUrl)}`,
+  );
   const a = (await res.json()).result;
   return a;
 }

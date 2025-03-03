@@ -6,8 +6,11 @@ import dayjs from 'dayjs';
 
 import Select from 'components/Select';
 import Img from 'components/Img';
+import Progress from 'components/Progress';
 
 import type { ItemSeries } from 'types';
+import type { Stream } from 'types/storage';
+import { getStreamProgress } from 'lib/helpers';
 import { getTotalSeasons } from '../helpers';
 import { cn } from 'lib/helpers';
 
@@ -15,9 +18,10 @@ import { cn } from 'lib/helpers';
 
 type EpisodesProps = {
   items: ItemSeries['items'];
+  streams: Stream[];
 };
 
-export default function Episodes({ items }: EpisodesProps) {
+export default function Episodes({ items, streams }: EpisodesProps) {
   const [view, setView] = useState<'vertical' | 'horizontal'>('vertical');
   const [season, setSeason] = useState(1);
 
@@ -52,30 +56,37 @@ export default function Episodes({ items }: EpisodesProps) {
         </div>
       </div>
 
-      {view === 'vertical' ? <Vertical items={$items} /> : null}
-      {view === 'horizontal' ? <Horizontal items={$items} /> : null}
+      {view === 'vertical' ? <Vertical items={$items} streams={streams} /> : null}
+      {view === 'horizontal' ? <Horizontal items={$items} streams={streams} /> : null}
     </div>
   );
 }
 
-function Vertical({ items }: EpisodesProps) {
+function Vertical({ items, streams }: EpisodesProps) {
   return (
     <div className="flex flex-col gap-6 pt-1.25">
       {items.map((item) => {
+        const stream = streams.find((stream) => stream.id.endsWith(item.id));
         const isUpcoming = dayjs(item.released).isAfter(new Date());
         return (
-          <Card key={item.id} to={`${item.id}/watch`} className="relative flex gap-4" isUpcoming={isUpcoming}>
+          <Card
+            key={item.id}
+            to={stream ? stream.url : `${item.id}/watch`}
+            className="relative flex gap-4"
+            isUpcoming={isUpcoming}
+          >
             <Thumbnail
               className="h-[171px] w-[304px]"
               src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
               height={171}
               width={304}
               isUpcoming={isUpcoming}
+              progress={getStreamProgress(stream)}
             />
 
             <div className="flex-1 pt-3">
               <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
-              <Title isWatched={item.episode === 1}>{item.title}</Title>
+              <Title>{item.title}</Title>
               <p className="line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
                 {item.synopsis}
               </p>
@@ -87,7 +98,7 @@ function Vertical({ items }: EpisodesProps) {
   );
 }
 
-function Horizontal({ items }: EpisodesProps) {
+function Horizontal({ items, streams }: EpisodesProps) {
   return (
     <div className="relative pt-1.25">
       <div className="absolute top-0 bottom-0 -left-8 z-10 w-3 bg-gradient-to-r from-neutral-950 to-transparent" />
@@ -95,11 +106,12 @@ function Horizontal({ items }: EpisodesProps) {
       <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
         <div className="snap-start scroll-mx-8" />
         {items.map((item) => {
+          const stream = streams.find((stream) => stream.id.endsWith(item.id));
           const isUpcoming = dayjs(item.released).isAfter(new Date());
           return (
             <Card
               key={item.id}
-              to={`${item.id}/watch`}
+              to={stream ? stream.url : `${item.id}/watch`}
               className="w-[304px] shrink-0 snap-start scroll-mx-8"
               isUpcoming={isUpcoming}
             >
@@ -109,10 +121,11 @@ function Horizontal({ items }: EpisodesProps) {
                 height={171}
                 width={304}
                 isUpcoming={isUpcoming}
+                progress={getStreamProgress(stream)}
               />
               <div className="mt-2">
                 <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
-                <Title isWatched={item.episode === 1}>{item.title}</Title>
+                <Title>{item.title}</Title>
                 <p className="mt-0.5 line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
                   {item.synopsis}
                 </p>
@@ -144,13 +157,14 @@ function Card({ className, to, isUpcoming, ...props }: CardProps) {
 
 type ThumbnailProps = {
   isUpcoming: boolean;
+  progress: number | null;
   className?: string;
   src: string;
   height: number;
   width?: number;
 };
 
-function Thumbnail({ isUpcoming, className, ...props }: ThumbnailProps) {
+function Thumbnail({ isUpcoming, progress, className, ...props }: ThumbnailProps) {
   return (
     <div
       className={cn(
@@ -167,6 +181,8 @@ function Thumbnail({ isUpcoming, className, ...props }: ThumbnailProps) {
           <PlayIcon className="size-16" />
         </div>
       ) : null}
+
+      {progress !== null ? <Progress value={progress} className="absolute right-2 bottom-2 left-2" /> : null}
     </div>
   );
 }
@@ -186,7 +202,7 @@ function Episode({ isUpcoming, children }: { isUpcoming: boolean; children: numb
 }
 
 type TitleProps = {
-  isWatched: boolean;
+  isWatched?: boolean;
   children: string;
 };
 
