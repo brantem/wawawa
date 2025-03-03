@@ -53,7 +53,7 @@ export function useData() {
         if (!prev.hasMore) return null;
         skip += prev.metas.length;
       }
-      return `/${type}?skip=${skip}`;
+      return `/${type}?sort=${sort}&genre=${genre}&year=${year}&skip=${skip}`;
     },
     async () => {
       let url = `${constants.CINEMETA_BASE_URL}/catalog/${type}`;

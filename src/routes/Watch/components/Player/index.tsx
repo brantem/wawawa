@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { MediaPlayer, MediaProvider, Track } from '@vidstack/react';
 import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
-import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 
 import BackButton from 'components/BackButton';
 
@@ -31,11 +30,9 @@ export default function Player() {
   return (
     <div className="group size-full overflow-hidden bg-black">
       <BackButton
-        className="fixed top-4 left-4 z-10 opacity-0 transition-[color,opacity] group-hover:opacity-100"
+        className="fixed top-3 left-3 z-10 opacity-0 transition-[color,opacity] group-hover:opacity-100"
         to={`/${type}/${id}${episodeId ? `/${episodeId}` : ''}/watch`}
-      >
-        <ArrowLeftIcon className="size-6 [&>path]:stroke-2" />
-      </BackButton>
+      />
 
       {!isLoading && src ? (
         <MediaPlayer

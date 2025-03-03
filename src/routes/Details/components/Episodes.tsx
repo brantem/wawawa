@@ -13,6 +13,7 @@ import type { Stream } from 'types/storage';
 import { getStreamProgress } from 'lib/helpers';
 import { getTotalSeasons } from '../helpers';
 import { cn } from 'lib/helpers';
+import { useMediaQuery } from 'lib/hooks';
 
 // TODO: empty state
 
@@ -22,6 +23,8 @@ type EpisodesProps = {
 };
 
 export default function Episodes({ items, streams }: EpisodesProps) {
+  const isDesktop = useMediaQuery('(width >= 768px)');
+
   const [view, setView] = useState<'vertical' | 'horizontal'>('vertical');
   const [season, setSeason] = useState(1);
 
@@ -38,12 +41,14 @@ export default function Episodes({ items, streams }: EpisodesProps) {
         </h2>
 
         <div className="flex gap-2">
-          <button
-            className="flex size-8.5 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 hover:bg-neutral-800"
-            onClick={() => setView((prev) => (prev === 'vertical' ? 'horizontal' : 'vertical'))}
-          >
-            {view === 'vertical' ? <ListBulletIcon className="size-4" /> : <ViewColumnsIcon className="size-4" />}
-          </button>
+          {isDesktop && (
+            <button
+              className="flex size-8.5 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 hover:bg-neutral-800"
+              onClick={() => setView((prev) => (prev === 'vertical' ? 'horizontal' : 'vertical'))}
+            >
+              {view === 'vertical' ? <ListBulletIcon className="size-4" /> : <ViewColumnsIcon className="size-4" />}
+            </button>
+          )}
 
           <Select value={season} onChange={(e) => setSeason(parseInt(e.target.value))}>
             {[...new Array(seasons)].map((_, i) => (
@@ -56,8 +61,14 @@ export default function Episodes({ items, streams }: EpisodesProps) {
         </div>
       </div>
 
-      {view === 'vertical' ? <Vertical items={$items} streams={streams} /> : null}
-      {view === 'horizontal' ? <Horizontal items={$items} streams={streams} /> : null}
+      {!isDesktop ? (
+        <Horizontal items={$items} streams={streams} />
+      ) : (
+        <>
+          {view === 'vertical' ? <Vertical items={$items} streams={streams} /> : null}
+          {view === 'horizontal' ? <Horizontal items={$items} streams={streams} /> : null}
+        </>
+      )}
     </div>
   );
 }
@@ -101,10 +112,10 @@ function Vertical({ items, streams }: EpisodesProps) {
 function Horizontal({ items, streams }: EpisodesProps) {
   return (
     <div className="relative pt-1.25">
-      <div className="absolute top-0 bottom-0 -left-8 z-10 w-3 bg-gradient-to-r from-neutral-950 to-transparent" />
+      <div className="absolute top-0 bottom-0 -left-4 z-10 w-3 bg-gradient-to-r from-neutral-950 to-transparent md:-left-8" />
 
-      <div className="no-scrollbar -mx-8 -mt-1.25 flex snap-x gap-6 overflow-x-auto px-2 pt-1.25">
-        <div className="snap-start scroll-mx-8" />
+      <div className="no-scrollbar -mx-4 -mt-1.25 flex snap-x overflow-x-auto px-2 pt-1.25 md:-mx-8">
+        <div className="mr-2 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6" />
         {items.map((item) => {
           const stream = streams.find((stream) => stream.id.endsWith(item.id));
           const isUpcoming = dayjs(item.released).isAfter(new Date());
@@ -112,7 +123,7 @@ function Horizontal({ items, streams }: EpisodesProps) {
             <Card
               key={item.id}
               to={stream ? stream.url : `${item.id}/watch`}
-              className="w-[304px] shrink-0 snap-start scroll-mx-8"
+              className="mr-4 w-[304px] shrink-0 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6"
               isUpcoming={isUpcoming}
             >
               <Thumbnail
@@ -133,10 +144,10 @@ function Horizontal({ items, streams }: EpisodesProps) {
             </Card>
           );
         })}
-        <div className="snap-start scroll-mx-8" />
+        <div className="snap-start scroll-mx-4 md:scroll-mx-6" />
       </div>
 
-      <div className="absolute top-0 -right-8 bottom-0 z-10 w-3 bg-gradient-to-l from-neutral-950 to-transparent" />
+      <div className="absolute top-0 -right-4 bottom-0 z-10 w-3 bg-gradient-to-l from-neutral-950 to-transparent md:-right-8" />
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import { Link, type LinkProps } from 'react-router';
+import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 
 import { cn } from 'lib/helpers';
 
-export default function BackButton({ className, ...props }: LinkProps) {
+export default function BackButton({ className, ...props }: Omit<LinkProps, 'children'>) {
   return (
     <Link
       className={cn(
@@ -10,6 +11,8 @@ export default function BackButton({ className, ...props }: LinkProps) {
         className,
       )}
       {...props}
-    />
+    >
+      <ArrowLeftIcon className="size-5 [&>path]:stroke-[1.5]" />
+    </Link>
   );
 }

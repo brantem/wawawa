@@ -1,11 +1,12 @@
 import { useRef, useCallback } from 'react';
-import { Link, useParams } from 'react-router';
-import { ArrowLeftIcon } from '@heroicons/react/24/solid';
+import { useParams } from 'react-router';
 
 import Layout from 'components/layouts/Default';
+import BackButton from 'components/BackButton';
 import Filter from './components/Filter';
 import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
 
+import { useCurrentBreakpoint } from 'lib/hooks';
 import { useData } from './hooks';
 import { getDisplayText } from './helpers';
 
@@ -14,6 +15,7 @@ import { getDisplayText } from './helpers';
 
 export default function Catalog() {
   const observerRef = useRef<IntersectionObserver>(null);
+  const currentBreakpoint = useCurrentBreakpoint();
 
   const { type } = useParams();
   const { data, isLoading, hasMore, loadMore, isLoadingMore } = useData();
@@ -36,32 +38,40 @@ export default function Catalog() {
     [loadMore, hasMore, isLoadingMore],
   );
 
-  return (
-    <Layout className="flex flex-col gap-8">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <Link
-            to="/"
-            className="-my-1 -ml-1 rounded-md stroke-white p-2 transition-colors hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950"
-          >
-            <ArrowLeftIcon className="size-6 [&>path]:stroke-2" />
-          </Link>
+  const n = (() => {
+    switch (currentBreakpoint) {
+      case 'md':
+        return 3;
+      case 'lg':
+        return 4;
+      case 'xl':
+        return 5;
+      default:
+        return 2;
+    }
+  })();
 
-          <h1 className="text-3xl font-semibold">{getDisplayText(type!)}</h1>
+  return (
+    <Layout className="max-md:px-4">
+      <div className="flex justify-between gap-4 max-md:flex-col max-md:pt-4 md:items-center">
+        <div className="flex items-center gap-2">
+          <BackButton to="/" className="-my-1 -ml-1" />
+
+          <h1 className="text-xl font-semibold">{getDisplayText(type!)}</h1>
         </div>
 
         <Filter />
       </div>
 
-      <div className="relative grid grid-cols-5 gap-6 pb-8">
+      <div className="relative grid grid-cols-2 gap-6 pb-4 max-md:gap-x-4 md:grid-cols-3 md:pb-8 lg:grid-cols-4 xl:grid-cols-5">
         {isLoading
-          ? [...new Array(5)].map((_, i) => <SkeletonItemCard key={i} />)
+          ? [...new Array(n)].map((_, i) => <SkeletonItemCard key={i} />)
           : data.map((item) => <ItemCard key={item.id} item={{ ...item, url: `/${type}/${item.id}` }} />)}
 
         {!isLoading && isLoadingMore
           ? (() => {
-              const remainder = data.length % 5;
-              return [...new Array(remainder === 0 ? 5 : 5 - remainder)].map((_, i) => <SkeletonItemCard key={i} />);
+              const remainder = data.length % n;
+              return [...new Array(remainder === 0 ? n : n - remainder)].map((_, i) => <SkeletonItemCard key={i} />);
             })()
           : null}
       </div>

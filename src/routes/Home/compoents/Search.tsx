@@ -6,15 +6,16 @@ export default function Search() {
   return (
     <input
       type="text"
-      className="w-2/4 rounded-full border border-neutral-200 bg-white px-6 py-3 text-neutral-950 outline-none"
+      className="w-3/4 rounded-full border border-neutral-200 bg-white px-5 py-2 text-neutral-950 outline-none md:w-2/4 md:px-6 md:py-3"
       placeholder="Titles"
       value={searchParams.get('q') || ''}
       onChange={(e) => {
+        const q = e.target.value;
+        if (!searchParams.has('q') && !q.trim()) return;
         setSearchParams(
           (prev) => {
-            const q = e.target.value.trim();
             if (q) {
-              prev.set('q', q.trim());
+              prev.set('q', q);
             } else {
               prev.delete('q');
             }

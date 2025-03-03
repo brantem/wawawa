@@ -4,12 +4,13 @@ import { PlayIcon } from '@heroicons/react/20/solid';
 
 import Layout from 'components/layouts/Default';
 import Hero from 'components/Hero';
+import BackButton from 'components/BackButton';
 import Progress from 'components/Progress';
 import Episodes from './components/Episodes';
 
 import type { Item } from 'types';
 import type { Stream } from 'types/storage';
-import { useItem } from 'lib/hooks';
+import { useMediaQuery, useItem } from 'lib/hooks';
 import { useStreams } from './hooks';
 import { getStreamProgress } from 'lib/helpers';
 import { getLastWatched, getTotalSeasons } from './helpers';
@@ -17,6 +18,8 @@ import { getLastWatched, getTotalSeasons } from './helpers';
 // TODO: not found state, play & resume, list of other movies/series?
 
 export default function Details() {
+  const isDesktop = useMediaQuery('(width >= 768px)');
+
   const params = useParams();
   const { item, isLoading } = useItem();
   const { streams } = useStreams();
@@ -25,13 +28,23 @@ export default function Details() {
 
   return (
     <Layout>
-      <Hero item={item} isLoading={isLoading} hasBackButton>
-        {item ? <PlayButton item={item} lastWatched={lastWatched} /> : null}
+      <Hero item={item} isLoading={isLoading}>
+        <BackButton to="/" className="absolute top-3 left-3 z-10 md:top-6 md:left-6" />
+
+        {isDesktop && item ? (
+          <PlayButton className="absolute right-8 bottom-8" item={item} lastWatched={lastWatched} />
+        ) : null}
       </Hero>
 
+      {!isDesktop && item ? (
+        <div className="px-4">
+          <PlayButton item={item} lastWatched={lastWatched} />
+        </div>
+      ) : null}
+
       {item ? (
-        <div className="flex flex-col gap-8 px-8 pb-8">
-          <div className="flex items-center gap-2 text-lg text-neutral-500">
+        <div className="flex flex-col gap-6 px-4 pb-4 md:gap-8 md:px-8 md:pb-8">
+          <div className="flex items-center gap-2 text-neutral-500 md:text-lg">
             <Release>{item.release}</Release>
             {item.type === 'series' ? (
               <>
@@ -81,7 +94,7 @@ export default function Details() {
             </div>
           ) : null}
 
-          <p className="text-lg">{item.synopsis}</p>
+          <p className="text-neutral-400 md:text-lg">{item.synopsis}</p>
 
           {item.type === 'series' ? <Episodes items={item.items} streams={streams} /> : null}
         </div>
@@ -90,7 +103,7 @@ export default function Details() {
   );
 }
 
-function PlayButton({ item, lastWatched }: { item: Item; lastWatched: Stream | null }) {
+function PlayButton({ className, item, lastWatched }: { className?: string; item: Item; lastWatched: Stream | null }) {
   const to = useMemo(() => {
     if (lastWatched) return lastWatched.url;
     if (item.type === 'movie') return 'watch';
@@ -112,9 +125,9 @@ function PlayButton({ item, lastWatched }: { item: Item; lastWatched: Stream | n
   const progress = getStreamProgress(lastWatched);
 
   return (
-    <div className="absolute right-8 bottom-8">
+    <div className={className}>
       <Link
-        className="relative flex items-center gap-2 rounded-full border border-neutral-200 bg-white py-2 pr-6 pl-5 font-semibold text-neutral-950 hover:bg-neutral-100"
+        className="relative flex items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white py-2 pr-6 pl-5 font-semibold text-neutral-950 hover:bg-neutral-100"
         to={to}
       >
         <PlayIcon className="size-5" />
