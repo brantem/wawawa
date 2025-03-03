@@ -1,9 +1,8 @@
-import { useParams, useSearchParams } from 'react-router';
-import useSWR from 'swr';
+import { useSearchParams } from 'react-router';
 
 import Select from 'components/Select';
 
-import * as constants from 'constants';
+import { useOptions } from '../hooks';
 
 export default function Filter() {
   const options = useOptions();
@@ -72,35 +71,4 @@ export default function Filter() {
       </Select>
     </div>
   );
-}
-
-function useOptions() {
-  type Data = {
-    catalogs: {
-      id: 'top' | 'year';
-      type: 'movie' | 'series';
-      genres: string[];
-    }[];
-  };
-
-  const { type } = useParams();
-
-  const { data, isLoading } = useSWR<Data>('/cinemeta/manifest.json', async () => {
-    const res = await fetch(`${constants.CINEMETA_BASE_URL}/manifest.json`);
-    return await res.json();
-  });
-
-  return {
-    genres: (() => {
-      const catalog = data?.catalogs.find((catalog) => catalog.id === 'top' && catalog.type === type);
-      if (!catalog) return [];
-      return catalog.genres;
-    })(),
-    year: (() => {
-      const catalog = data?.catalogs.find((catalog) => catalog.id === 'year' && catalog.type === type);
-      if (!catalog) return [];
-      return catalog.genres;
-    })(),
-    isLoading,
-  };
 }

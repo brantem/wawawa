@@ -7,6 +7,7 @@ import Filter from './components/Filter';
 import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
 
 import { useData } from './hooks';
+import { getDisplayText } from './helpers';
 
 // TODO: cinemeta is a mess, try TMDB
 // TODO: virtualized, search (not possible), empty state
@@ -68,15 +69,4 @@ export default function Catalog() {
       <div ref={bottomRef} />
     </Layout>
   );
-}
-
-function getDisplayText(s: string) {
-  switch (s) {
-    case 'movie':
-      return 'Movies';
-    case 'series':
-      return 'Series';
-    default:
-      return s;
-  }
 }

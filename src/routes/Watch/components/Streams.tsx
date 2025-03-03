@@ -6,6 +6,7 @@ import Select from 'components/Select';
 
 import type { Stream } from '../types';
 import { useStreams } from '../hooks';
+import { getDisplayText } from '../helpers';
 
 // TODO: empty state
 
@@ -47,11 +48,6 @@ export default function Streams() {
       </div>
     </div>
   );
-}
-
-function getDisplayText(s: string) {
-  if (s.includes('4k')) return s.replace('4k', '4K');
-  return s;
 }
 
 function SkeletonCard({ index }: { index: number }) {

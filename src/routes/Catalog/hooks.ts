@@ -1,9 +1,41 @@
 import { useParams, useSearchParams } from 'react-router';
+import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 
 import { Meta } from 'types';
 import * as constants from 'constants';
 import { metaToItem } from 'lib/helpers';
+
+export function useOptions() {
+  type Data = {
+    catalogs: {
+      id: 'top' | 'year';
+      type: 'movie' | 'series';
+      genres: string[];
+    }[];
+  };
+
+  const { type } = useParams();
+
+  const { data, isLoading } = useSWR<Data>('/cinemeta/manifest.json', async () => {
+    const res = await fetch(`${constants.CINEMETA_BASE_URL}/manifest.json`);
+    return await res.json();
+  });
+
+  return {
+    genres: (() => {
+      const catalog = data?.catalogs.find((catalog) => catalog.id === 'top' && catalog.type === type);
+      if (!catalog) return [];
+      return catalog.genres;
+    })(),
+    year: (() => {
+      const catalog = data?.catalogs.find((catalog) => catalog.id === 'year' && catalog.type === type);
+      if (!catalog) return [];
+      return catalog.genres;
+    })(),
+    isLoading,
+  };
+}
 
 export function useData() {
   const [searchParams] = useSearchParams();
