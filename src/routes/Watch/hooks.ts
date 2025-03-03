@@ -21,12 +21,11 @@ export function useStreams() {
       }
   );
 
-  const { type, id, episodeId } = useParams<{ type: 'movies' | 'series'; id: string; episodeId?: string }>();
-  const _type = type === 'movies' ? 'movie' : type;
+  const { type, id, episodeId } = useParams();
   const _episodeId = episodeId ? `:${episodeId}` : '';
 
-  const { data, isLoading } = useSWR<Raw[]>(`/${_type}/${id}${_episodeId}/streams`, async () => {
-    const res = await fetch(`${constants.TORRENTIO_BASE_URL}/stream/${_type}/${id}${_episodeId}.json`);
+  const { data, isLoading } = useSWR<Raw[]>(`/${type}/${id}${_episodeId}/streams`, async () => {
+    const res = await fetch(`${constants.TORRENTIO_BASE_URL}/stream/${type}/${id}${_episodeId}.json`);
     return (await res.json())?.streams || [];
   });
 

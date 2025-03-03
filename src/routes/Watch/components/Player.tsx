@@ -22,7 +22,13 @@ export default function Player() {
   return (
     <div className="size-full overflow-hidden bg-black">
       {src ? (
-        <MediaPlayer title={title} src={{ src, type: 'video/mp4' }} streamType="on-demand" autoPlay>
+        <MediaPlayer
+          title={title}
+          src={{ src, type: 'video/mp4' }}
+          streamType="on-demand"
+          autoPlay
+          onTimeUpdate={(e) => console.log(e.currentTime)}
+        >
           <MediaProvider>
             {subtitles.map(({ id, url, ...subtitle }) => (
               <Track id={id} key={id} src={url} kind="subtitles" label={getLabel(subtitle.lang)} {...subtitle} />
@@ -39,13 +45,8 @@ function getLabel(lang: string) {
   return (langs.where('2', lang) || langs.where('2T', lang) || langs.where('2B', lang))?.name || lang;
 }
 
-function useStreamId() {
-  const { '*': streamId } = useParams() as { '*': string };
-  return streamId;
-}
-
 function useTitle() {
-  const { episodeId } = useParams() as { episodeId: string };
+  const { episodeId } = useParams();
 
   const { item: parent } = useItem();
   if (!parent) return '';
@@ -85,8 +86,8 @@ function useStream() {
     )[];
   };
 
-  const rawStreamId = useStreamId();
-  const streamId = atob(decodeURIComponent(rawStreamId));
+  const { '*': rawStreamId } = useParams();
+  const streamId = atob(decodeURIComponent(rawStreamId!));
 
   const { data, isLoading } = useSWR(`/stream/${rawStreamId}`, async () => {
     // TODO: support magnet link
@@ -135,11 +136,10 @@ function useSubtitles() {
     lang: string;
   };
 
-  const { type, id, episodeId } = useParams<{ type: 'movies' | 'series'; id: string; episodeId: string }>();
-  const _type = type === 'movies' ? 'movie' : type;
+  const { type, id, episodeId, '*': rawStreamId } = useParams();
   const _episodeId = episodeId ? `:${episodeId}` : '';
 
-  const streamId = decodeURIComponent(useStreamId());
+  const streamId = decodeURIComponent(rawStreamId!);
   const stream = useStreams().streams.find((stream) => stream.id === streamId)!;
 
   const [subtitles, setSubtitles] = useState<Subtitle[] | null>(null);
@@ -156,7 +156,7 @@ function useSubtitles() {
       searchParams.set('videoSize', size.toString());
       searchParams.set('videoHash', hash);
 
-      const baseUrl = `${constants.OPENSUBTITLES_BASE_URL}/subtitles/${_type}/${id}${_episodeId}`;
+      const baseUrl = `${constants.OPENSUBTITLES_BASE_URL}/subtitles/${type}/${id}${_episodeId}`;
       const res = await fetch(`${baseUrl}/${searchParams.toString()}.json`);
 
       const raw: Raw[] = (await res.json())?.subtitles || [];

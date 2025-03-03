@@ -5,24 +5,10 @@ import { Meta } from 'types';
 import * as constants from 'constants';
 import { metaToItem } from 'lib/helpers';
 
-export function useType() {
-  const { type } = useParams() as { type: 'movies' | 'series' };
-  return type;
-}
-
-type Key = {
-  type: string;
-  sort: 'popularity' | null;
-  genre: string | null;
-  year: string | null;
-  skip: number;
-};
-
 export function useData() {
   const [searchParams] = useSearchParams();
 
-  const type = useType();
-  const _type = type === 'movies' ? 'movie' : type;
+  const { type } = useParams();
 
   const sort = searchParams.has('sort') ? searchParams.get('sort') : searchParams.has('year') ? null : 'popularity';
   const genre = searchParams.get('genre');
@@ -35,10 +21,10 @@ export function useData() {
         if (!prev.hasMore) return null;
         skip += prev.metas.length;
       }
-      return `/${_type}?skip=${skip}`;
+      return `/${type}?skip=${skip}`;
     },
     async () => {
-      let url = `${constants.CINEMETA_BASE_URL}/catalog/${_type}`;
+      let url = `${constants.CINEMETA_BASE_URL}/catalog/${type}`;
 
       const searchParams = new URLSearchParams();
       if (skip) searchParams.set('skip', skip.toString());

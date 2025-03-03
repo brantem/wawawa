@@ -32,18 +32,8 @@ export default function Home() {
       </Hero>
 
       <div className={cn('flex flex-col gap-16 pb-8', series.rank > movies.rank && 'flex-col-reverse')}>
-        <Items
-          title={isSearching ? 'Movies' : 'Popular Movies'}
-          baseUrl="/movies"
-          items={movies}
-          isLoading={isLoading}
-        />
-        <Items
-          title={isSearching ? 'Series' : 'Popular Series'}
-          baseUrl="/series"
-          items={series}
-          isLoading={isLoading}
-        />
+        <Items type="movie" title={isSearching ? 'Movies' : 'Popular Movies'} items={movies} isLoading={isLoading} />
+        <Items type="series" title={isSearching ? 'Series' : 'Popular Series'} items={series} isLoading={isLoading} />
       </div>
     </Layout>
   );

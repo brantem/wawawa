@@ -1,12 +1,12 @@
 import { useRef, useCallback } from 'react';
-import { Link } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 
 import Layout from 'components/layouts/Default';
 import Filter from './components/Filter';
 import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
 
-import { useData, useType } from './hooks';
+import { useData } from './hooks';
 
 // TODO: cinemeta is a mess, try TMDB
 // TODO: virtualized, search (not possible), empty state
@@ -14,7 +14,7 @@ import { useData, useType } from './hooks';
 export default function Catalog() {
   const observerRef = useRef<IntersectionObserver>(null);
 
-  const type = useType();
+  const { type } = useParams();
   const { data, isLoading, hasMore, loadMore, isLoadingMore } = useData();
 
   const bottomRef = useCallback(
@@ -46,7 +46,7 @@ export default function Catalog() {
             <ArrowLeftIcon className="size-6 [&>path]:stroke-2" />
           </Link>
 
-          <h1 className="text-3xl font-semibold">{getDisplayText(type)}</h1>
+          <h1 className="text-3xl font-semibold">{getDisplayText(type!)}</h1>
         </div>
 
         <Filter />
@@ -72,7 +72,7 @@ export default function Catalog() {
 
 function getDisplayText(s: string) {
   switch (s) {
-    case 'movies':
+    case 'movie':
       return 'Movies';
     case 'series':
       return 'Series';

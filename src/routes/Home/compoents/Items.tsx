@@ -5,13 +5,13 @@ import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
 import type { Item } from 'types';
 
 type ItemsProps = {
+  type: Item['type'];
   title: string;
-  baseUrl: string;
   items: Item[];
   isLoading: boolean;
 };
 
-export default function Items({ title, baseUrl, items, isLoading }: ItemsProps) {
+export default function Items({ type, title, items, isLoading }: ItemsProps) {
   return (
     <div className="group/container px-8">
       {!isLoading ? (
@@ -19,7 +19,7 @@ export default function Items({ title, baseUrl, items, isLoading }: ItemsProps) 
           <h2 className="text-xl font-semibold">{title}</h2>
 
           <a
-            href={baseUrl}
+            href={`/${type}`}
             className="flex items-center gap-2 text-sm text-neutral-500 transition-all hover:text-neutral-400"
           >
             <span className="relative -mr-6 bg-neutral-950 transition-[margin] group-hover/container:mr-0">
@@ -48,7 +48,7 @@ export default function Items({ title, baseUrl, items, isLoading }: ItemsProps) 
                 <ItemCard
                   key={item.id}
                   className="w-[calc(100%/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-8"
-                  item={{ ...item, url: `${baseUrl}/${item.id}` }}
+                  item={{ ...item, url: `${type}/${item.id}` }}
                 />
               ))}
           <div className="snap-start scroll-mx-8" />
