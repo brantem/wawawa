@@ -145,8 +145,6 @@ function useSubtitles() {
   const [subtitles, setSubtitles] = useState<Subtitle[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // TODO: yuck, find a way to avoid useEffect. useSWR didn't work unless timeout is disabled, or fetchOpensubHash gets
-  // called twice.
   useEffect(() => {
     if (!stream || subtitles !== null || isLoading) return;
     (async () => {
@@ -162,13 +160,26 @@ function useSubtitles() {
       const res = await fetch(`${baseUrl}/${searchParams.toString()}.json`);
 
       const raw: Raw[] = (await res.json())?.subtitles || [];
+
+      let foundDefault = false;
       setSubtitles(
-        raw.map((subtitle) => ({
-          id: subtitle.id,
-          url: `${constants.STREAMING_SERVER_BASE_URL}/subtitles.vtt?from=${subtitle.url}`,
-          encoding: subtitle.SubEncoding.toLowerCase(),
-          lang: subtitle.lang, // ISO 639-2
-        })),
+        raw.map((raw) => {
+          const subtitle = {
+            id: raw.id,
+            url: `${constants.STREAMING_SERVER_BASE_URL}/subtitles.vtt?from=${raw.url}`,
+            encoding: raw.SubEncoding.toLowerCase(),
+            lang: raw.lang, // ISO 639-2
+            default: false,
+          };
+
+          // TODO: customizeable default
+          if (!foundDefault && subtitle.lang === 'eng') {
+            foundDefault = true;
+            subtitle.default = true;
+          }
+
+          return subtitle;
+        }),
       );
       setIsLoading(false);
     })();
