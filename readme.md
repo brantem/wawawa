@@ -8,13 +8,11 @@ Client for streamio
 
 #### TODO
 
-- [ ] Replace Cinemeta with TMDB
 - [ ] Responsive
-- [ ] Desktop app
-- [ ] Addons
+- [ ] Replace Cinemeta with TMDB
 - [ ] Watchlist
-- [ ] Improved player
-- [ ] Magnet link
+- [ ] Addons
+- [ ] Desktop app
 - [x] Subtitle
 - [x] Remember last stream and position
 - [x] Last watched
