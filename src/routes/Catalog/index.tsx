@@ -60,7 +60,7 @@ export default function Catalog() {
           <h1 className="text-xl font-semibold">{getDisplayText(type!)}</h1>
         </div>
 
-        {data.length ? <Filter /> : null}
+        <Filter />
       </div>
 
       <div className="relative grid grid-cols-2 gap-6 pb-4 max-md:gap-x-4 md:grid-cols-3 md:pb-8 lg:grid-cols-4 xl:grid-cols-5">
