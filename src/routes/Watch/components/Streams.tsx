@@ -37,7 +37,11 @@ export default function Streams() {
         </div>
 
         {groups.length ? (
-          <Select value={group ? group : $stream ? $stream.group : ''} onChange={(e) => setGroup(e.target.value)}>
+          <Select
+            className="md:w-36"
+            value={group ? group : $stream ? $stream.group : ''}
+            onChange={(e) => setGroup(e.target.value)}
+          >
             {groups.map((group) => (
               <option key={group} value={group}>
                 {getDisplayText(group)}

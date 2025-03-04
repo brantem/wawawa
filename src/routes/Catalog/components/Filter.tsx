@@ -18,7 +18,7 @@ export default function Filter() {
   return (
     <div className="flex">
       <Select
-        className="rounded-r-none max-md:flex-1"
+        className="rounded-r-none max-md:flex-1 md:w-36"
         value={value}
         onChange={(e) => {
           setSearchParams((prev) => {
@@ -41,7 +41,7 @@ export default function Filter() {
       </Select>
 
       <Select
-        className="-ml-px rounded-l-none max-md:flex-1"
+        className="-ml-px rounded-l-none max-md:flex-1 md:w-36"
         value={(() => {
           if (value === 'year') return searchParams.get('year') || options.year[0];
           return searchParams.get('genre') || 'ALL';

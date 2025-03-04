@@ -48,7 +48,7 @@ export default function Episodes({ items, streams }: EpisodesProps) {
             </button>
           )}
 
-          <Select value={season} onChange={(e) => setSeason(parseInt(e.target.value))}>
+          <Select className="w-36" value={season} onChange={(e) => setSeason(parseInt(e.target.value))}>
             {[...new Array(seasons)].map((_, i) => (
               <option key={i} value={i + 1}>
                 Season {i + 1}
