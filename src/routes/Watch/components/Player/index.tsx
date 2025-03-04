@@ -8,7 +8,6 @@ import NotFound from 'routes/NotFound';
 
 import { useTitle, useVideo, useSubtitles } from '../../hooks';
 import { cn } from 'lib/helpers';
-import { getLabel } from '../../helpers';
 import Storage from './storage';
 
 import '@vidstack/react/player/styles/default/theme.css';
@@ -19,42 +18,41 @@ export default function Player() {
   const loading = useLocation();
 
   const title = useTitle();
-  const { src, duration, isLoading } = useVideo();
-  const { subtitles } = useSubtitles();
+  const video = useVideo();
 
   const storage = useMemo(() => {
-    if (isLoading) return;
-    return new Storage(id!, episodeId || null, loading.pathname, duration);
-  }, [duration]);
+    if (video.isLoading) return;
+    return new Storage(id!, episodeId || null, loading.pathname, video.duration);
+  }, [video.duration]);
 
   const backUrl = `/${type}/${id}${episodeId ? `/${episodeId}` : ''}/watch`;
 
   return (
     <div className="group size-full overflow-hidden bg-black">
-      {isLoading || src ? (
+      {video.isLoading || video.src ? (
         <BackButton
           className={cn(
             'fixed top-3 left-3 z-10',
-            src && 'opacity-0 transition-[color,opacity] group-hover:opacity-100',
+            video.src && 'opacity-0 transition-[color,opacity] group-hover:opacity-100',
           )}
           to={backUrl}
         />
       ) : null}
 
-      {!isLoading ? (
-        src ? (
+      {!video.isLoading ? (
+        video.src ? (
           <MediaPlayer
             title={title}
-            src={{ src, type: 'video/mp4' }}
+            src={{ src: video.src, type: 'video/mp4' }}
             streamType="on-demand"
             autoPlay
             hideControlsOnMouseLeave
             storage={storage}
           >
             <MediaProvider>
-              {subtitles.map(({ id, url, ...subtitle }) => (
-                <Track id={id} key={id} src={url} kind="subtitles" label={getLabel(subtitle.lang)} {...subtitle} />
-              ))}
+              <Subtitles
+                hasBuiltinSubtitle={(video.raw?.streams || []).some((stream) => stream.track === 'subtitle')}
+              />
             </MediaProvider>
             <DefaultVideoLayout icons={defaultLayoutIcons} download={false} noAudioGain />
           </MediaPlayer>
@@ -71,4 +69,19 @@ export default function Player() {
       )}
     </div>
   );
+}
+
+function Subtitles({ hasBuiltinSubtitle }: { hasBuiltinSubtitle: boolean }) {
+  const { subtitles } = useSubtitles();
+
+  let foundDefault = hasBuiltinSubtitle;
+  return subtitles.map(({ id, url, ...subtitle }) => {
+    let isDefault = false;
+    if (!foundDefault && subtitle.lang === 'eng' /* TODO */) {
+      foundDefault = true;
+      isDefault = true;
+    }
+
+    return <Track id={id} key={id} src={url} kind="subtitles" {...subtitle} default={isDefault} />;
+  });
 }

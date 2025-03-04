@@ -31,3 +31,10 @@
 [data-media-player] video {
   height: 100%;
 }
+
+.vds-captions-menu .vds-menu-item-hint {
+  max-width: 125px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

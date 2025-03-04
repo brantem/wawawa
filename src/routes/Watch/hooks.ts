@@ -8,6 +8,7 @@ import * as media from 'lib/media';
 import { useItem } from 'lib/hooks';
 import { getStreamProgress } from 'lib/helpers';
 import storage from 'lib/storage';
+import { getLabel } from './helpers';
 
 export function useTitle() {
   const { episodeId } = useParams();
@@ -143,19 +144,19 @@ export function useVideo() {
 
   const { data, isLoading } = useSWR(`/stream/${rawStreamId}`, async () => {
     // TODO: support magnet link
-    if (/^https?:\/\//.test(streamId)) return { src: streamId, duration: null };
+    if (/^https?:\/\//.test(streamId)) return { raw: null, src: streamId, duration: null };
 
     const mediaUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
 
     let probe: Probe;
     try {
       const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURIComponent(mediaUrl)}`);
-      if (!res.ok) return { src: null, duration: null };
+      if (!res.ok) return { raw: null, src: null, duration: null };
 
       probe = await res.json();
     } catch (err) {
       console.error(err);
-      return { src: null, duration: null };
+      return { raw: null, src: null, duration: null };
     }
 
     const capabilities = media.getCapabilities();
@@ -174,7 +175,7 @@ export function useVideo() {
       src = `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(mediaUrl)}`; // HLS
     }
 
-    return { src, duration: probe.format.duration || null };
+    return { raw: probe, src, duration: probe.format.duration || null };
   });
 
   return { ...data!, isLoading };
@@ -246,25 +247,20 @@ export function useSubtitles() {
         return;
       }
 
-      let foundDefault = false;
+      let m: Record<string, number> = {};
       setSubtitles(
-        raw.map((raw) => {
-          const subtitle = {
-            id: raw.id,
-            url: `${constants.STREAMING_SERVER_BASE_URL}/subtitles.vtt?from=${raw.url}`,
-            encoding: raw.SubEncoding.toLowerCase(),
-            lang: raw.lang, // ISO 639-2
-            default: false,
-          };
-
-          // TODO: customizeable default
-          if (!foundDefault && subtitle.lang === 'eng') {
-            foundDefault = true;
-            subtitle.default = true;
-          }
-
-          return subtitle;
-        }),
+        raw
+          .map((raw) => {
+            m[raw.lang] = (m[raw.lang] || 0) + 1;
+            return {
+              id: raw.id,
+              url: `${constants.STREAMING_SERVER_BASE_URL}/subtitles.vtt?from=${raw.url}`,
+              encoding: raw.SubEncoding.toLowerCase(),
+              lang: raw.lang, // ISO 639-2
+              label: `${getLabel(raw.lang)} ${m[raw.lang]}`,
+            };
+          })
+          .sort((a, b) => a.label.localeCompare(b.label)),
       );
       setIsLoading(false);
     })();
