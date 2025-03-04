@@ -8,8 +8,9 @@ import Catalog from 'routes/Catalog';
 import Details from 'routes/Details';
 import Watch from 'routes/Watch';
 
-import 'index.css';
 import { isTypeValid } from 'lib/helpers';
+
+import 'index.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <SWRConfig
