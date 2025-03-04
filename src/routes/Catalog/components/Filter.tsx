@@ -18,7 +18,7 @@ export default function Filter() {
   return (
     <div className="flex">
       <Select
-        className="-my-px rounded-r-none max-md:flex-1"
+        className="rounded-r-none max-md:flex-1"
         value={value}
         onChange={(e) => {
           setSearchParams((prev) => {

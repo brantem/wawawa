@@ -32,7 +32,7 @@ export default function Details() {
   return isLoading || item ? (
     <Layout>
       <Hero item={item} isLoading={isLoading}>
-        <BackButton to="/" className="absolute top-3 left-3 z-10 md:top-6 md:left-6" />
+        <BackButton to="/" className="absolute top-3 left-2 z-10 md:top-6 md:left-6" />
 
         {isDesktop && item ? (
           <PlayButton className="absolute right-8 bottom-8" item={item} lastWatched={lastWatched} />

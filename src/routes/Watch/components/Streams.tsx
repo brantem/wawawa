@@ -30,18 +30,14 @@ export default function Streams() {
 
   return (
     <>
-      <div className="flex justify-between gap-4 max-md:flex-col max-md:pt-4 md:items-center">
-        <div className="flex items-center gap-2 md:h-8">
-          <BackButton className="-my-1 -ml-1" to={`/${type}/${id}`} />
+      <div className="mt-3 flex shrink-0 justify-between gap-4 max-md:flex-col md:mt-6 md:h-9 md:items-center">
+        <div className="flex items-center gap-2">
+          <BackButton className="-ml-2" to={`/${type}/${id}`} />
           <h2 className="text-xl font-semibold">Select a Stream</h2>
         </div>
 
         {groups.length ? (
-          <Select
-            className="-my-px"
-            value={group ? group : $stream ? $stream.group : ''}
-            onChange={(e) => setGroup(e.target.value)}
-          >
+          <Select value={group ? group : $stream ? $stream.group : ''} onChange={(e) => setGroup(e.target.value)}>
             {groups.map((group) => (
               <option key={group} value={group}>
                 {getDisplayText(group)}

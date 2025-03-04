@@ -12,7 +12,7 @@ export default function Watch() {
       {streamId ? (
         <Player />
       ) : (
-        <Layout className="max-md:px-4">
+        <Layout className="px-4 md:px-8">
           <Streams />
         </Layout>
       )}

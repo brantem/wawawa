@@ -52,10 +52,10 @@ export default function Catalog() {
   })();
 
   return (
-    <Layout className="max-md:px-4">
-      <div className="flex justify-between gap-4 max-md:flex-col max-md:pt-4 md:items-center">
-        <div className="flex items-center gap-2 md:h-8">
-          <BackButton to="/" className="-my-1 -ml-1" />
+    <Layout className="px-4 md:px-8">
+      <div className="mt-3 flex shrink-0 justify-between gap-4 max-md:flex-col md:mt-6 md:h-9 md:items-center">
+        <div className="flex items-center gap-2">
+          <BackButton to="/" className="-ml-2" />
 
           <h1 className="text-xl font-semibold">{getDisplayText(type!)}</h1>
         </div>
