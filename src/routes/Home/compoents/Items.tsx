@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { ArrowRightIcon } from '@heroicons/react/16/solid';
 
 import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
@@ -18,15 +19,15 @@ export default function Items({ type, title, items, isLoading }: ItemsProps) {
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-semibold">{title}</h2>
 
-          <a
-            href={`/${type}`}
+          <Link
+            to={`/${type}`}
             className="flex items-center gap-2 text-sm text-neutral-500 transition-all hover:text-neutral-400"
           >
             <span className="relative -mr-6 bg-neutral-950 transition-[margin] group-hover/container:mr-0">
               Show More
             </span>
             <ArrowRightIcon className="size-4 opacity-0 transition-opacity group-hover/container:opacity-100" />
-          </a>
+          </Link>
         </div>
       ) : (
         <div className="h-7 w-16 animate-pulse rounded bg-neutral-900" />
