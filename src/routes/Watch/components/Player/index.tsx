@@ -14,8 +14,6 @@ import Storage from './storage';
 import '@vidstack/react/player/styles/default/theme.css';
 import '@vidstack/react/player/styles/default/layouts/video.css';
 
-// TODO: loading state
-
 export default function Player() {
   const { type, id, episodeId } = useParams();
   const loading = useLocation();

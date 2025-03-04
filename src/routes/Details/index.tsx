@@ -16,7 +16,7 @@ import { useStreams } from './hooks';
 import { getStreamProgress } from 'lib/helpers';
 import { getLastWatched, getTotalSeasons } from './helpers';
 
-// TODO: not found state, play & resume, list of other movies/series?
+// TODO: list of other movies/series?
 
 export default function Details() {
   const isDesktop = useMediaQuery('(width >= 768px)');
