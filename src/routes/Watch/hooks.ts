@@ -44,8 +44,15 @@ export function useStreams() {
   const _episodeId = episodeId ? `:${episodeId}` : '';
 
   const { data, isLoading } = useSWR<Raw[]>(`/${type}/${id}${_episodeId}/streams`, async () => {
-    const res = await fetch(`${constants.TORRENTIO_BASE_URL}/stream/${type}/${id}${_episodeId}.json`);
-    return (await res.json())?.streams || [];
+    try {
+      const res = await fetch(`${constants.TORRENTIO_BASE_URL}/stream/${type}/${id}${_episodeId}.json`);
+      if (!res.ok) return [];
+
+      return (await res.json())?.streams || [];
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
   });
 
   const groups = new Set<string>();
@@ -139,8 +146,17 @@ export function useVideo() {
     if (/^https?:\/\//.test(streamId)) return { src: streamId, duration: null };
 
     const mediaUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
-    const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURIComponent(mediaUrl)}`);
-    const probe: Probe = await res.json();
+
+    let probe: Probe;
+    try {
+      const res = await fetch(`${HLSV2_BASE_URL}/probe?mediaURL=${encodeURIComponent(mediaUrl)}`);
+      if (!res.ok) return { src: null, duration: null };
+
+      probe = await res.json();
+    } catch (err) {
+      console.error(err);
+      return { src: null, duration: null };
+    }
 
     const capabilities = media.getCapabilities();
     const isFormatSupported = capabilities.formats.some((format) => probe.format.name.includes(format));
@@ -155,8 +171,7 @@ export function useVideo() {
 
     let src = mediaUrl; // non HLS
     if (isFormatSupported && areStreamsSupported) {
-      // HLS
-      src = `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(mediaUrl)}`;
+      src = `${HLSV2_BASE_URL}/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(mediaUrl)}`; // HLS
     }
 
     return { src, duration: probe.format.duration || null };
@@ -173,11 +188,16 @@ async function fetchOpensubHash(streamId: string): Promise<{ size: number; hash:
     videoUrl = `${constants.STREAMING_SERVER_BASE_URL}/${streamId}`;
   }
 
-  const res = await fetch(
-    `${constants.STREAMING_SERVER_BASE_URL}/opensubHash?videoUrl=${encodeURIComponent(videoUrl)}`,
-  );
-  const a = (await res.json()).result;
-  return a;
+  try {
+    const url = `${constants.STREAMING_SERVER_BASE_URL}/opensubHash?videoUrl=${encodeURIComponent(videoUrl)}`;
+    const res = await fetch(url);
+    if (!res.ok) return { size: 0, hash: '' };
+
+    return (await res.json())?.result || { size: 0, hash: '' };
+  } catch (err) {
+    console.error(err);
+    return { size: 0, hash: '' };
+  }
 }
 
 export function useSubtitles() {
@@ -208,10 +228,23 @@ export function useSubtitles() {
       searchParams.set('videoSize', size.toString());
       searchParams.set('videoHash', hash);
 
-      const baseUrl = `${constants.OPENSUBTITLES_BASE_URL}/subtitles/${type}/${id}${_episodeId}`;
-      const res = await fetch(`${baseUrl}/${searchParams.toString()}.json`);
+      let raw: Raw[];
+      try {
+        const url = `${constants.OPENSUBTITLES_BASE_URL}/subtitles/${type}/${id}${_episodeId}/${searchParams.toString()}.json`;
+        const res = await fetch(url);
+        if (!res.ok) {
+          setSubtitles([]);
+          setIsLoading(false);
+          return;
+        }
 
-      const raw: Raw[] = (await res.json())?.subtitles || [];
+        raw = (await res.json())?.subtitles || [];
+      } catch (err) {
+        console.error(err);
+        setSubtitles([]);
+        setIsLoading(false);
+        return;
+      }
 
       let foundDefault = false;
       setSubtitles(

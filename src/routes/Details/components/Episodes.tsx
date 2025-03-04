@@ -15,8 +15,6 @@ import { getTotalSeasons } from '../helpers';
 import { cn } from 'lib/helpers';
 import { useMediaQuery } from 'lib/hooks';
 
-// TODO: empty state
-
 type EpisodesProps = {
   items: ItemSeries['items'];
   streams: Stream[];

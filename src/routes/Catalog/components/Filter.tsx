@@ -8,6 +8,8 @@ export default function Filter() {
   const options = useOptions();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  if (!options.year.length || !options.genres.length) return;
+
   const value = (() => {
     if (!searchParams.has('sort') && searchParams.has('year')) return 'year';
     return 'popularity';
@@ -16,7 +18,7 @@ export default function Filter() {
   return (
     <div className="flex">
       <Select
-        className="rounded-r-none max-md:flex-1"
+        className="-my-px rounded-r-none max-md:flex-1"
         value={value}
         onChange={(e) => {
           setSearchParams((prev) => {

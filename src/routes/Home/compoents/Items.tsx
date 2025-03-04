@@ -19,15 +19,17 @@ export default function Items({ type, title, items, isLoading }: ItemsProps) {
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-semibold">{title}</h2>
 
-          <Link
-            to={`/${type}`}
-            className="flex items-center gap-2 text-sm text-neutral-500 transition-all hover:text-neutral-400"
-          >
-            <span className="relative -mr-6 bg-neutral-950 transition-[margin] group-hover/container:mr-0">
-              Show More
-            </span>
-            <ArrowRightIcon className="size-4 opacity-0 transition-opacity group-hover/container:opacity-100" />
-          </Link>
+          {items.length ? (
+            <Link
+              to={`/${type}`}
+              className="flex items-center gap-2 text-sm text-neutral-500 transition-all hover:text-neutral-400"
+            >
+              <span className="relative -mr-6 bg-neutral-950 transition-[margin] group-hover/container:mr-0">
+                Show More
+              </span>
+              <ArrowRightIcon className="size-4 opacity-0 transition-opacity group-hover/container:opacity-100" />
+            </Link>
+          ) : null}
         </div>
       ) : (
         <div className="h-7 w-16 animate-pulse rounded bg-neutral-900" />
@@ -38,20 +40,30 @@ export default function Items({ type, title, items, isLoading }: ItemsProps) {
 
         <div className="no-scrollbar -mx-4 -mt-1.25 flex snap-x overflow-x-auto px-2 pt-1.25 md:-mx-8">
           <div className="mr-2 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6" />
-          {isLoading
-            ? [...new Array(5)].map((_, i) => (
-                <SkeletonItemCard
-                  key={i}
-                  className="mr-4 w-[calc(1024px/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6"
-                />
-              ))
-            : items.map((item) => (
-                <ItemCard
-                  key={item.id}
-                  className="mr-4 w-[calc(1024px/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6"
-                  item={{ ...item, url: `${type}/${item.id}` }}
-                />
-              ))}
+          {isLoading ? (
+            [...new Array(5)].map((_, i) => (
+              <SkeletonItemCard
+                key={i}
+                className="mr-4 w-[calc(1024px/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6"
+              />
+            ))
+          ) : items.length ? (
+            items.map((item) => (
+              <ItemCard
+                key={item.id}
+                className="mr-4 w-[calc(1024px/5-var(--spacing)*6-5px)] shrink-0 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6"
+                item={{ ...item, url: `${type}/${item.id}` }}
+              />
+            ))
+          ) : (
+            <div className="grid w-full grid-cols-3 rounded-md">
+              <div className="mb-14 aspect-[2/3] w-[calc(1024px/5-var(--spacing)*6-5px)]" />
+              <div className="flex flex-col items-center justify-center">
+                <h3 className="text-lg font-medium">No titles found</h3>
+                <p className="text-neutral-500">Please refresh or try again later.</p>
+              </div>
+            </div>
+          )}
           <div className="snap-start scroll-mx-4 md:scroll-mx-6" />
         </div>
 

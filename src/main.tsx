@@ -1,20 +1,30 @@
 import ReactDOM from 'react-dom/client';
 import { SWRConfig } from 'swr';
-import { BrowserRouter, Routes, Route } from 'react-router';
+import { BrowserRouter, Routes, Route, useParams, Outlet } from 'react-router';
 
+import NotFound from 'routes/NotFound';
 import Home from 'routes/Home';
 import Catalog from 'routes/Catalog';
 import Details from 'routes/Details';
 import Watch from 'routes/Watch';
 
 import 'index.css';
+import { isTypeValid } from 'lib/helpers';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <SWRConfig value={{ revalidateIfStale: false, revalidateOnFocus: false, revalidateOnReconnect: false }}>
+  <SWRConfig
+    value={{
+      errorRetryCount: 3,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }}
+  >
     <BrowserRouter>
       <Routes>
+        <Route path="*" element={<NotFound />} />
         <Route index element={<Home />} />
-        <Route path=":type">
+        <Route path=":type" element={<Type />}>
           <Route index element={<Catalog />} />
           <Route path=":id">
             <Route index element={<Details />} />
@@ -25,3 +35,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     </BrowserRouter>
   </SWRConfig>,
 );
+
+function Type() {
+  const { type } = useParams();
+  return isTypeValid(type!) ? <Outlet /> : <NotFound />;
+}

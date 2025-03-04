@@ -10,21 +10,25 @@ export function useSearchValue() {
   return useDebounce(useSearchParams()[0].get('q'), 500);
 }
 
-const fetcher = async ({ type, search }: { type: string; search: string }) => {
-  const _search = search ? `/search=${search}` : '';
-  const res = await fetch(`${constants.CINEMETA_BASE_URL}/catalog/${type}/top${_search}.json`);
-  return res.json();
-};
-
-export function useData() {
+export function useItems(type: Meta['type']) {
   const search = useSearchValue();
+  const _search = search ? `/search=${search}` : '';
 
-  const movies = useSWR<{ metas: Meta[]; rank: number }>({ type: 'movie', search }, fetcher);
-  const series = useSWR<{ metas: Meta[]; rank: number }>({ type: 'series', search }, fetcher);
+  const { data, isLoading } = useSWR<{ metas: Meta[]; rank: number }>(`/${type}?search=${search}`, async () => {
+    try {
+      const res = await fetch(`${constants.CINEMETA_BASE_URL}/catalog/${type}/top${_search}.json`);
+      if (!res.ok) return { metas: [], rank: 0 };
+
+      return res.json();
+    } catch (err) {
+      console.error(err);
+      return { metas: [], rank: 0 };
+    }
+  });
 
   return {
-    movies: Object.assign((movies.data?.metas || []).map(metaToItem), { rank: movies?.data?.rank || 0 }),
-    series: Object.assign((series.data?.metas || []).map(metaToItem), { rank: series?.data?.rank || 0 }),
-    isLoading: movies.isLoading || series.isLoading,
+    items: (data?.metas || []).map(metaToItem),
+    rank: data?.rank || 0,
+    isLoading: isLoading,
   };
 }

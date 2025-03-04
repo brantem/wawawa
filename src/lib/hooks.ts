@@ -80,8 +80,15 @@ export function useItem() {
   const { type, id } = useParams();
 
   const { data, isLoading } = useSWR(`/${type}/${id}`, async () => {
-    const res = await fetch(`${constants.CINEMETA_BASE_URL}/meta/${type}/${id}.json`);
-    return metaToItem((await res.json()).meta);
+    try {
+      const res = await fetch(`${constants.CINEMETA_BASE_URL}/meta/${type}/${id}.json`);
+      if (!res.ok) return null;
+
+      return metaToItem((await res.json())?.meta);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   });
 
   return {

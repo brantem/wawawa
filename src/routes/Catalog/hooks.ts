@@ -7,29 +7,33 @@ import * as constants from 'constants';
 import { metaToItem } from 'lib/helpers';
 
 export function useOptions() {
-  type Data = {
-    catalogs: {
-      id: 'top' | 'year';
-      type: 'movie' | 'series';
-      genres: string[];
-    }[];
+  type Catalog = {
+    id: 'top' | 'year';
+    type: 'movie' | 'series';
+    genres: string[];
   };
 
   const { type } = useParams();
 
-  const { data, isLoading } = useSWR<Data>('/cinemeta/manifest.json', async () => {
-    const res = await fetch(`${constants.CINEMETA_BASE_URL}/manifest.json`);
-    return await res.json();
+  const { data, isLoading } = useSWR<Catalog[]>('/cinemeta/manifest.json', async () => {
+    try {
+      const res = await fetch(`${constants.CINEMETA_BASE_URL}/manifest.json`);
+      if (!res.ok) return [];
+
+      return (await res.json())?.catalogs || [];
+    } catch (err) {
+      return [];
+    }
   });
 
   return {
     genres: (() => {
-      const catalog = data?.catalogs.find((catalog) => catalog.id === 'top' && catalog.type === type);
+      const catalog = (data || []).find((catalog) => catalog.id === 'top' && catalog.type === type);
       if (!catalog) return [];
       return catalog.genres;
     })(),
     year: (() => {
-      const catalog = data?.catalogs.find((catalog) => catalog.id === 'year' && catalog.type === type);
+      const catalog = (data || []).find((catalog) => catalog.id === 'year' && catalog.type === type);
       if (!catalog) return [];
       return catalog.genres;
     })(),
@@ -76,8 +80,15 @@ export function useData() {
           break;
       }
 
-      const res = await fetch(url);
-      return res.json();
+      try {
+        const res = await fetch(url);
+        if (!res.ok) return { metas: [], hasMore: false };
+
+        return res.json();
+      } catch (err) {
+        console.error(err);
+        return { metas: [], hasMore: false };
+      }
     },
   );
 

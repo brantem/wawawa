@@ -9,7 +9,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function metaToItem(meta: Meta) {
+export function isTypeValid(s: string) {
+  switch (s) {
+    case 'movie':
+    case 'series':
+      return true;
+    default:
+      return false;
+  }
+}
+
+export function metaToItem(meta: Meta | null | undefined) {
+  if (!meta) return null;
+
   const item: Record<string, any> = {
     ...pick(meta, ['id', 'type', 'runtime']),
     title: meta.name,

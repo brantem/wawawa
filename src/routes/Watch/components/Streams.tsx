@@ -11,7 +11,7 @@ import { useStreams, useSelectedStream } from '../hooks';
 import { getDisplayText } from '../helpers';
 import { cn } from 'lib/helpers';
 
-// TODO: empty state
+// TODO: if some some links are not url and streaming server is not availble, show baner
 
 export default function Streams() {
   const { type, id } = useParams();
@@ -31,22 +31,24 @@ export default function Streams() {
   return (
     <>
       <div className="flex justify-between gap-4 max-md:flex-col max-md:pt-4 md:items-center">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:h-8">
           <BackButton className="-my-1 -ml-1" to={`/${type}/${id}`} />
           <h2 className="text-xl font-semibold">Select a Stream</h2>
         </div>
 
-        <Select
-          className={!groups.length ? 'opacity-0' : undefined}
-          value={group ? group : $stream ? $stream.group : ''}
-          onChange={(e) => setGroup(e.target.value)}
-        >
-          {groups.map((group) => (
-            <option key={group} value={group}>
-              {getDisplayText(group)}
-            </option>
-          ))}
-        </Select>
+        {groups.length ? (
+          <Select
+            className="-my-px"
+            value={group ? group : $stream ? $stream.group : ''}
+            onChange={(e) => setGroup(e.target.value)}
+          >
+            {groups.map((group) => (
+              <option key={group} value={group}>
+                {getDisplayText(group)}
+              </option>
+            ))}
+          </Select>
+        ) : null}
       </div>
 
       {selected && $stream && !isSelectedVisible ? (
@@ -58,9 +60,16 @@ export default function Streams() {
       ) : null}
 
       <div className="flex flex-col gap-2 pb-4 md:pb-8">
-        {isLoading || isSelectedLoading
-          ? [...new Array(5)].map((_, i) => <SkeletonCard key={i} index={i + 1} />)
-          : $streams.map((stream, i) => <Card key={stream.id} index={i + 1} stream={stream} />)}
+        {isLoading || isSelectedLoading ? (
+          [...new Array(5)].map((_, i) => <SkeletonCard key={i} index={i + 1} />)
+        ) : $streams.length ? (
+          $streams.map((stream, i) => <Card key={stream.id} index={i + 1} stream={stream} />)
+        ) : (
+          <div className="flex h-15 flex-col items-center justify-center">
+            <h3 className="text-lg font-medium">No streams found</h3>
+            <p className="text-neutral-500">Please refresh or try again later.</p>
+          </div>
+        )}
       </div>
     </>
   );

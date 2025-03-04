@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react';
+import { Fragment, useMemo, useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router';
 import { PlayIcon } from '@heroicons/react/20/solid';
 
@@ -7,6 +7,7 @@ import Hero from 'components/Hero';
 import BackButton from 'components/BackButton';
 import Progress from 'components/Progress';
 import Episodes from './components/Episodes';
+import NotFound from 'routes/NotFound';
 
 import type { Item } from 'types';
 import type { Stream } from 'types/storage';
@@ -26,7 +27,9 @@ export default function Details() {
 
   const lastWatched = getLastWatched(streams);
 
-  return (
+  // TODO: improve loading by delaying the skeleton
+
+  return isLoading || item ? (
     <Layout>
       <Hero item={item} isLoading={isLoading}>
         <BackButton to="/" className="absolute top-3 left-3 z-10 md:top-6 md:left-6" />
@@ -100,6 +103,8 @@ export default function Details() {
         </div>
       ) : null}
     </Layout>
+  ) : (
+    <NotFound />
   );
 }
 
