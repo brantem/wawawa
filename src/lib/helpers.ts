@@ -19,9 +19,7 @@ export function isTypeValid(s: string) {
   }
 }
 
-export function metaToItem(meta: Meta | null | undefined) {
-  if (!meta) return null;
-
+export function metaToItem(meta: Meta) {
   const item: Record<string, any> = {
     ...pick(meta, ['id', 'type', 'runtime']),
     title: meta.name,

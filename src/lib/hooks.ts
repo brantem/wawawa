@@ -84,7 +84,10 @@ export function useItem() {
       const res = await fetch(`${constants.CINEMETA_BASE_URL}/meta/${type}/${id}.json`);
       if (!res.ok) return null;
 
-      return metaToItem((await res.json())?.meta);
+      const meta = (await res.json())?.meta;
+      if (!meta) return null;
+
+      return metaToItem(meta);
     } catch (err) {
       console.error(err);
       return null;
