@@ -23,7 +23,7 @@ type EpisodesProps = {
 export default function Episodes({ items, streams }: EpisodesProps) {
   const isDesktop = useMediaQuery('(width >= 768px)');
 
-  const [view, setView] = useState<'vertical' | 'horizontal'>('vertical');
+  const [view, setView] = useState<'horizontal' | 'vertical'>('horizontal');
   const [season, setSeason] = useState(1);
 
   const seasons = getTotalSeasons(items);
@@ -32,7 +32,7 @@ export default function Episodes({ items, streams }: EpisodesProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="sticky top-0 z-10 -my-4 flex items-center justify-between gap-4 bg-neutral-950 py-4">
+      <div className="sticky top-0 z-10 -mx-4 -my-4 flex items-center justify-between gap-4 bg-neutral-950 px-4 py-4 md:-mx-8 md:px-8">
         <h2 className="flex items-center gap-2 text-xl font-semibold">
           <span>Episodes</span>
           <span className="text-neutral-500">{$items.length}</span>
@@ -42,7 +42,7 @@ export default function Episodes({ items, streams }: EpisodesProps) {
           {isDesktop && (
             <button
               className="flex size-8.5 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 hover:bg-neutral-800"
-              onClick={() => setView((prev) => (prev === 'vertical' ? 'horizontal' : 'vertical'))}
+              onClick={() => setView((prev) => (prev === 'horizontal' ? 'vertical' : 'horizontal'))}
             >
               {view === 'vertical' ? <ListBulletIcon className="size-4" /> : <ViewColumnsIcon className="size-4" />}
             </button>
@@ -63,10 +63,53 @@ export default function Episodes({ items, streams }: EpisodesProps) {
         <Horizontal items={$items} streams={streams} />
       ) : (
         <>
-          {view === 'vertical' ? <Vertical items={$items} streams={streams} /> : null}
           {view === 'horizontal' ? <Horizontal items={$items} streams={streams} /> : null}
+          {view === 'vertical' ? <Vertical items={$items} streams={streams} /> : null}
         </>
       )}
+    </div>
+  );
+}
+
+function Horizontal({ items, streams }: EpisodesProps) {
+  return (
+    <div className="relative">
+      <div className="absolute top-0 bottom-0 -left-4 z-10 w-4 bg-gradient-to-r from-neutral-950 to-transparent max-md:hidden md:-left-8" />
+
+      <div className="no-scrollbar -mx-4 flex snap-x overflow-x-auto pt-1.25 md:-mx-8">
+        <div className="mr-4 snap-start scroll-mx-4 md:mr-8 md:scroll-mx-8" />
+        {items.map((item) => {
+          const stream = streams.find((stream) => stream.id.endsWith(item.id));
+          const isUpcoming = dayjs(item.released).isAfter(new Date());
+          return (
+            <Card
+              key={item.id}
+              to={stream ? stream.url : `${item.id}/watch`}
+              className="mr-4 w-[304px] shrink-0 snap-start scroll-mx-4 md:scroll-mx-8"
+              isUpcoming={isUpcoming}
+            >
+              <Thumbnail
+                className="h-[171px] w-[304px]"
+                src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
+                height={171}
+                width={304}
+                isUpcoming={isUpcoming}
+                progress={getStreamProgress(stream)}
+              />
+              <div className="mt-2">
+                <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
+                <Title>{item.title}</Title>
+                <p className="mt-0.5 line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
+                  {item.synopsis}
+                </p>
+              </div>
+            </Card>
+          );
+        })}
+        <div className="snap-start md:mr-4" />
+      </div>
+
+      <div className="absolute top-0 -right-4 bottom-0 z-10 w-4 bg-gradient-to-l from-neutral-950 to-transparent max-md:hidden md:-right-8" />
     </div>
   );
 }
@@ -103,49 +146,6 @@ function Vertical({ items, streams }: EpisodesProps) {
           </Card>
         );
       })}
-    </div>
-  );
-}
-
-function Horizontal({ items, streams }: EpisodesProps) {
-  return (
-    <div className="relative pt-1.25">
-      <div className="absolute top-0 bottom-0 -left-4 z-10 w-3 bg-gradient-to-r from-neutral-950 to-transparent md:-left-8" />
-
-      <div className="no-scrollbar -mx-4 -mt-1.25 flex snap-x overflow-x-auto px-2 pt-1.25 md:-mx-8">
-        <div className="mr-2 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6" />
-        {items.map((item) => {
-          const stream = streams.find((stream) => stream.id.endsWith(item.id));
-          const isUpcoming = dayjs(item.released).isAfter(new Date());
-          return (
-            <Card
-              key={item.id}
-              to={stream ? stream.url : `${item.id}/watch`}
-              className="mr-4 w-[304px] shrink-0 snap-start scroll-mx-4 md:mr-6 md:scroll-mx-6"
-              isUpcoming={isUpcoming}
-            >
-              <Thumbnail
-                className="h-[171px] w-[304px]"
-                src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
-                height={171}
-                width={304}
-                isUpcoming={isUpcoming}
-                progress={getStreamProgress(stream)}
-              />
-              <div className="mt-2">
-                <Episode isUpcoming={isUpcoming}>{item.episode}</Episode>
-                <Title>{item.title}</Title>
-                <p className="mt-0.5 line-clamp-3 text-sm text-neutral-400" title={item.synopsis}>
-                  {item.synopsis}
-                </p>
-              </div>
-            </Card>
-          );
-        })}
-        <div className="snap-start scroll-mx-4 md:scroll-mx-6" />
-      </div>
-
-      <div className="absolute top-0 -right-4 bottom-0 z-10 w-3 bg-gradient-to-l from-neutral-950 to-transparent md:-right-8" />
     </div>
   );
 }

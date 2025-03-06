@@ -33,7 +33,7 @@ export default function Streams() {
 
   return (
     <>
-      <div className="mt-3 flex shrink-0 justify-between gap-4 max-md:flex-col md:mt-6 md:h-9 md:items-center">
+      <div className="flex shrink-0 justify-between gap-4 max-md:flex-col md:h-9 md:items-center">
         <div>
           <div className="flex items-center gap-2">
             <BackButton className="-ml-2" to={`/${generateItemPathFromParams(omit(params, 'episodeId'))}`} />

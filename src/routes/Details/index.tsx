@@ -2,7 +2,7 @@ import { Fragment, useMemo, useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router';
 import { PlayIcon } from '@heroicons/react/20/solid';
 
-import Layout from 'components/layouts/Default';
+import Layout from 'components/Layout';
 import Hero from 'components/Hero';
 import BackButton from 'components/BackButton';
 import Progress from 'components/Progress';
@@ -30,23 +30,19 @@ export default function Details() {
   // TODO: improve loading by delaying the skeleton
 
   return isLoading || item ? (
-    <Layout>
+    <Layout className="max-md:pt-0">
       <Hero item={item} isLoading={isLoading}>
-        <BackButton to="/" className="absolute top-3 left-2 z-10 md:top-6 md:left-6" />
+        <BackButton to="/" className="absolute top-3 -left-2 md:top-6" />
 
         {isDesktop && item ? (
-          <PlayButton className="absolute right-8 bottom-8" item={item} lastWatched={lastWatched} />
+          <PlayButton className="absolute right-0 bottom-8" item={item} lastWatched={lastWatched} />
         ) : null}
       </Hero>
 
-      {!isDesktop && item ? (
-        <div className="px-4">
-          <PlayButton item={item} lastWatched={lastWatched} />
-        </div>
-      ) : null}
+      {!isDesktop && item ? <PlayButton item={item} lastWatched={lastWatched} /> : null}
 
       {item ? (
-        <div className="flex flex-col gap-6 px-4 md:gap-8 md:px-8">
+        <div className="flex flex-col gap-6 md:gap-8">
           <div className="flex items-center gap-2 text-neutral-500 md:text-lg">
             <Release>{item.release}</Release>
             {item.type === 'series' ? (

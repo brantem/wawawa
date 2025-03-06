@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 
-import Layout from 'components/layouts/Default';
+import Layout from 'components/Layout';
 import Hero from 'components/Hero';
 import Search from './compoents/Search';
 import Items from './compoents/Items';
@@ -26,7 +26,7 @@ export default function Home() {
   }, [movies.isLoading, series.isLoading]);
 
   return (
-    <Layout>
+    <Layout className="max-md:pt-0">
       <Hero item={hero} isLogoALink>
         <div className="relative flex h-full flex-col items-center justify-center gap-4">
           <h1 className="text-center text-2xl font-semibold md:text-3xl">What would you like to watch?</h1>
@@ -35,7 +35,7 @@ export default function Home() {
 
         <Link
           to="/settings"
-          className="absolute top-3 right-2 z-10 rounded-md stroke-white p-2 transition-colors hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950 md:top-6 md:right-6"
+          className="absolute top-3 -right-2 z-10 rounded-md stroke-white p-2 transition-colors hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950 md:top-6"
         >
           <Cog6ToothIcon className="size-5" />
         </Link>

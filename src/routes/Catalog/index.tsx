@@ -1,7 +1,7 @@
 import { useRef, useCallback } from 'react';
 import { useParams } from 'react-router';
 
-import Layout from 'components/layouts/Default';
+import Layout from 'components/Layout';
 import BackButton from 'components/BackButton';
 import Filter from './components/Filter';
 import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
@@ -52,8 +52,8 @@ export default function Catalog() {
   })();
 
   return (
-    <Layout className="px-4 md:px-8">
-      <div className="mt-3 flex shrink-0 justify-between gap-4 max-md:flex-col md:mt-6 md:h-9 md:items-center">
+    <Layout>
+      <div className="flex shrink-0 justify-between gap-4 max-md:flex-col md:h-9 md:items-center">
         <div className="flex items-center gap-2">
           <BackButton to="/" className="-ml-2" />
 
@@ -63,7 +63,7 @@ export default function Catalog() {
         <Filter />
       </div>
 
-      <div className="relative grid grid-cols-2 gap-6 max-md:gap-x-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="relative grid grid-cols-2 gap-6 max-md:gap-x-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {isLoading ? (
           [...new Array(n)].map((_, i) => <SkeletonItemCard key={i} />)
         ) : data.length ? (
