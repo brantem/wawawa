@@ -95,6 +95,7 @@ function Form({ value, onSubmit, onSuccess }: FormProps) {
           await onSubmit(url.trim());
           onSuccess();
         } catch (err) {
+          // TODO: this shouldn't be here
           let message = 'Failed to save';
           if (err instanceof Error) {
             switch (err.message) {

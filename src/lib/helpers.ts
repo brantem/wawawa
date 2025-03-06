@@ -19,6 +19,18 @@ export function isTypeValid(s: string) {
   }
 }
 
+export async function fetcher<T extends any = any>(url: string): Promise<T | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+
+    return res.json();
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
 export function metaToItem(meta: Meta) {
   const item: Record<string, any> = {
     ...pick(meta, ['id', 'type', 'runtime']),

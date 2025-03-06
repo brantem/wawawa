@@ -7,7 +7,7 @@ import Filter from './components/Filter';
 import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
 
 import { useCurrentBreakpoint } from 'lib/hooks';
-import { useData } from './hooks';
+import { useItems } from './hooks';
 import { getDisplayText } from './helpers';
 
 // TODO: cinemeta is a mess, try TMDB
@@ -18,7 +18,7 @@ export default function Catalog() {
   const currentBreakpoint = useCurrentBreakpoint();
   const params = useParams();
 
-  const { data, isLoading, hasMore, loadMore, isLoadingMore } = useData();
+  const { items, isLoading, hasMore, loadMore, isLoadingMore } = useItems();
 
   const bottomRef = useCallback(
     (node: HTMLDivElement) => {
@@ -66,8 +66,8 @@ export default function Catalog() {
       <div className="relative grid grid-cols-2 gap-6 max-md:gap-x-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {isLoading ? (
           [...new Array(n)].map((_, i) => <SkeletonItemCard key={i} />)
-        ) : data.length ? (
-          data.map((item) => <ItemCard key={item.id} item={{ ...item, url: `/${params.type}/${item.id}` }} />)
+        ) : items.length ? (
+          items.map((item) => <ItemCard key={item.id} item={{ ...item, url: `/${params.type}/${item.id}` }} />)
         ) : (
           <>
             <div className="mb-14 aspect-[2/3]" />
@@ -80,13 +80,13 @@ export default function Catalog() {
 
         {!isLoading && isLoadingMore
           ? (() => {
-              const remainder = data.length % n;
+              const remainder = items.length % n;
               return [...new Array(remainder === 0 ? n : n - remainder)].map((_, i) => <SkeletonItemCard key={i} />);
             })()
           : null}
       </div>
 
-      {!isLoading && data.length ? <div ref={bottomRef} /> : null}
+      {!isLoading && items.length ? <div ref={bottomRef} /> : null}
     </Layout>
   );
 }

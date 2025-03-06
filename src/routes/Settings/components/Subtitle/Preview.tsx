@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import * as constants from 'constants/settings';
 import { useWindowSize, useMediaQuery } from 'lib/hooks';
-import { useSubtitleStore } from './hooks';
+import { useSubtitle } from './hooks';
 
 // based on vidstack's default layout caption
 // https://github.com/vidstack/player/blob/d89a19dc83fc4143a6afe40dddbbf0d3f8644aa2/packages/vidstack/styles/player/default/captions.css
@@ -12,7 +12,7 @@ export default function Preview() {
 
   const isSmall = useMediaQuery('(width < 1056px)');
   const { height } = useWindowSize();
-  const subtitle = useSubtitleStore();
+  const subtitle = useSubtitle();
 
   const [useRealSize, setUseRealSize] = useState(false);
   const h = (isSmall || useRealSize ? height : containerRef.current?.clientHeight) || 0;

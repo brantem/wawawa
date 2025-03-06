@@ -4,7 +4,7 @@ import { MediaPlayer, MediaProvider, Track, Spinner } from '@vidstack/react';
 import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/layouts/default';
 
 import BackButton from 'components/BackButton';
-import NotFound from 'routes/NotFound';
+import NotFound from 'components/NotFound';
 
 import Storage from './storage';
 import { useSettings } from 'lib/hooks';

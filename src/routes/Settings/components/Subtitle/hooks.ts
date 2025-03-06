@@ -8,7 +8,7 @@ type SubtitleState = typeof constants.SUBTITLE & {
   set(name: keyof typeof constants.SUBTITLE, value: string): void;
 };
 
-export const useSubtitleStore = create<SubtitleState>()((set) => ({
+export const useSubtitle = create<SubtitleState>()((set) => ({
   ...Object.keys(constants.SUBTITLE).reduce(
     (subtitle, key) => ({
       ...subtitle,

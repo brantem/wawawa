@@ -7,7 +7,7 @@ import Preview from './Preview';
 
 import * as constants from 'constants/settings';
 import { useSettings } from 'lib/hooks';
-import { useSubtitleStore } from './hooks';
+import { useSubtitle } from './hooks';
 
 export default function Subtitle() {
   const settings = useSettings();
@@ -98,7 +98,7 @@ type FieldProps = BaseFieldProps & {
 };
 
 function Field({ label, name, children }: FieldProps) {
-  const props = useSubtitleStore((state) => ({
+  const props = useSubtitle((state) => ({
     value: state[name],
     onChange(value: string) {
       state.set(name, value);

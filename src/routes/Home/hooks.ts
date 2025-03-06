@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router';
 import useSWR from 'swr';
 
 import type { Meta } from 'types';
-import { metaToItem } from 'lib/helpers';
+import { fetcher, metaToItem } from 'lib/helpers';
 import { useDebounce, useSettings } from 'lib/hooks';
 
 export function useSearchValue() {
@@ -15,17 +15,8 @@ export function useItems(type: Meta['type']) {
 
   const settings = useSettings();
 
-  const { data, isLoading } = useSWR<{ metas: Meta[]; rank: number }>(`/${type}?search=${search}`, async () => {
-    try {
-      const res = await fetch(`${settings.catalog.url}/catalog/${type}/top${_search}.json`);
-      if (!res.ok) return { metas: [], rank: 0 };
-
-      return res.json();
-    } catch (err) {
-      console.error(err);
-      return { metas: [], rank: 0 };
-    }
-  });
+  const url = `${settings.catalog.url}/catalog/${type}/top${_search}.json`;
+  const { data, isLoading } = useSWR<{ metas: Meta[]; rank: number } | null>(url, fetcher);
 
   return {
     items: (data?.metas || []).map(metaToItem),

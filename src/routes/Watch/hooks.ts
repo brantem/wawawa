@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import useSWR from 'swr';
 
-import type { Stream, Subtitle } from './types';
+import type { Subtitle } from './types';
 import * as media from 'lib/media';
 import { useSettings, useItem } from 'lib/hooks';
-import { getStreamProgress, generateItemPathFromParams, generateItemIdFromParams } from 'lib/helpers';
+import { fetcher, getStreamProgress, generateItemPathFromParams, generateItemIdFromParams } from 'lib/helpers';
 import storage from 'lib/storage';
 import { getLabel } from './helpers';
 
@@ -44,21 +44,11 @@ export function useStreams() {
 
   const settings = useSettings();
 
-  const { data, isLoading } = useSWR<Raw[]>(`${generateItemPathFromParams(params)}:streams`, async () => {
-    try {
-      const res = await fetch(`${settings.stream.url}/stream/${params.type}/${generateItemIdFromParams(params)}.json`);
-      if (!res.ok) return [];
-
-      return (await res.json())?.streams || [];
-    } catch (err) {
-      console.error(err);
-      return [];
-    }
-  });
+  const url = `${settings.stream.url}/stream/${params.type}/${generateItemIdFromParams(params)}.json`;
+  const { data, isLoading } = useSWR<{ streams: Raw[] } | null>(url, fetcher);
 
   const groups = new Set<string>();
-  const streams: Stream[] = [];
-  (data || []).forEach((stream) => {
+  const streams = (data?.streams || []).map((stream) => {
     const group = stream.name.replace(/Torrentio\n/, '');
     groups.add(group);
 
@@ -72,7 +62,7 @@ export function useStreams() {
       filename = stream.behaviorHints.filename;
     }
 
-    streams.push({
+    return {
       id: btoa('url' in stream ? stream.url : `${stream.infoHash}/${stream.fileIdx}`),
       group,
       title: title.replace('\n', ' '),
@@ -80,8 +70,8 @@ export function useStreams() {
       seeders,
       size,
       origin,
-    });
-  }, []);
+    };
+  });
 
   return {
     groups: Array.from(groups),
@@ -147,16 +137,8 @@ export function useVideo() {
 
     src = `${settings.streaming.url}/${src}`;
 
-    let probe: Probe;
-    try {
-      const res = await fetch(`${settings.streaming.url}/hlsv2/probe?mediaURL=${encodeURIComponent(src)}`);
-      if (!res.ok) return { raw: null, src: null, duration: null };
-
-      probe = await res.json();
-    } catch (err) {
-      console.error(err);
-      return { raw: null, src: null, duration: null };
-    }
+    const probe = await fetcher<Probe>(`${settings.streaming.url}/hlsv2/probe?mediaURL=${encodeURIComponent(src)}`);
+    if (!probe) return { raw: null, src: null, duration: null };
 
     const capabilities = media.getCapabilities();
     const isFormatSupported = capabilities.formats.some((format) => probe.format.name.includes(format));
@@ -187,16 +169,8 @@ async function fetchOpensubHash(streamingServerUrl: string, streamId: string): P
     videoUrl = `${streamingServerUrl}/${streamId}`;
   }
 
-  try {
-    const url = `${streamingServerUrl}/opensubHash?videoUrl=${encodeURIComponent(videoUrl)}`;
-    const res = await fetch(url);
-    if (!res.ok) return { size: 0, hash: '' };
-
-    return (await res.json())?.result || { size: 0, hash: '' };
-  } catch (err) {
-    console.error(err);
-    return { size: 0, hash: '' };
-  }
+  const res = await fetcher(`${streamingServerUrl}/opensubHash?videoUrl=${encodeURIComponent(videoUrl)}`);
+  return res || { size: 0, hash: '' };
 }
 
 export function useSubtitles() {
@@ -228,23 +202,8 @@ export function useSubtitles() {
       searchParams.set('videoSize', size.toString());
       searchParams.set('videoHash', hash);
 
-      let raw: Raw[];
-      try {
-        const url = `${settings.subtitles.url}/subtitles/${generateItemPathFromParams(params)}/${searchParams.toString()}.json`;
-        const res = await fetch(url);
-        if (!res.ok) {
-          setSubtitles([]);
-          setIsLoading(false);
-          return;
-        }
-
-        raw = (await res.json())?.subtitles || [];
-      } catch (err) {
-        console.error(err);
-        setSubtitles([]);
-        setIsLoading(false);
-        return;
-      }
+      const url = `${settings.subtitles.url}/subtitles/${generateItemPathFromParams(params)}/${searchParams.toString()}.json`;
+      const { subtitles: raw } = (await fetcher<{ subtitles: Raw[] }>(url)) || { subtitles: [] };
 
       let m: Record<string, number> = {};
       setSubtitles(

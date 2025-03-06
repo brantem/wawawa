@@ -7,7 +7,7 @@ import Hero from 'components/Hero';
 import Search from './compoents/Search';
 import Items from './compoents/Items';
 
-import { Item } from 'types';
+import type { Item } from 'types';
 import { useSearchValue, useItems } from './hooks';
 import { cn } from 'lib/helpers';
 import { getRandomInt } from './helpers';

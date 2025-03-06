@@ -3,12 +3,15 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { useParams } from 'react-router';
 import pick from 'just-pick';
-import { createWithEqualityFn as create } from 'zustand/traditional';
-import { persist } from 'zustand/middleware';
+import { useStoreWithEqualityFn } from 'zustand/traditional';
 
-import type { Settings, Meta } from 'types';
-import * as constants from 'constants';
-import { metaToItem } from 'lib/helpers';
+import type { Meta } from 'types';
+import { fetcher, metaToItem } from 'lib/helpers';
+import settings, { type SettingsState } from 'lib/settings';
+
+export function useSettings<U = SettingsState>(selector: (state: SettingsState) => U = (state) => state as U) {
+  return useStoreWithEqualityFn(settings, selector);
+}
 
 export function useDebounce<T extends any>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -98,68 +101,6 @@ export function useCurrentBreakpoint() {
 
   return breakpoint;
 }
-
-async function fetcher<T extends any = any>(url: string): Promise<T | null> {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-
-    return res.json();
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-}
-
-type SettingsState = Settings & {
-  set(name: Extract<keyof Settings, 'language'>, value: string): void;
-  setUrl(name: Exclude<keyof Settings, 'language'>, url: string): Promise<void> | void;
-};
-
-export const useSettings = create<SettingsState>()(
-  persist(
-    (set, get) => ({
-      catalog: constants.CATALOG,
-      meta: constants.META,
-      stream: constants.STREAM,
-      subtitles: constants.SUBTITLES,
-      streaming: {
-        url: constants.STREAMING_URL,
-      },
-      language: 'eng',
-      set(name, value) {
-        set({ [name]: value });
-      },
-      async setUrl(name, url) {
-        if (url === get()[name].url) return;
-        if (name === 'streaming') return set({ streaming: { url } });
-
-        type Manifest = {
-          name: string;
-          version: string;
-          resources: (string | { name: string })[];
-        };
-
-        let manifest;
-        try {
-          manifest = await fetcher<Manifest>(`${url}/manifest.json`);
-        } catch (err) {
-          console.error(err);
-          throw err;
-        }
-        if (!manifest) throw new Error('MISSING_MANIFEST');
-
-        const isValid = manifest.resources.some((res) => (typeof res === 'string' ? res : res.name) === name);
-        if (!isValid) throw new Error('INVALID');
-
-        set({ [name]: { url, ...pick(manifest, ['name']) } });
-      },
-    }),
-    {
-      name: 'settings',
-    },
-  ),
-);
 
 export function useStreamingServer() {
   type Settings = {

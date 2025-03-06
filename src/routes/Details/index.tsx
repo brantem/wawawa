@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState, useEffect } from 'react';
+import { Fragment, useMemo } from 'react';
 import { Link, useParams } from 'react-router';
 import { PlayIcon } from '@heroicons/react/20/solid';
 
@@ -7,7 +7,7 @@ import Hero from 'components/Hero';
 import BackButton from 'components/BackButton';
 import Progress from 'components/Progress';
 import Episodes from './components/Episodes';
-import NotFound from 'routes/NotFound';
+import NotFound from 'components/NotFound';
 
 import type { Item } from 'types';
 import type { Stream } from 'types/storage';

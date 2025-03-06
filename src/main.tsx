@@ -2,12 +2,12 @@ import ReactDOM from 'react-dom/client';
 import { SWRConfig } from 'swr';
 import { BrowserRouter, Routes, Route, useParams, Outlet } from 'react-router';
 
-import NotFound from 'routes/NotFound';
 import Home from 'routes/Home';
 import Settings from 'routes/Settings';
 import Catalog from 'routes/Catalog';
 import Details from 'routes/Details';
 import Watch from 'routes/Watch';
+import NotFound from 'components/NotFound';
 
 import { isTypeValid } from 'lib/helpers';
 
@@ -25,7 +25,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   >
     <BrowserRouter>
       <Routes>
-        <Route path="*" element={<NotFound />} />
         <Route index element={<Home />} />
         <Route path="settings" element={<Settings />} />
         <Route path=":type" element={<Type />}>
@@ -35,6 +34,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path=":episodeId?/watch/:streamId?" element={<Watch />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   </SWRConfig>,

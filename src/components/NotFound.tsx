@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 
-export default function NotFound({
+export default function NotFoundSection({
   title = "Oops! This page doesn't exist",
   back = { url: '/', text: 'Take Me Back' },
 }) {

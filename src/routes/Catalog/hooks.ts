@@ -4,7 +4,7 @@ import useSWRInfinite from 'swr/infinite';
 
 import type { Meta } from 'types';
 import { useSettings } from 'lib/hooks';
-import { metaToItem } from 'lib/helpers';
+import { fetcher, metaToItem } from 'lib/helpers';
 
 export function useOptions() {
   type Catalog = {
@@ -17,25 +17,17 @@ export function useOptions() {
 
   const settings = useSettings();
 
-  const { data, isLoading } = useSWR<Catalog[]>('/cinemeta/manifest.json', async () => {
-    try {
-      const res = await fetch(`${settings.catalog.url}/manifest.json`);
-      if (!res.ok) return [];
-
-      return (await res.json())?.catalogs || [];
-    } catch (err) {
-      return [];
-    }
-  });
+  const { data, isLoading } = useSWR<{ catalogs: Catalog[] } | null>(`${settings.catalog.url}/manifest.json`, fetcher);
+  const catalogs = data?.catalogs || [];
 
   return {
     genres: (() => {
-      const catalog = (data || []).find((catalog) => catalog.id === 'top' && catalog.type === params.type);
+      const catalog = catalogs.find((catalog) => catalog.id === 'top' && catalog.type === params.type);
       if (!catalog) return [];
       return catalog.genres;
     })(),
     year: (() => {
-      const catalog = (data || []).find((catalog) => catalog.id === 'year' && catalog.type === params.type);
+      const catalog = catalogs.find((catalog) => catalog.id === 'year' && catalog.type === params.type);
       if (!catalog) return [];
       return catalog.genres;
     })(),
@@ -43,7 +35,7 @@ export function useOptions() {
   };
 }
 
-export function useData() {
+export function useItems() {
   const [searchParams] = useSearchParams();
   const params = useParams();
 
@@ -54,62 +46,50 @@ export function useData() {
   const settings = useSettings();
 
   let skip = 0;
-  const { data, isLoading, size, setSize } = useSWRInfinite<{ metas: Meta[]; hasMore: boolean }>(
-    (_, prev) => {
-      if (prev) {
-        if (!prev.hasMore) return null;
-        skip += prev.metas.length;
-      }
-      return `/${params.type}?sort=${sort}&genre=${genre}&year=${year}&skip=${skip}`;
-    },
-    async () => {
-      let url = `${settings.catalog.url}/catalog/${params.type}`;
+  const { data, isLoading, size, setSize } = useSWRInfinite<{ metas: Meta[]; hasMore: boolean } | null>((_, prev) => {
+    if (prev) {
+      if (!prev.hasMore) return null;
+      skip += prev.metas.length;
+    }
 
-      const searchParams = new URLSearchParams();
-      if (skip) searchParams.set('skip', skip.toString());
+    let url = `${settings.catalog.url}/catalog/${params.type}`;
 
-      switch (sort) {
-        case 'popularity':
-          if (genre) searchParams.set('genre', genre);
+    const searchParams = new URLSearchParams();
+    if (skip) searchParams.set('skip', skip.toString());
 
-          const params = searchParams.toString();
-          url += `/top${params ? `/${params}` : ''}.json`;
-          break;
-        default:
-          if (!year) return [];
+    switch (sort) {
+      case 'popularity':
+        if (genre) searchParams.set('genre', genre);
 
-          searchParams.set('genre', year);
-          url += `/year/${searchParams.toString()}.json`;
-          break;
-      }
+        const params = searchParams.toString();
+        url += `/top${params ? `/${params}` : ''}.json`;
+        break;
+      default:
+        if (!year) return [];
 
-      try {
-        const res = await fetch(url);
-        if (!res.ok) return { metas: [], hasMore: false };
+        searchParams.set('genre', year);
+        url += `/year/${searchParams.toString()}.json`;
+        break;
+    }
 
-        return res.json();
-      } catch (err) {
-        console.error(err);
-        return { metas: [], hasMore: false };
-      }
-    },
-  );
+    return url;
+  }, fetcher);
 
   let hasMore = true;
   const items = data
     ? data
         .reduce((metas, data) => {
-          hasMore = data.hasMore;
+          hasMore = data?.hasMore || false;
 
           // cinemeta is so bad, they repeat the last few metas on the next page
           const prevIds = metas.map((meta) => meta.id);
-          return [...metas, ...data.metas.filter((meta) => !prevIds.includes(meta.id))];
+          return [...metas, ...(data?.metas || []).filter((meta) => !prevIds.includes(meta.id))];
         }, [] as Meta[])
         .map(metaToItem)
     : [];
 
   return {
-    data: items,
+    items,
     isLoading,
 
     hasMore,
