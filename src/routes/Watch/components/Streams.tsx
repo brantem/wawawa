@@ -33,9 +33,14 @@ export default function Streams() {
   return (
     <>
       <div className="mt-3 flex shrink-0 justify-between gap-4 max-md:flex-col md:mt-6 md:h-9 md:items-center">
-        <div className="flex items-center gap-2">
-          <BackButton className="-ml-2" to={`/${generateItemPathFromParams(omit(params, 'episodeId'))}`} />
-          <h2 className="text-xl font-semibold">Select a Stream</h2>
+        <div>
+          <div className="flex items-center gap-2">
+            <BackButton className="-ml-2" to={`/${generateItemPathFromParams(omit(params, 'episodeId'))}`} />
+            <h2 className="flex items-center gap-2 text-xl font-semibold">
+              <span>Select a Stream</span>
+              <span className="text-neutral-500">{$streams.length}</span>
+            </h2>
+          </div>
         </div>
 
         {groups.length ? (
@@ -82,10 +87,10 @@ function SkeletonCard({ index }: { index: number }) {
     <div className="flex items-center rounded-md bg-neutral-900">
       <div className="min-w-15 px-3 text-center text-lg font-semibold tabular-nums">{index}</div>
 
-      <div className="flex-1 py-2">
-        <div className="h-5 w-sm animate-pulse rounded bg-neutral-800" />
+      <div className="flex-1 py-2 pr-2">
+        <div className="h-5 w-full max-w-sm animate-pulse rounded bg-neutral-800" />
         <div className="mt-2.5 flex items-center gap-2">
-          <div className="h-3.5 w-48 animate-pulse rounded bg-neutral-800" />
+          <div className="h-3.5 w-full max-w-48 animate-pulse rounded bg-neutral-800" />
         </div>
       </div>
     </div>
