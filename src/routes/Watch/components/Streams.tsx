@@ -23,12 +23,13 @@ export default function Streams() {
   const [group, setGroup] = useState('');
 
   const $stream = selected ? streams.find((stream) => stream.id === selected.id) : null;
-  const $streams = streams.filter((stream) => {
-    if (group) return stream.group === group;
-    if ($stream) return stream.id !== $stream.id && stream.group === $stream.group;
-    return stream.group === groups[0];
-  });
-  const isSelectedVisible = selected ? $streams.some((stream) => stream.id === selected.id) : false;
+  const _group = (() => {
+    if (group) return group;
+    if ($stream && groups.includes($stream.group)) return $stream.group;
+    return groups[0];
+  })();
+
+  const $streams = streams.filter((stream) => stream.group === _group);
 
   return (
     <>
@@ -38,17 +39,13 @@ export default function Streams() {
             <BackButton className="-ml-2" to={`/${generateItemPathFromParams(omit(params, 'episodeId'))}`} />
             <h2 className="flex items-center gap-2 text-xl font-semibold">
               <span>Select a Stream</span>
-              <span className="text-neutral-500">{$streams.length}</span>
+              {$streams.length ? <span className="text-neutral-500">{$streams.length}</span> : null}
             </h2>
           </div>
         </div>
 
         {groups.length ? (
-          <Select
-            className="md:w-36"
-            value={group ? group : $stream ? $stream.group : ''}
-            onChange={(e) => setGroup(e.target.value)}
-          >
+          <Select className="md:min-w-36" value={_group} onChange={(e) => setGroup(e.target.value)}>
             {groups.map((group) => (
               <option key={group} value={group}>
                 {getDisplayText(group)}
@@ -58,7 +55,7 @@ export default function Streams() {
         ) : null}
       </div>
 
-      {selected && $stream && !isSelectedVisible ? (
+      {selected && $stream ? (
         <div>
           <h4 className="mb-1 text-sm text-neutral-500">Last Used</h4>
           <Card index={0} stream={$stream} />
@@ -70,7 +67,10 @@ export default function Streams() {
         {isLoading || isSelectedLoading ? (
           [...new Array(5)].map((_, i) => <SkeletonCard key={i} index={i + 1} />)
         ) : $streams.length ? (
-          $streams.map((stream, i) => <Card key={stream.id} index={i + 1} stream={stream} />)
+          $streams.map((stream, i) => {
+            if ($stream && stream.id !== $stream.id && stream.group === $stream.group) return;
+            return <Card key={stream.id} index={i + 1} stream={stream} />;
+          })
         ) : (
           <div className="flex h-15 flex-col items-center justify-center">
             <h3 className="text-lg font-medium">No streams found</h3>
