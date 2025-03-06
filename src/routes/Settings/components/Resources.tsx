@@ -21,7 +21,7 @@ export default function Resources() {
       <div className="flex flex-col gap-4 md:pl-9">
         <Field label="Catalog" description="Display a collection of movies and series" name="catalog" />
         <Field label="Meta" description="Show details for movies and series" name="meta" />
-        <Field label="Streams" description="Provide the source to watch movies and series" name="streams" />
+        <Field label="Streams" description="Provide the source to watch movies and series" name="stream" />
         <Field label="Subtitles" description="Provide subtitles for movies and series" name="subtitles" />
       </div>
     </div>
@@ -31,7 +31,7 @@ export default function Resources() {
 type FieldProps = {
   label: string;
   description: string;
-  name: Extract<keyof Settings, 'catalog' | 'meta' | 'streams' | 'subtitles'>;
+  name: Extract<keyof Settings, 'catalog' | 'meta' | 'stream' | 'subtitles'>;
 };
 
 function Field({ name, ...props }: FieldProps) {

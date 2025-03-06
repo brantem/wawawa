@@ -7,7 +7,7 @@ export type Settings = {
     url: string;
     name: string;
   };
-  streams: {
+  stream: {
     url: string;
     name: string;
   };

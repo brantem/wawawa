@@ -121,7 +121,7 @@ export const useSettings = create<SettingsState>()(
     (set, get) => ({
       catalog: constants.CATALOG,
       meta: constants.META,
-      streams: constants.STREAMS,
+      stream: constants.STREAM,
       subtitles: constants.SUBTITLES,
       streaming: {
         url: constants.STREAMING_URL,

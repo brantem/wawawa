@@ -6,7 +6,7 @@ export const META = {
   url: 'https://v3-cinemeta.strem.io',
   name: 'Cinemeta',
 };
-export const STREAMS = {
+export const STREAM = {
   url: 'https://torrentio.strem.fun',
   name: 'Torrentio',
 };

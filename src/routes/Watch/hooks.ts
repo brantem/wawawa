@@ -46,7 +46,7 @@ export function useStreams() {
 
   const { data, isLoading } = useSWR<Raw[]>(`${generateItemPathFromParams(params)}:streams`, async () => {
     try {
-      const res = await fetch(`${settings.streams.url}/stream/${params.type}/${generateItemIdFromParams(params)}.json`);
+      const res = await fetch(`${settings.stream.url}/stream/${params.type}/${generateItemIdFromParams(params)}.json`);
       if (!res.ok) return [];
 
       return (await res.json())?.streams || [];
