@@ -20,8 +20,8 @@ import { getLastWatched, getTotalSeasons } from './helpers';
 
 export default function Details() {
   const isDesktop = useMediaQuery('(width >= 768px)');
-
   const params = useParams();
+
   const { item, isLoading } = useItem();
   const { streams } = useStreams();
 
@@ -46,7 +46,7 @@ export default function Details() {
       ) : null}
 
       {item ? (
-        <div className="flex flex-col gap-6 px-4 pb-4 md:gap-8 md:px-8 md:pb-8">
+        <div className="flex flex-col gap-6 px-4 md:gap-8 md:px-8">
           <div className="flex items-center gap-2 text-neutral-500 md:text-lg">
             <Release>{item.release}</Release>
             {item.type === 'series' ? (

@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router';
+import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 
 import Layout from 'components/layouts/Default';
 import Hero from 'components/Hero';
@@ -30,11 +32,16 @@ export default function Home() {
           <h1 className="text-center text-2xl font-semibold md:text-3xl">What would you like to watch?</h1>
           <Search />
         </div>
+
+        <Link
+          to="/settings"
+          className="absolute top-3 right-2 z-10 rounded-md stroke-white p-2 transition-colors hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950 md:top-6 md:right-6"
+        >
+          <Cog6ToothIcon className="size-5" />
+        </Link>
       </Hero>
 
-      <div
-        className={cn('flex flex-col gap-12 pb-4 md:gap-16 md:pb-8', series.rank > movies.rank && 'flex-col-reverse')}
-      >
+      <div className={cn('flex flex-col gap-12 md:gap-16', series.rank > movies.rank && 'flex-col-reverse')}>
         <Items
           type="movie"
           title={isSearching ? 'Movies' : 'Popular Movies'}

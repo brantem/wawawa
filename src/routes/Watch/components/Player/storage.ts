@@ -2,8 +2,9 @@ import type { MediaStorage } from '@vidstack/react';
 import omit from 'just-omit';
 import throttle from 'just-throttle';
 
-import storage from 'lib/storage';
 import type { Stream } from 'types/storage';
+import storage from 'lib/storage';
+import { generateItemIdFromParams } from 'lib/helpers';
 
 export default class Storage implements MediaStorage {
   #id: string;
@@ -18,8 +19,8 @@ export default class Storage implements MediaStorage {
     rate: 1,
   };
 
-  constructor(id: string, episodeId: string | null, url: string, duration: number | null) {
-    this.#id = `${id}${episodeId ? `:${episodeId}` : ''}`;
+  constructor(params: Record<string, string | undefined>, url: string, duration: number | null) {
+    this.#id = generateItemIdFromParams(params);
     this.#url = url;
     this.#data.duration = duration;
   }

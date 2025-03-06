@@ -5,11 +5,11 @@ import Streams from './components/Streams';
 import Player from './components/Player';
 
 export default function Watch() {
-  const { '*': streamId } = useParams();
+  const params = useParams();
 
   return (
     <>
-      {streamId ? (
+      {params.streamId ? (
         <Player />
       ) : (
         <Layout className="px-4 md:px-8">

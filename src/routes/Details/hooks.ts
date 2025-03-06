@@ -4,11 +4,11 @@ import useSWR from 'swr';
 import storage from 'lib/storage';
 
 export function useStreams() {
-  const { type, id } = useParams();
+  const params = useParams();
 
   const { data, isLoading } = useSWR(
-    `/${type}/${id}/streams/local`,
-    () => storage.getAll('streams', IDBKeyRange.bound(id, `${id}\uffff`, false, true) /* wtf is this */),
+    `${params.type}/${params.id}:local-streams`,
+    () => storage.getAll('streams', IDBKeyRange.bound(params.id, `${params.id}\uffff`, false, true) /* wtf is this */),
     { revalidateIfStale: true },
   );
 

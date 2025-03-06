@@ -16,8 +16,8 @@ import { getDisplayText } from './helpers';
 export default function Catalog() {
   const observerRef = useRef<IntersectionObserver>(null);
   const currentBreakpoint = useCurrentBreakpoint();
+  const params = useParams();
 
-  const { type } = useParams();
   const { data, isLoading, hasMore, loadMore, isLoadingMore } = useData();
 
   const bottomRef = useCallback(
@@ -57,17 +57,17 @@ export default function Catalog() {
         <div className="flex items-center gap-2">
           <BackButton to="/" className="-ml-2" />
 
-          <h1 className="text-xl font-semibold">{getDisplayText(type!)}</h1>
+          <h1 className="text-xl font-semibold">{getDisplayText(params.type!)}</h1>
         </div>
 
         <Filter />
       </div>
 
-      <div className="relative grid grid-cols-2 gap-6 pb-4 max-md:gap-x-4 md:grid-cols-3 md:pb-8 lg:grid-cols-4 xl:grid-cols-5">
+      <div className="relative grid grid-cols-2 gap-6 max-md:gap-x-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {isLoading ? (
           [...new Array(n)].map((_, i) => <SkeletonItemCard key={i} />)
         ) : data.length ? (
-          data.map((item) => <ItemCard key={item.id} item={{ ...item, url: `/${type}/${item.id}` }} />)
+          data.map((item) => <ItemCard key={item.id} item={{ ...item, url: `/${params.type}/${item.id}` }} />)
         ) : (
           <>
             <div className="mb-14 aspect-[2/3]" />

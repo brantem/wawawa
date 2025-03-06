@@ -6,26 +6,27 @@ import { DefaultVideoLayout, defaultLayoutIcons } from '@vidstack/react/player/l
 import BackButton from 'components/BackButton';
 import NotFound from 'routes/NotFound';
 
-import { useTitle, useVideo, useSubtitles } from '../../hooks';
-import { cn } from 'lib/helpers';
 import Storage from './storage';
+import { useSettings } from 'lib/hooks';
+import { useTitle, useVideo, useSubtitles } from '../../hooks';
+import { cn, generateItemPathFromParams } from 'lib/helpers';
 
 import '@vidstack/react/player/styles/default/theme.css';
 import '@vidstack/react/player/styles/default/layouts/video.css';
 
 export default function Player() {
-  const { type, id, episodeId } = useParams();
-  const loading = useLocation();
+  const params = useParams();
+  const location = useLocation();
 
   const title = useTitle();
   const video = useVideo();
 
   const storage = useMemo(() => {
     if (video.isLoading) return;
-    return new Storage(id!, episodeId || null, loading.pathname, video.duration);
+    return new Storage(params, location.pathname, video.duration);
   }, [video.duration]);
 
-  const backUrl = `/${type}/${id}${episodeId ? `/${episodeId}` : ''}/watch`;
+  const backUrl = `/${generateItemPathFromParams(params)}/watch`;
 
   return (
     <div className="group size-full overflow-hidden bg-black">
@@ -72,12 +73,13 @@ export default function Player() {
 }
 
 function Subtitles({ hasBuiltinSubtitle }: { hasBuiltinSubtitle: boolean }) {
+  const settings = useSettings();
   const { subtitles } = useSubtitles();
 
   let foundDefault = hasBuiltinSubtitle;
   return subtitles.map(({ id, url, ...subtitle }) => {
     let isDefault = false;
-    if (!foundDefault && subtitle.lang === 'eng' /* TODO */) {
+    if (!foundDefault && subtitle.lang === settings.language) {
       foundDefault = true;
       isDefault = true;
     }

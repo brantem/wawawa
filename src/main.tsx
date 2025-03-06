@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useParams, Outlet } from 'react-router';
 
 import NotFound from 'routes/NotFound';
 import Home from 'routes/Home';
+import Settings from 'routes/Settings';
 import Catalog from 'routes/Catalog';
 import Details from 'routes/Details';
 import Watch from 'routes/Watch';
@@ -15,6 +16,7 @@ import 'index.css';
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <SWRConfig
     value={{
+      loadingTimeout: 5000,
       errorRetryCount: 3,
       revalidateIfStale: false,
       revalidateOnFocus: false,
@@ -25,11 +27,12 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route index element={<Home />} />
+        <Route path="settings" element={<Settings />} />
         <Route path=":type" element={<Type />}>
           <Route index element={<Catalog />} />
           <Route path=":id">
             <Route index element={<Details />} />
-            <Route path=":episodeId?/watch/*" element={<Watch />} />
+            <Route path=":episodeId?/watch/:streamId?" element={<Watch />} />
           </Route>
         </Route>
       </Routes>
@@ -38,6 +41,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 );
 
 function Type() {
-  const { type } = useParams();
-  return isTypeValid(type!) ? <Outlet /> : <NotFound />;
+  const params = useParams();
+  return isTypeValid(params.type!) ? <Outlet /> : <NotFound />;
 }

@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 
 import type { Meta } from 'types';
-import * as constants from 'constants';
+import { useSettings } from 'lib/hooks';
 import { metaToItem } from 'lib/helpers';
 
 export function useOptions() {
@@ -13,11 +13,13 @@ export function useOptions() {
     genres: string[];
   };
 
-  const { type } = useParams();
+  const params = useParams();
+
+  const settings = useSettings();
 
   const { data, isLoading } = useSWR<Catalog[]>('/cinemeta/manifest.json', async () => {
     try {
-      const res = await fetch(`${constants.CINEMETA_BASE_URL}/manifest.json`);
+      const res = await fetch(`${settings.catalog.url}/manifest.json`);
       if (!res.ok) return [];
 
       return (await res.json())?.catalogs || [];
@@ -28,12 +30,12 @@ export function useOptions() {
 
   return {
     genres: (() => {
-      const catalog = (data || []).find((catalog) => catalog.id === 'top' && catalog.type === type);
+      const catalog = (data || []).find((catalog) => catalog.id === 'top' && catalog.type === params.type);
       if (!catalog) return [];
       return catalog.genres;
     })(),
     year: (() => {
-      const catalog = (data || []).find((catalog) => catalog.id === 'year' && catalog.type === type);
+      const catalog = (data || []).find((catalog) => catalog.id === 'year' && catalog.type === params.type);
       if (!catalog) return [];
       return catalog.genres;
     })(),
@@ -43,12 +45,13 @@ export function useOptions() {
 
 export function useData() {
   const [searchParams] = useSearchParams();
-
-  const { type } = useParams();
+  const params = useParams();
 
   const sort = searchParams.has('sort') ? searchParams.get('sort') : searchParams.has('year') ? null : 'popularity';
   const genre = searchParams.get('genre');
   const year = searchParams.get('year');
+
+  const settings = useSettings();
 
   let skip = 0;
   const { data, isLoading, size, setSize } = useSWRInfinite<{ metas: Meta[]; hasMore: boolean }>(
@@ -57,10 +60,10 @@ export function useData() {
         if (!prev.hasMore) return null;
         skip += prev.metas.length;
       }
-      return `/${type}?sort=${sort}&genre=${genre}&year=${year}&skip=${skip}`;
+      return `/${params.type}?sort=${sort}&genre=${genre}&year=${year}&skip=${skip}`;
     },
     async () => {
-      let url = `${constants.CINEMETA_BASE_URL}/catalog/${type}`;
+      let url = `${settings.catalog.url}/catalog/${params.type}`;
 
       const searchParams = new URLSearchParams();
       if (skip) searchParams.set('skip', skip.toString());

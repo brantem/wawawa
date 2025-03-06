@@ -10,6 +10,31 @@
   </head>
   <body class="h-full">
     <div id="root" class="h-full"></div>
+    <!-- https://miunau.com/posts/dynamic-text-contrast-in-css/ -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="0">
+      <defs>
+        <filter id="bwFilter" color-interpolation-filters="sRGB">
+          <!-- Convert to grayscale based on luminance -->
+          <feColorMatrix
+            type="matrix"
+            values="0.2126 0.7152 0.0722 0 0
+                          0.2126 0.7152 0.0722 0 0
+                          0.2126 0.7152 0.0722 0 0
+                          0 0 0 1 0"
+          />
+          <!-- Expand edges slightly to clean up any fringing -->
+          <feMorphology operator="dilate" radius="2" />
+          <!-- Apply the threshold to determine if the color should be black or white -->
+          <feComponentTransfer>
+            <feFuncR type="linear" slope="-255" intercept="128" />
+            <feFuncG type="linear" slope="-255" intercept="128" />
+            <feFuncB type="linear" slope="-255" intercept="128" />
+          </feComponentTransfer>
+          <!-- Composite step to clean up the result -->
+          <feComposite operator="in" in2="SourceGraphic" />
+        </filter>
+      </defs>
+    </svg>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

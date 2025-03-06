@@ -239,3 +239,121 @@ to use a subtitle:
   <Track src={`http://127.0.0.1:11470/subtitles.vtt?from=${subtitle.url}`} kind="subtitles" label={getDisplayText(subtitle.lang)} />
 </MediaProvider>
 ```
+
+### Settings
+
+```sh
+http://127.0.0.1:11470/settings
+
+# response
+{
+  "options": [
+    {
+      "id": "localAddonEnabled",
+      "label": "ENABLE_LOCAL_FILES_ADDON",
+      "type": "checkbox"
+    },
+    {
+      "id": "remoteHttps",
+      "label": "ENABLE_REMOTE_HTTPS_CONN",
+      "type": "select",
+      "class": "https",
+      "icon": true,
+      "selections": [
+        {
+          "name": "Disabled",
+          "val": ""
+        },
+        {
+          "name": "192.168.0.108",
+          "val": "192.168.0.108"
+        }
+      ]
+    },
+    {
+      "id": "cacheSize",
+      "label": "CACHING",
+      "type": "select",
+      "class": "caching",
+      "icon": true,
+      "selections": [
+        {
+          "name": "no caching",
+          "val": 0
+        },
+        {
+          "name": "2GB",
+          "val": 2147483648
+        },
+        {
+          "name": "5GB",
+          "val": 5368709120
+        },
+        {
+          "name": "10GB",
+          "val": 10737418240
+        },
+        {
+          "name": "∞",
+          "val": null
+        }
+      ]
+    }
+  ],
+  "values": {
+    "serverVersion": "4.20.8",
+    "appPath": "/Users/brantem/Library/Application Support/stremio-server",
+    "cacheRoot": "/Users/brantem/Library/Application Support/stremio-server",
+    "cacheSize": 2147483648,
+    "btMaxConnections": 55,
+    "btHandshakeTimeout": 20000,
+    "btRequestTimeout": 4000,
+    "btDownloadSpeedSoftLimit": 2621440,
+    "btDownloadSpeedHardLimit": 3670016,
+    "btMinPeersForStable": 5,
+    "remoteHttps": "",
+    "localAddonEnabled": false,
+    "transcodeHorsepower": 0.75,
+    "transcodeMaxBitRate": 0,
+    "transcodeConcurrency": 1,
+    "transcodeTrackConcurrency": 1,
+    "transcodeHardwareAccel": true,
+    "transcodeProfile": null,
+    "allTranscodeProfiles": ["videotoolbox"],
+    "transcodeMaxWidth": 1920,
+    "proxyStreamsEnabled": false
+  },
+  "baseUrl": "http://192.168.0.108:11470"
+}
+```
+
+to save settings do:
+
+```sh
+POST http://127.0.0.1:11470/settings
+{
+  "cacheSize": 2147483648,
+  "btMaxConnections": 55,
+  "btHandshakeTimeout": 20000,
+  "btRequestTimeout": 4000,
+  "btDownloadSpeedSoftLimit": 2621440,
+  "btDownloadSpeedHardLimit": 3670016,
+  "btMinPeersForStable": 5,
+  "remoteHttps": "",
+  "proxyStreamsEnabled": false,
+  "transcodeProfile": null
+}
+```
+
+#### Transcode Profile
+
+```sh
+http://127.0.0.1:11470/device-info
+
+# response
+{
+  "availableHardwareAccelerations": ["videotoolbox"]
+}
+```
+
+options: `availableInterfaces`

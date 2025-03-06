@@ -52,3 +52,11 @@ export function getStreamProgress(stream: Stream | null | undefined) {
   if (!stream.time || !stream.duration) return 0;
   return (stream.time / stream.duration) * 100;
 }
+
+export function generateItemPathFromParams(params: Record<string, string | undefined>) {
+  return `${params.type}/${params.id}${params.episodeId ? `/${params.episodeId}` : ''}`;
+}
+
+export function generateItemIdFromParams(params: Record<string, string | undefined>) {
+  return `${params.id}${params.episodeId ? `:${params.episodeId}` : ''}`;
+}

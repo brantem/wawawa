@@ -1,3 +1,27 @@
+export type Settings = {
+  catalog: {
+    url: string;
+    name: string;
+  };
+  meta: {
+    url: string;
+    name: string;
+  };
+  streams: {
+    url: string;
+    name: string;
+  };
+  subtitles: {
+    url: string;
+    name: string;
+  };
+  streaming: {
+    url: string;
+    // TODO
+  };
+  language: string;
+};
+
 type BaseMeta = {
   id: string;
   name: string;

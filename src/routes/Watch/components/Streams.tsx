@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { PlayIcon } from '@heroicons/react/24/solid';
+import omit from 'just-omit';
 
 import BackButton from 'components/BackButton';
 import Select from 'components/Select';
@@ -9,12 +10,13 @@ import Progress from 'components/Progress';
 import type { Stream } from '../types';
 import { useStreams, useSelectedStream } from '../hooks';
 import { getDisplayText } from '../helpers';
-import { cn } from 'lib/helpers';
+import { cn, generateItemPathFromParams } from 'lib/helpers';
 
 // TODO: if some some links are not url and streaming server is not availble, show baner
 
 export default function Streams() {
-  const { type, id } = useParams();
+  const params = useParams();
+
   const { groups, streams, isLoading } = useStreams();
   const { selected, isLoading: isSelectedLoading } = useSelectedStream();
 
@@ -32,7 +34,7 @@ export default function Streams() {
     <>
       <div className="mt-3 flex shrink-0 justify-between gap-4 max-md:flex-col md:mt-6 md:h-9 md:items-center">
         <div className="flex items-center gap-2">
-          <BackButton className="-ml-2" to={`/${type}/${id}`} />
+          <BackButton className="-ml-2" to={`/${generateItemPathFromParams(omit(params, 'episodeId'))}`} />
           <h2 className="text-xl font-semibold">Select a Stream</h2>
         </div>
 
@@ -59,7 +61,7 @@ export default function Streams() {
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-2 pb-4 md:pb-8">
+      <div className="flex flex-col gap-2">
         {isLoading || isSelectedLoading ? (
           [...new Array(5)].map((_, i) => <SkeletonCard key={i} index={i + 1} />)
         ) : $streams.length ? (
