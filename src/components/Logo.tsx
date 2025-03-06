@@ -61,7 +61,9 @@ export default function Logo({ src, title, className, ...props }: LogoProps) {
   }, [src]);
 
   return url === 'MISSING' ? (
-    <span className={cn('text-3xl font-semibold', className)}>{title}</span>
+    <span className={cn('text-4xl font-semibold text-balance max-md:w-full max-md:text-center', className)}>
+      {title}
+    </span>
   ) : url ? (
     <Img src={url} title={title} className={className} {...props} fetchPriority="high" />
   ) : null;
