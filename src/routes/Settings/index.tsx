@@ -7,6 +7,8 @@ import Subtitle from './components/Subtitle';
 export default function Settings() {
   return (
     <Layout className="max-md:gap-4">
+      <title>Settings - wawawa</title>
+
       <div className="flex shrink-0 items-center gap-2 md:h-9">
         <BackButton to="/" className="-ml-2" />
 

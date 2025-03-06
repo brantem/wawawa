@@ -53,6 +53,8 @@ export default function Catalog() {
 
   return (
     <Layout>
+      <title>{`${getDisplayText(params.type!)} - wawawa`}</title>
+
       <div className="flex shrink-0 justify-between gap-4 max-md:flex-col md:h-9 md:items-center">
         <div className="flex items-center gap-2">
           <BackButton to="/" className="-ml-2" />

@@ -31,6 +31,8 @@ export default function Details() {
 
   return isLoading || item ? (
     <Layout className="max-md:pt-0">
+      <title>{item?.title || 'wawawa'}</title>
+
       <Hero item={item} isLoading={isLoading}>
         <BackButton to="/" className="absolute top-3 -left-2 md:top-6" />
 
