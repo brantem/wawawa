@@ -170,7 +170,7 @@ async function fetchOpensubHash(streamingServerUrl: string, streamId: string): P
   }
 
   const res = await fetcher(`${streamingServerUrl}/opensubHash?videoUrl=${encodeURIComponent(videoUrl)}`);
-  return res || { size: 0, hash: '' };
+  return res?.result || { size: 0, hash: '' };
 }
 
 export function useSubtitles() {
@@ -202,7 +202,7 @@ export function useSubtitles() {
       searchParams.set('videoSize', size.toString());
       searchParams.set('videoHash', hash);
 
-      const url = `${settings.subtitles.url}/subtitles/${generateItemPathFromParams(params)}/${searchParams.toString()}.json`;
+      const url = `${settings.subtitles.url}/subtitles/${params.type}/${generateItemIdFromParams(params)}/${searchParams.toString()}.json`;
       const { subtitles: raw } = (await fetcher<{ subtitles: Raw[] }>(url)) || { subtitles: [] };
 
       let m: Record<string, number> = {};
