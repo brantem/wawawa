@@ -8,15 +8,17 @@ import Select from 'components/Select';
 import Progress from 'components/Progress';
 
 import type { Stream } from '../types';
+import { useSettings } from 'lib/hooks';
 import { useStreams, useSelectedStream } from '../hooks';
-import { getDisplayText } from '../helpers';
 import { cn, generateItemPathFromParams } from 'lib/helpers';
+import { getDisplayText } from '../helpers';
 
 // TODO: if some some links are not url and streaming server is not availble, show baner
 
 export default function Streams() {
   const params = useParams();
 
+  const settings = useSettings();
   const { groups, streams, isLoading } = useStreams();
   const { selected, isLoading: isSelectedLoading } = useSelectedStream();
 
@@ -44,15 +46,31 @@ export default function Streams() {
           </div>
         </div>
 
-        {groups.length ? (
-          <Select className="md:min-w-36" value={_group} onChange={(e) => setGroup(e.target.value)}>
+        <div className="flex">
+          <Select
+            className="w-1/2 truncate rounded-r-none focus:z-10 md:min-w-36"
+            value={settings.stream.url}
+            onChange={(e) => settings.set('stream', e.target.value)}
+          >
+            {settings.options.stream.map((option) => (
+              <option key={option.url} value={option.url}>
+                {option.name}
+              </option>
+            ))}
+          </Select>
+          <Select
+            className="-ml-px w-1/2 truncate rounded-l-none md:min-w-36"
+            value={_group}
+            onChange={(e) => setGroup(e.target.value)}
+            disabled={!groups.length}
+          >
             {groups.map((group) => (
               <option key={group} value={group}>
                 {getDisplayText(group)}
               </option>
             ))}
           </Select>
-        ) : null}
+        </div>
       </div>
 
       {selected && $stream ? (
