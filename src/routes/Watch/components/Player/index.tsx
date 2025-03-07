@@ -33,7 +33,7 @@ export default function Player() {
       {video.isLoading || video.src ? (
         <BackButton
           className={cn(
-            'fixed top-3 left-2 z-10',
+            'fixed top-2 left-2 z-10',
             video.src && 'opacity-0 transition-[color,opacity] group-hover:opacity-100',
           )}
           to={backUrl}

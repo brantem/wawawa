@@ -34,7 +34,7 @@ export default function Hero({ item, isLoading, isLogoALink, children }: HeroPro
   return (
     <div
       className={cn(
-        'relative -mx-4 h-[350px] shrink-0 overflow-hidden bg-neutral-900 px-4 min-[960px]:-mx-8 min-[960px]:px-8 md:-mt-6 md:h-[500px] lg:rounded-t-3xl',
+        'relative -mx-4 h-[350px] shrink-0 overflow-hidden bg-neutral-900 px-4 md:-mx-8 md:-mt-8 md:h-[500px] md:px-8 lg:-mt-6 lg:rounded-t-3xl',
         isLoading && 'animate-pulse',
       )}
     >

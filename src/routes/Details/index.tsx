@@ -34,7 +34,7 @@ export default function Details() {
       <title>{item?.title || 'wawawa'}</title>
 
       <Hero item={item} isLoading={isLoading}>
-        <BackButton to="/" className="absolute top-3 -left-2 md:top-6" />
+        <BackButton to="/" className="absolute top-2 -left-2 md:top-6" />
 
         {isDesktop && item ? (
           <PlayButton className="absolute right-0 bottom-8" item={item} lastWatched={lastWatched} />

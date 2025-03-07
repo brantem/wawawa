@@ -35,7 +35,7 @@ export default function Home() {
 
         <Link
           to="/settings"
-          className="absolute top-3 -right-2 z-10 rounded-md stroke-white p-2 transition-colors hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950 md:top-6"
+          className="absolute top-2 -right-2 z-10 rounded-md stroke-white p-2 transition-colors hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950 md:top-6"
         >
           <Cog6ToothIcon className="size-5" />
         </Link>

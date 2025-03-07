@@ -4,8 +4,13 @@ type LayoutProps = Pick<React.ComponentPropsWithoutRef<'div'>, 'className' | 'ch
 
 export default function Layout({ className, children }: LayoutProps) {
   return (
-    <div className="min-h-full px-4">
-      <div className={cn('mx-auto flex min-h-full max-w-[960px] flex-col gap-8 pt-3 pb-4 md:pb-8 lg:pt-14', className)}>
+    <div className="min-h-full px-4 md:px-8">
+      <div
+        className={cn(
+          'mx-auto flex min-h-full max-w-[960px] flex-col gap-8 pt-3 pb-4 md:pt-8 md:pb-8 lg:pt-14',
+          className,
+        )}
+      >
         {children}
       </div>
     </div>
