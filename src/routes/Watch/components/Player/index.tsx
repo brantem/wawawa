@@ -46,10 +46,11 @@ export default function Player() {
           <MediaPlayer
             title={title}
             src={{ src: video.src, type: 'video/mp4' }}
+            storage={storage}
             streamType="on-demand"
             autoPlay
             hideControlsOnMouseLeave
-            storage={storage}
+            crossOrigin
           >
             <MediaProvider>
               <Subtitles
@@ -81,16 +82,27 @@ export default function Player() {
 
 function Subtitles({ hasBuiltinSubtitle }: { hasBuiltinSubtitle: boolean }) {
   const settings = useSettings();
+  const server = useStreamingServer();
   const { subtitles } = useSubtitles();
 
   let foundDefault = hasBuiltinSubtitle;
-  return subtitles.map(({ id, url, ...subtitle }) => {
+  return subtitles.map(({ id, url, lang, ...subtitle }) => {
     let isDefault = false;
-    if (!foundDefault && subtitle.lang === settings.language) {
+    if (!foundDefault && lang === settings.language) {
       foundDefault = true;
       isDefault = true;
     }
 
-    return <Track id={id} key={id} src={url} kind="subtitles" {...subtitle} default={isDefault} />;
+    return (
+      <Track
+        id={id}
+        key={id}
+        kind="subtitles"
+        type={server.isOnline ? 'vtt' : 'srt'}
+        src={server.isOnline ? `${settings.streaming.url}/subtitles.vtt?from=${url}` : url}
+        {...subtitle}
+        default={isDefault}
+      />
+    );
   });
 }

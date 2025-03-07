@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import useSWR from 'swr';
+import pick from 'just-pick';
 
 import type { Subtitle } from './types';
 import * as media from 'lib/media';
@@ -178,7 +179,7 @@ export function useSubtitles() {
     id: string;
     url: string;
     SubEncoding: string;
-    lang: string;
+    lang: string; // ISO 639-2
   };
 
   const params = useParams();
@@ -214,10 +215,8 @@ export function useSubtitles() {
           .map((raw) => {
             m[raw.lang] = (m[raw.lang] || 0) + 1;
             return {
-              id: raw.id,
-              url: `${settings.streaming.url}/subtitles.vtt?from=${raw.url}`,
+              ...pick(raw, ['id', 'url', 'lang']),
               encoding: raw.SubEncoding.toLowerCase(),
-              lang: raw.lang, // ISO 639-2
               label: `${getLabel(raw.lang)} ${m[raw.lang]}`,
             };
           })
