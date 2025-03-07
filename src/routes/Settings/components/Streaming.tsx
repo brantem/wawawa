@@ -15,36 +15,48 @@ export default function Streaming() {
 
   return (
     <div className="flex flex-col gap-4 md:gap-8">
-      <div className="flex items-center gap-3 md:h-8">
-        <ServerIcon className="size-6" />
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <span>Streaming</span>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 md:h-8">
+          <ServerIcon className="size-6" />
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <span>Streaming</span>
+            <div className="flex items-center gap-1">
+              <div
+                className={cn(
+                  'size-2 rounded-full border',
+                  !server.isLoading && !server.isRevalidating
+                    ? server.settings
+                      ? 'border-green-400 bg-green-500'
+                      : 'border-red-400 bg-red-500'
+                    : 'animate-pulse border-neutral-400 bg-neutral-500',
+                )}
+              />
+              {!server.isLoading && !server.isRevalidating ? (
+                server.settings ? (
+                  <span className="text-neutral-500">{server.settings.values['serverVersion']}</span>
+                ) : (
+                  <span className="text-sm font-medium text-neutral-500">{server.settings ? 'Online' : 'Offline'}</span>
+                )
+              ) : null}
+            </div>
+          </h2>
+        </div>
 
-          <div className="flex items-center gap-1">
-            <div
-              className={cn(
-                'size-2 rounded-full border',
-                !server.isLoading && !server.isRevalidating
-                  ? server.settings
-                    ? 'border-green-400 bg-green-500'
-                    : 'border-red-400 bg-red-500'
-                  : 'animate-pulse border-neutral-400 bg-neutral-500',
-              )}
-            />
-            {!server.isLoading && !server.isRevalidating ? (
-              server.settings ? (
-                <span className="text-neutral-500">{server.settings.values['serverVersion']}</span>
-              ) : (
-                <span className="text-sm font-medium text-neutral-500">{server.settings ? 'Online' : 'Offline'}</span>
-              )
-            ) : null}
-          </div>
-        </h2>
+        {!server.isLoading && !server.settings && (
+          <a
+            href="https://www.stremio.com/download-service"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="rounded-full border border-neutral-800 bg-neutral-900 px-4 py-1 text-sm font-medium hover:border-neutral-700 hover:bg-neutral-800"
+          >
+            Install
+          </a>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 md:pl-9">
         <URLField
-          label="URL"
+          label="Server URL"
           value={settings.streaming.url}
           onChange={async (value) => {
             settings.set('streaming', value);

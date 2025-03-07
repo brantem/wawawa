@@ -7,7 +7,7 @@ import BackButton from 'components/BackButton';
 import NotFound from 'components/NotFound';
 
 import Storage from './storage';
-import { useSettings } from 'lib/hooks';
+import { useSettings, useStreamingServer } from 'lib/hooks';
 import { useTitle, useVideo, useSubtitles } from '../../hooks';
 import { cn, generateItemPathFromParams } from 'lib/helpers';
 
@@ -18,6 +18,7 @@ export default function Player() {
   const params = useParams();
   const location = useLocation();
 
+  const server = useStreamingServer();
   const title = useTitle();
   const video = useVideo();
 
@@ -57,8 +58,14 @@ export default function Player() {
             </MediaProvider>
             <DefaultVideoLayout icons={defaultLayoutIcons} download={false} noAudioGain />
           </MediaPlayer>
-        ) : (
+        ) : server.settings ? (
           <NotFound title="Hmm… This stream won't load" back={{ url: backUrl, text: 'Try another stream' }} />
+        ) : (
+          <NotFound
+            title="Streaming Server Unavailable"
+            description="This stream won't load as the server is unreachable. Ensure it's online"
+            back={{ url: '/settings#streaming', text: 'Configure Server' }}
+          />
         )
       ) : (
         <div className="vds-buffering-indicator" data-buffering>

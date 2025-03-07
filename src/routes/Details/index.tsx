@@ -6,6 +6,7 @@ import Layout from 'components/Layout';
 import Hero from 'components/Hero';
 import BackButton from 'components/BackButton';
 import Progress from 'components/Progress';
+import StreamingServerUnavailableBanner from 'components/StreamingServerUnavailableBanner';
 import Episodes from './components/Episodes';
 import NotFound from 'components/NotFound';
 
@@ -42,6 +43,8 @@ export default function Details() {
       </Hero>
 
       {!isDesktop && item ? <PlayButton item={item} lastWatched={lastWatched} /> : null}
+
+      <StreamingServerUnavailableBanner />
 
       {item ? (
         <div className="flex flex-col gap-6 md:gap-8">

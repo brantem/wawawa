@@ -5,6 +5,7 @@ import omit from 'just-omit';
 
 import BackButton from 'components/BackButton';
 import Select from 'components/Select';
+import StreamingServerUnavailableBanner from 'components/StreamingServerUnavailableBanner';
 import Progress from 'components/Progress';
 
 import type { Stream } from '../types';
@@ -12,8 +13,6 @@ import { useSettings } from 'lib/hooks';
 import { useStreams, useSelectedStream } from '../hooks';
 import { cn, generateItemPathFromParams } from 'lib/helpers';
 import { getDisplayText } from '../helpers';
-
-// TODO: if some some links are not url and streaming server is not availble, show baner
 
 export default function Streams() {
   const params = useParams();
@@ -72,6 +71,8 @@ export default function Streams() {
           </Select>
         </div>
       </div>
+
+      <StreamingServerUnavailableBanner />
 
       {selected && $stream ? (
         <div>

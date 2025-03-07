@@ -53,10 +53,10 @@ export default function Preview() {
       </div>
 
       {!isSmall ? (
-        <label className="mt-4 ml-9 flex items-center gap-2 text-sm">
+        <label className="mt-4 ml-9 flex w-fit items-center gap-2 text-sm">
           <input
             type="checkbox"
-            className="size-5 appearance-none rounded-sm border border-neutral-700 bg-neutral-950 text-white"
+            className="size-5 appearance-none rounded-sm border border-neutral-700 bg-neutral-950 text-white hover:border-neutral-600"
             checked={useRealSize}
             onChange={() => setUseRealSize((prev) => !prev)}
           />

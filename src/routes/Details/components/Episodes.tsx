@@ -41,7 +41,7 @@ export default function Episodes({ items, streams }: EpisodesProps) {
         <div className="flex gap-2">
           {isDesktop && (
             <button
-              className="flex size-8.5 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 hover:bg-neutral-800"
+              className="flex size-8.5 items-center justify-center rounded-full border border-neutral-800 bg-neutral-900 hover:border-neutral-700 hover:bg-neutral-800"
               onClick={() => setView((prev) => (prev === 'horizontal' ? 'vertical' : 'horizontal'))}
             >
               {view === 'vertical' ? <ListBulletIcon className="size-4" /> : <ViewColumnsIcon className="size-4" />}

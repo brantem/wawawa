@@ -39,7 +39,7 @@ export default function URLField({ label, description, options, value, onChange 
 
         <div className="flex items-center">
           <button
-            className="flex h-8.5 w-9.5 shrink-0 items-center justify-center rounded-l-full border border-neutral-600 bg-neutral-800 pl-1 hover:bg-neutral-700"
+            className="flex h-8.5 w-9.5 shrink-0 items-center justify-center rounded-l-full border border-neutral-700 bg-neutral-800 pl-1 hover:border-neutral-600 hover:bg-neutral-700"
             onClick={() => {
               if (isOpen) {
                 store.setId(null);

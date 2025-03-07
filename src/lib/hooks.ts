@@ -136,44 +136,45 @@ export function useStreamingServer() {
 
   const streamingUrl = useSettings((state) => state.streaming.url);
 
-  const { data, isLoading, mutate, isValidating } = useSWR('streaming-server', async () => {
-    const [settings, deviceInfo, networkInfo] = await Promise.all([
-      fetcher<Settings>(`${streamingUrl}/settings`),
-      fetcher<DeviceInfo>(`${streamingUrl}/device-info`),
-      fetcher<NetworkInfo>(`${streamingUrl}/network-info`),
-    ]);
-    return { settings, deviceInfo, networkInfo };
-  });
-  const { trigger, isMutating } = useSWRMutation(
-    'streaming-server',
-    async (_, { arg }: { arg: Record<string, any> }) => {
-      try {
-        const res = await fetch(`${streamingUrl}/settings`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...pick(data!.settings!.values || {}, [
-              'cacheSize',
-              'btMaxConnections',
-              'btHandshakeTimeout',
-              'btRequestTimeout',
-              'btDownloadSpeedSoftLimit',
-              'btDownloadSpeedHardLimit',
-              'btMinPeersForStable',
-              'remoteHttps',
-              'proxyStreamsEnabled',
-              'transcodeProfile',
-            ]),
-            ...arg,
-          }),
-        });
-        if (!res.ok) return Promise.reject();
-        if (!(await res.json())?.success) return Promise.reject();
-      } catch {
-        return Promise.reject();
-      }
+  const { data, isLoading, mutate, isValidating } = useSWR(
+    streamingUrl,
+    async () => {
+      const [settings, deviceInfo, networkInfo] = await Promise.all([
+        fetcher<Settings>(`${streamingUrl}/settings`),
+        fetcher<DeviceInfo>(`${streamingUrl}/device-info`),
+        fetcher<NetworkInfo>(`${streamingUrl}/network-info`),
+      ]);
+      return { settings, deviceInfo, networkInfo };
     },
+    { revalidateIfStale: true },
   );
+  const { trigger, isMutating } = useSWRMutation(streamingUrl, async (_, { arg }: { arg: Record<string, any> }) => {
+    try {
+      const res = await fetch(`${streamingUrl}/settings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...pick(data!.settings!.values || {}, [
+            'cacheSize',
+            'btMaxConnections',
+            'btHandshakeTimeout',
+            'btRequestTimeout',
+            'btDownloadSpeedSoftLimit',
+            'btDownloadSpeedHardLimit',
+            'btMinPeersForStable',
+            'remoteHttps',
+            'proxyStreamsEnabled',
+            'transcodeProfile',
+          ]),
+          ...arg,
+        }),
+      });
+      if (!res.ok) return Promise.reject();
+      if (!(await res.json())?.success) return Promise.reject();
+    } catch {
+      return Promise.reject();
+    }
+  });
 
   return {
     settings: data?.settings || null,

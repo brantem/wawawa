@@ -4,6 +4,7 @@ import { Cog6ToothIcon } from '@heroicons/react/20/solid';
 
 import Layout from 'components/Layout';
 import Hero from 'components/Hero';
+import StreamingServerUnavailableBanner from 'components/StreamingServerUnavailableBanner';
 import Search from './compoents/Search';
 import Items from './compoents/Items';
 
@@ -40,6 +41,8 @@ export default function Home() {
           <Cog6ToothIcon className="size-5" />
         </Link>
       </Hero>
+
+      <StreamingServerUnavailableBanner />
 
       <div className={cn('flex flex-col gap-12 md:gap-16', series.rank > movies.rank && 'flex-col-reverse')}>
         <Items
