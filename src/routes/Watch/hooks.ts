@@ -4,7 +4,7 @@ import useSWR from 'swr';
 
 import type { Subtitle } from './types';
 import * as media from 'lib/media';
-import { useSettings, useItem } from 'lib/hooks';
+import { useSettings, useStreamingServer, useItem } from 'lib/hooks';
 import { fetcher, getStreamProgress, generateItemPathFromParams, generateItemIdFromParams } from 'lib/helpers';
 import storage from 'lib/storage';
 import { getLabel } from './helpers';
@@ -185,6 +185,7 @@ export function useSubtitles() {
   const streamId = decodeURIComponent(params.streamId!);
 
   const settings = useSettings();
+  const server = useStreamingServer();
 
   const stream = useStreams().streams.find((stream) => stream.id === streamId)!;
 
@@ -195,12 +196,14 @@ export function useSubtitles() {
     if (!stream || subtitles !== null || isLoading) return;
     (async () => {
       setIsLoading(true);
-      const { size, hash } = await fetchOpensubHash(settings.streaming.url, atob(streamId));
+      const { size, hash } = server.isOnline
+        ? await fetchOpensubHash(settings.streaming.url, atob(streamId))
+        : { size: 0, hash: '' };
 
       const searchParams = new URLSearchParams();
       searchParams.set('filename', stream.filename);
-      searchParams.set('videoSize', size.toString());
-      searchParams.set('videoHash', hash);
+      if (size) searchParams.set('videoSize', size.toString());
+      if (hash) searchParams.set('videoHash', hash);
 
       const url = `${settings.subtitles.url}/subtitles/${params.type}/${generateItemIdFromParams(params)}/${searchParams.toString()}.json`;
       const { subtitles: raw } = (await fetcher<{ subtitles: Raw[] }>(url)) || { subtitles: [] };
