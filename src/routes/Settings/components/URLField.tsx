@@ -108,6 +108,7 @@ type OptionsProps = Required<Pick<URLFieldProps, 'options'>> & {
 };
 
 function Options({ options, value, onClick }: OptionsProps) {
+  // TODO: delete button
   return (
     <div className="flex flex-col gap-2">
       {options.map((option) => {
