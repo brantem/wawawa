@@ -1,22 +1,23 @@
 import { useId, useState } from 'react';
 import { createWithEqualityFn as create } from 'zustand/traditional';
-import { Cog6ToothIcon } from '@heroicons/react/16/solid';
-import { XMarkIcon } from '@heroicons/react/20/solid';
+import { PencilIcon } from '@heroicons/react/16/solid';
+import { CheckCircleIcon, PlusIcon, XMarkIcon } from '@heroicons/react/20/solid';
 
 import Spinner from 'components/Spinner';
+
+import type { SettingsOption } from 'types';
+import Select from 'components/Select';
+import { cn } from 'lib/helpers';
 
 type URLFieldProps = {
   label: string;
   description?: string;
-  value:
-    | string
-    | {
-        url: string;
-        name: string;
-      };
-} & Pick<FormProps, 'onSubmit'>;
+  options?: SettingsOption[];
+  value: string | SettingsOption;
+  onChange(url: string): Promise<void>;
+};
 
-export default function URLField({ label, description, value, onSubmit }: URLFieldProps) {
+export default function URLField({ label, description, options, value, onChange }: URLFieldProps) {
   const id = useId();
   const store = useStore();
 
@@ -25,7 +26,9 @@ export default function URLField({ label, description, value, onSubmit }: URLFie
   return (
     <div
       className={
-        isOpen ? '-mx-4 -mt-4 bg-gradient-to-t from-neutral-900 from-50% to-transparent p-4 md:rounded-b-md' : undefined
+        isOpen
+          ? '-mx-4 -mt-4 flex flex-col gap-4 bg-gradient-to-t from-neutral-900 from-[calc(100%-66px)] to-transparent p-4 md:rounded-b-md'
+          : undefined
       }
     >
       <div className="flex justify-between gap-2 max-md:flex-col md:h-8.5 md:items-center">
@@ -46,36 +49,97 @@ export default function URLField({ label, description, value, onSubmit }: URLFie
             }}
           >
             {!isOpen ? (
-              <Cog6ToothIcon className="size-4" />
+              options ? (
+                <PlusIcon className="size-5 stroke-white stroke-2" />
+              ) : (
+                <PencilIcon className="size-4" />
+              )
             ) : (
-              <XMarkIcon className="size-5 stroke-white stroke-[1.5]" />
+              <XMarkIcon className="size-5 stroke-white stroke-2" />
             )}
           </button>
 
-          <button className="relative flex w-full overflow-hidden rounded-r-full border border-neutral-200 bg-white text-center font-semibold text-neutral-950 hover:bg-neutral-100 md:w-56">
-            <div className="absolute top-0 bottom-0 left-0 w-4 bg-gradient-to-r from-white to-transparent" />
-            <span className="no-scrollbar inline-block min-w-full overflow-auto px-4 py-1 whitespace-nowrap">
+          {options ? (
+            <Select
+              className="w-full truncate rounded-l-none md:w-56"
+              value={typeof value === 'string' ? value : value.url}
+              onChange={(e) => onChange(e.target.value)}
+            >
+              {options.map((option) => (
+                <option key={option.url} value={option.url}>
+                  {option.name}
+                </option>
+              ))}
+            </Select>
+          ) : (
+            <button className="w-full truncate rounded-r-full border border-neutral-200 bg-white px-4 py-1 text-center font-semibold text-neutral-950 hover:bg-neutral-100 md:w-56">
               {typeof value === 'string' ? value : value.name}
-            </span>
-            <div className="absolute top-0 right-0 bottom-0 w-4 bg-gradient-to-l from-white to-transparent" />
-          </button>
+            </button>
+          )}
         </div>
       </div>
 
       {isOpen ? (
-        <Form
-          value={typeof value === 'string' ? value : value.url}
-          onSubmit={onSubmit}
-          onSuccess={() => store.setId(null)}
-        />
+        <>
+          {options ? (
+            <Options
+              options={options}
+              value={typeof value === 'string' ? value : value.url}
+              onClick={(url) => {
+                onChange(url);
+                store.setId(null);
+              }}
+            />
+          ) : null}
+          <Form
+            value={options ? '' : typeof value === 'string' ? value : value.url}
+            onSubmit={onChange}
+            onSuccess={() => store.setId(null)}
+          />
+        </>
       ) : null}
+    </div>
+  );
+}
+
+type OptionsProps = Required<Pick<URLFieldProps, 'options'>> & {
+  value: string;
+  onClick: (url: string) => void;
+};
+
+function Options({ options, value, onClick }: OptionsProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      {options.map((option) => {
+        const isSelected = option.url === value;
+        return (
+          <div
+            key={option.url}
+            className="flex gap-2 rounded-md border border-neutral-800 py-1 pl-3 text-sm"
+            onClick={() => onClick(option.url)}
+          >
+            <span className="w-32 shrink-0 truncate" title={option.name}>
+              {option.name}
+            </span>
+            <span
+              className={cn(
+                'no-scrollbar flex-1 overflow-auto whitespace-nowrap text-neutral-500',
+                !isSelected && 'pr-3',
+              )}
+            >
+              {option.url}
+            </span>
+            {isSelected ? <CheckCircleIcon className="mr-1 size-5" /> : null}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 type FormProps = {
   value: string;
-  onSubmit(value: string): Promise<void>;
+  onSubmit(url: string): Promise<void>;
   onSuccess(): void;
 };
 
@@ -86,7 +150,6 @@ function Form({ value, onSubmit, onSuccess }: FormProps) {
 
   return (
     <form
-      className="mt-2 md:mt-4"
       onSubmit={async (e) => {
         e.preventDefault();
 
@@ -115,7 +178,10 @@ function Form({ value, onSubmit, onSuccess }: FormProps) {
       <div className="flex w-full">
         <input
           type="url"
-          className="flex-1 rounded-l-md border border-neutral-700 bg-neutral-800 px-3 py-1 text-white invalid:border-red-500 focus:z-10 disabled:text-neutral-500"
+          className={cn(
+            'flex-1 rounded-l-md border border-neutral-700 bg-neutral-800 px-3 py-1 text-white focus:z-10 disabled:text-neutral-500',
+            url && 'invalid:border-red-500',
+          )}
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           disabled={isLoading}

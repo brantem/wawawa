@@ -29,7 +29,7 @@ export default function Subtitle() {
           <Select
             className="w-full md:w-56"
             value={settings.language}
-            onChange={(e) => settings.set('language', e.target.value)}
+            onChange={(e) => settings.setLanguage(e.target.value)}
           >
             {langs.all().map((lang) => (
               <option key={lang[2]} value={lang[2]}>

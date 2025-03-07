@@ -7,13 +7,20 @@ import * as constants from 'constants';
 import { fetcher } from 'lib/helpers';
 
 export type SettingsState = Settings & {
-  set(name: Extract<keyof Settings, 'language'>, value: string): void;
-  setUrl(name: Exclude<keyof Settings, 'language'>, url: string): Promise<void> | void;
+  set(name: Exclude<keyof Settings, 'options' | 'language'>, url: string): Promise<void> | void;
+
+  setLanguage(language: string): void;
 };
 
 export default createStore<SettingsState>()(
   persist(
     (set, get) => ({
+      options: {
+        catalog: [constants.CATALOG],
+        meta: [constants.META],
+        stream: [constants.STREAM],
+        subtitles: [constants.SUBTITLES],
+      },
       catalog: constants.CATALOG,
       meta: constants.META,
       stream: constants.STREAM,
@@ -21,13 +28,12 @@ export default createStore<SettingsState>()(
       streaming: {
         url: constants.STREAMING_URL,
       },
-      language: 'eng',
-      set(name, value) {
-        set({ [name]: value });
-      },
-      async setUrl(name, url) {
+      async set(name, url) {
         if (url === get()[name].url) return;
         if (name === 'streaming') return set({ streaming: { url } });
+
+        let option = get().options[name].find((option) => option.url === url);
+        if (option) return set({ [name]: option });
 
         type Manifest = {
           name: string;
@@ -41,7 +47,19 @@ export default createStore<SettingsState>()(
         const isValid = manifest.resources.some((res) => (typeof res === 'string' ? res : res.name) === name);
         if (!isValid) throw new Error('INVALID');
 
-        set({ [name]: { url, ...pick(manifest, ['name']) } });
+        option = { url, ...pick(manifest, ['name']) };
+        set((prev) => ({
+          options: {
+            ...prev.options,
+            [name]: [...prev.options[name], option],
+          },
+          [name]: option,
+        }));
+      },
+
+      language: 'eng',
+      setLanguage(language) {
+        set({ language });
       },
     }),
     {

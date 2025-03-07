@@ -1,4 +1,15 @@
+export type SettingsOption = {
+  url: string;
+  name: string;
+};
+
 export type Settings = {
+  options: {
+    catalog: SettingsOption[];
+    meta: SettingsOption[];
+    stream: SettingsOption[];
+    subtitles: SettingsOption[];
+  };
   catalog: {
     url: string;
     name: string;

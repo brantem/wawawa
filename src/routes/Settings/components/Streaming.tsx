@@ -46,8 +46,8 @@ export default function Streaming() {
         <URLField
           label="URL"
           value={settings.streaming.url}
-          onSubmit={async (value) => {
-            settings.setUrl('streaming', value);
+          onChange={async (value) => {
+            settings.set('streaming', value);
             if (settings.streaming.url !== value) server.revalidate();
           }}
         />
