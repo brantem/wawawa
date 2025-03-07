@@ -25,7 +25,7 @@ export default function Streaming() {
                 className={cn(
                   'size-2 rounded-full border',
                   !server.isLoading && !server.isRevalidating
-                    ? server.settings
+                    ? server.isOnline
                       ? 'border-green-400 bg-green-500'
                       : 'border-red-400 bg-red-500'
                     : 'animate-pulse border-neutral-400 bg-neutral-500',
@@ -35,14 +35,14 @@ export default function Streaming() {
                 server.settings ? (
                   <span className="text-neutral-500">{server.settings.values['serverVersion']}</span>
                 ) : (
-                  <span className="text-sm font-medium text-neutral-500">{server.settings ? 'Online' : 'Offline'}</span>
+                  <span className="text-sm font-medium text-neutral-500">Offline</span>
                 )
               ) : null}
             </div>
           </h2>
         </div>
 
-        {!server.isLoading && !server.settings && (
+        {!server.isLoading && !server.isOnline && (
           <a
             href="https://www.stremio.com/download-service"
             rel="noopener noreferrer"
@@ -77,7 +77,7 @@ export default function Streaming() {
               }
               server.update({ cacheSize });
             }}
-            disabled={server.isLoading || !server.settings}
+            disabled={server.isLoading || !server.isOnline}
           >
             {server.settings ? (
               server.settings.options
@@ -100,7 +100,7 @@ export default function Streaming() {
             className="min-w-56"
             value={server.settings?.values['transcodeProfile'] ?? ''}
             onChange={(e) => server.update({ transcodeProfile: e.target.value === 'null' ? null : e.target.value })}
-            disabled={server.isLoading || !server.settings}
+            disabled={server.isLoading || !server.isOnline}
           >
             <option value="null">Disabled</option>
             {server.deviceInfo?.availableHardwareAccelerations.map((value) => (
@@ -162,7 +162,7 @@ function TorrentProfile() {
             server.update(constants.STREAMING_PROFILE.find((option) => option[1] === e.target.value)![0]);
           }
         }}
-        disabled={server.isLoading || !server.settings}
+        disabled={server.isLoading || !server.isOnline}
       >
         {constants.STREAMING_PROFILE.map(([_, label]) => (
           <option key={label} value={label}>

@@ -58,7 +58,7 @@ export default function Player() {
             </MediaProvider>
             <DefaultVideoLayout icons={defaultLayoutIcons} download={false} noAudioGain />
           </MediaPlayer>
-        ) : server.settings ? (
+        ) : server.isOnline ? (
           <NotFound title="Hmm… This stream won't load" back={{ url: backUrl, text: 'Try another stream' }} />
         ) : (
           <NotFound

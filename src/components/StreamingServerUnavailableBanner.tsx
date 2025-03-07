@@ -9,7 +9,7 @@ export default function StreamingServerUnavailableBanner() {
 
   const { isHidden, onClose } = useStore();
 
-  if (isHidden || server.isLoading || server.settings) return null;
+  if (isHidden || server.isLoading || server.isOnline) return null;
 
   return (
     <div className="relative flex justify-between gap-2 border-l-4 border-yellow-500 py-1 pl-3 max-sm:flex-col sm:items-center sm:gap-4">

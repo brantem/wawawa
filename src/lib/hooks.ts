@@ -176,10 +176,12 @@ export function useStreamingServer() {
     }
   });
 
+  const settings = data?.settings || null;
   return {
-    settings: data?.settings || null,
+    settings,
     deviceInfo: data?.deviceInfo || null,
     networkInfo: data?.networkInfo || null,
+    isOnline: !!settings,
     isLoading,
 
     revalidate() {
