@@ -1,15 +1,13 @@
-import { useState } from 'react';
 import { Link } from 'react-router';
 import { XMarkIcon } from '@heroicons/react/20/solid';
+import { createWithEqualityFn as create } from 'zustand/traditional';
 
 import { useStreamingServer } from 'lib/hooks';
-import { cn } from 'lib/helpers';
 
 export default function StreamingServerUnavailableBanner() {
   const server = useStreamingServer();
 
-  // TODO: persist?
-  const [isHidden, setIsHidden] = useState(false);
+  const { isHidden, onClose } = useStore();
 
   if (isHidden || server.isLoading || server.settings) return null;
 
@@ -36,22 +34,34 @@ export default function StreamingServerUnavailableBanner() {
           Install
         </a>
 
-        <CloseButton className="top-px right-0.5 -mr-1.25 max-sm:absolute" onClick={() => setIsHidden(true)} />
+        <button
+          className="top-px right-0.5 -mr-1.25 flex size-7.5 items-center justify-center rounded-full stroke-white hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950 max-sm:absolute"
+          onClick={onClose}
+        >
+          <XMarkIcon className="size-5" />
+        </button>
       </div>
     </div>
   );
 }
 
-function CloseButton({ className, onClick }: { className: string; onClick(): void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'flex size-7.5 items-center justify-center rounded-full stroke-white hover:bg-white hover:stroke-neutral-950 hover:text-neutral-950',
-        className,
-      )}
-    >
-      <XMarkIcon className="size-5" />
-    </button>
-  );
-}
+const KEY = 'streaming_server_unavailable_banner_dismissed';
+const EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+
+type State = {
+  isHidden: boolean;
+  onClose(): void;
+};
+
+const useStore = create<State>((set) => {
+  const data = localStorage.getItem(KEY);
+  const expiration = data ? JSON.parse(data) : 0;
+  return {
+    isHidden: expiration && Date.now() <= expiration,
+    onClose: () => {
+      const expiration = Date.now() + EXPIRATION_TIME;
+      localStorage.setItem(KEY, JSON.stringify(expiration));
+      set({ isHidden: true });
+    },
+  };
+});
