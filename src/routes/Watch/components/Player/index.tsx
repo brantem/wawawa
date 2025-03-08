@@ -98,8 +98,8 @@ function Subtitles({ hasBuiltinSubtitle }: { hasBuiltinSubtitle: boolean }) {
         id={id}
         key={id}
         kind="subtitles"
-        type={server.isOnline ? 'vtt' : 'srt'}
-        src={server.isOnline ? `${settings.streaming.url}/subtitles.vtt?from=${url}` : url}
+        type="srt"
+        src={server.isOnline ? `${settings.streaming.url}/subtitles.srt?from=${url}` : url}
         {...subtitle}
         default={isDefault}
       />
