@@ -125,14 +125,11 @@ function Card({ index, stream }: CardProps) {
   const settings = useSettings();
   const device = useDevice();
 
-  const to = (() => {
-    if (!settings.externalPlayer) return stream.id;
-
+  let to = encodeURIComponent(stream.id);
+  if (settings.externalPlayer) {
     const m = generateExternalPlayerUrl(settings.externalPlayer, stream.url);
-    if (!m) return stream.id;
-
-    return m[device.name] || stream.id;
-  })();
+    if (m) to = m[device.name] || to;
+  }
 
   return (
     <Link
