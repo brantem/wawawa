@@ -86,10 +86,7 @@ export default function Streams() {
         {isLoading || isSelectedLoading ? (
           [...new Array(5)].map((_, i) => <SkeletonCard key={i} index={i + 1} />)
         ) : $streams.length ? (
-          $streams.map((stream, i) => {
-            if ($stream && stream.id !== $stream.id && stream.group === $stream.group) return;
-            return <Card key={stream.id} index={i + 1} stream={stream} />;
-          })
+          $streams.map((stream, i) => <Card key={stream.id} index={i + 1} stream={stream} />)
         ) : (
           <div className="flex h-15 flex-col items-center justify-center">
             <h3 className="text-lg font-medium">No streams found</h3>
