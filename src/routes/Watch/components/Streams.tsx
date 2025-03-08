@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { PlayIcon } from '@heroicons/react/24/solid';
+import { PlayIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
 import omit from 'just-omit';
 
 import BackButton from 'components/BackButton';
@@ -159,7 +159,11 @@ function Card({ index, stream }: CardProps) {
       </div>
 
       <div className="hidden aspect-square size-15 h-full items-center justify-center opacity-0 group-hover:opacity-100 md:flex">
-        <PlayIcon className="size-6" />
+        {settings.externalPlayer ? (
+          <ArrowTopRightOnSquareIcon className="size-6 stroke-neutral-900" />
+        ) : (
+          <PlayIcon className="size-6" />
+        )}
       </div>
     </Link>
   );
