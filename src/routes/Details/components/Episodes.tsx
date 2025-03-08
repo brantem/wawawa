@@ -20,11 +20,11 @@ type EpisodesProps = {
   streams: Stream[];
 };
 
-export default function Episodes({ items, streams }: EpisodesProps) {
+export default function Episodes({ defaultSeason = 3, items, streams }: EpisodesProps & { defaultSeason: number }) {
   const isDesktop = useMediaQuery('(width >= 768px)');
 
   const [view, setView] = useState<'horizontal' | 'vertical'>('horizontal');
-  const [season, setSeason] = useState(1);
+  const [season, setSeason] = useState(() => defaultSeason);
 
   const seasons = getTotalSeasons(items);
   const hasSpecial = items.some((item) => item.season === 0);

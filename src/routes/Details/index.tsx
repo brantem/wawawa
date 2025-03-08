@@ -15,7 +15,7 @@ import type { Stream } from 'types/storage';
 import { useMediaQuery, useItem } from 'lib/hooks';
 import { useStreams } from './hooks';
 import { getStreamProgress } from 'lib/helpers';
-import { getLastWatched, getTotalSeasons } from './helpers';
+import { getTotalSeasons, parseStreamId, getLastWatched } from './helpers';
 
 // TODO: list of other movies/series?
 
@@ -100,7 +100,13 @@ export default function Details() {
 
           <p className="text-neutral-400 md:text-lg">{item.synopsis}</p>
 
-          {item.type === 'series' ? <Episodes items={item.items} streams={streams} /> : null}
+          {item.type === 'series' ? (
+            <Episodes
+              defaultSeason={lastWatched ? parseStreamId(lastWatched.id).season : 1}
+              items={item.items}
+              streams={streams}
+            />
+          ) : null}
         </div>
       ) : null}
     </Layout>
@@ -121,7 +127,7 @@ function PlayButton({ className, item, lastWatched }: { className?: string; item
     if (item.type === 'movie') {
       text = 'Resume';
     } else {
-      const [_, season, episode] = lastWatched.id.match(/.+:(\d+):(\d+)/)!;
+      const { season, episode } = parseStreamId(lastWatched.id);
       text = `Resume S${season}:E${episode}`;
     }
   } else {
