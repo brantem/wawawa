@@ -7,8 +7,12 @@ import * as constants from 'constants';
 import { fetcher } from 'lib/helpers';
 
 export type SettingsState = Settings & {
-  set(name: Exclude<keyof Settings, 'options' | 'language'>, url: string): Promise<void> | void;
+  set(
+    name: Extract<keyof Settings, 'catalog' | 'meta' | 'stream' | 'subtitles' | 'streaming'>,
+    url: string,
+  ): Promise<void> | void;
 
+  setExternalPlayer(externalPlayer: string | null): void;
   setLanguage(language: string): void;
 };
 
@@ -55,6 +59,11 @@ export default createStore<SettingsState>()(
           },
           [name]: option,
         }));
+      },
+
+      externalPlayer: null,
+      setExternalPlayer(externalPlayer) {
+        set({ externalPlayer });
       },
 
       language: 'eng',

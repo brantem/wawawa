@@ -72,3 +72,56 @@ export function generateItemPathFromParams(params: Record<string, string | undef
 export function generateItemIdFromParams(params: Record<string, string | undefined>) {
   return `${params.id}${params.episodeId ? `:${params.episodeId}` : ''}`;
 }
+
+const httpRegex = /https?:\/\//;
+export function generateExternalPlayerUrl(type: string, url: string): Record<string, string> | null {
+  switch (type) {
+    case 'choose':
+      return {
+        android: `${url.replace(httpRegex, 'intent://')}#Intent;type=video/any;scheme=https;end`,
+      };
+    case 'vlc':
+      return {
+        ios: `vlc-x-callback://x-callback-url/stream?url=${url}`,
+        visionos: `vlc-x-callback://x-callback-url/stream?url=${url}`,
+        android: `${url.replace(httpRegex, 'intent://')}#Intent;package=org.videolan.vlc;type=video;scheme=https;end`,
+      };
+    case 'mxplayer':
+      return {
+        android: `${url.replace(httpRegex, 'intent://')}#Intent;package=com.mxtech.videoplayer.ad;type=video;scheme=https;end`,
+      };
+    case 'justplayer':
+      return {
+        android: `${url.replace(httpRegex, 'intent://')}#Intent;package=com.brouken.player;type=video;scheme=https;end`,
+      };
+    case 'outplayer':
+      return {
+        ios: url.replace(httpRegex, 'outplayer://'),
+        visionos: url.replace(httpRegex, 'outplayer://'),
+      };
+    case 'iina':
+      return {
+        macos: `iina://weblink?url=${url}`,
+      };
+    case 'mpv':
+      return {
+        macos: `mpv://${url}`,
+      };
+    case 'moonplayer':
+      return {
+        macos: `moonplayer://open?url=${url}`,
+      };
+    case 'm3u': {
+      const playlist = `data:application/octet-stream;charset=utf-8;base64,${btoa(`#EXTM3U\n#EXTINF:0\n${url}`)}`;
+      return {
+        linux: playlist,
+        windows: playlist,
+        macos: playlist,
+        android: playlist,
+        ios: playlist,
+      };
+    }
+    default:
+      return null;
+  }
+}

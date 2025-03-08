@@ -67,10 +67,10 @@ export default function Streaming() {
         <Field label="Cache Size">
           <Select
             className="min-w-56"
-            value={server.settings?.values['cacheSize']}
+            value={server.settings?.values['cacheSize'] || ''}
             onChange={(e) => {
               let cacheSize;
-              if (e.target.value === 'null') {
+              if (e.target.value === '') {
                 cacheSize = null;
               } else {
                 cacheSize = parseInt(e.target.value);
@@ -83,7 +83,7 @@ export default function Streaming() {
               server.settings.options
                 .find((option) => option.id === 'cacheSize')!
                 .selections.map((selection) => (
-                  <option key={selection.val} value={selection.val === null ? 'null' : selection.val.toString()}>
+                  <option key={selection.val} value={selection.val === null ? '' : selection.val.toString()}>
                     {getDisplayText(selection.name)}
                   </option>
                 ))

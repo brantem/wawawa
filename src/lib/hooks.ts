@@ -124,7 +124,7 @@ export function useStreamingServer() {
           id: 'cacheSize';
           selections: {
             name: string;
-            val: string;
+            val: number;
           }[];
         }
     )[];

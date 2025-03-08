@@ -2,6 +2,7 @@ import Layout from 'components/Layout';
 import BackButton from 'components/BackButton';
 import Resources from './components/Resources';
 import Streaming from './components/Streaming';
+import Player from './components/Player';
 import Subtitle from './components/Subtitle';
 
 export default function Settings() {
@@ -18,6 +19,7 @@ export default function Settings() {
       <div className="flex flex-col gap-16">
         <Resources />
         <Streaming />
+        <Player />
         <Subtitle />
       </div>
     </Layout>

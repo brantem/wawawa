@@ -26,10 +26,13 @@ export type Settings = {
     url: string;
     name: string;
   };
+
   streaming: {
     url: string;
     // TODO
   };
+
+  externalPlayer: string | null;
   language: string;
 };
 
