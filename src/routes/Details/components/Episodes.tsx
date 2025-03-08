@@ -60,7 +60,7 @@ export default function Episodes({ defaultSeason = 3, items, streams }: Episodes
       </div>
 
       {!isDesktop ? (
-        <Horizontal items={$items} streams={streams} />
+        <Horizontal key={season} items={$items} streams={streams} />
       ) : (
         <>
           {view === 'horizontal' ? <Horizontal key={season} items={$items} streams={streams} /> : null}
