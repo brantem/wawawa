@@ -39,6 +39,11 @@ export default class Storage implements MediaStorage {
     return this.#data;
   }
 
+  async setDuration(duration: number) {
+    this.#data.duration = duration;
+    await this.#save();
+  }
+
   async getVolume() {
     return (await this.#get()).volume;
   }

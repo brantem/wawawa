@@ -51,6 +51,10 @@ export default function Player() {
             autoPlay
             hideControlsOnMouseLeave
             crossOrigin
+            onDurationChange={(duration) => {
+              if (video.duration) return;
+              storage?.setDuration(duration);
+            }}
           >
             <MediaProvider>
               <Subtitles
