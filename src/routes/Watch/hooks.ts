@@ -65,6 +65,7 @@ export function useStreams() {
 
     return {
       id: btoa('url' in stream ? stream.url : `${stream.infoHash}/${stream.fileIdx}`),
+      url: 'url' in stream ? stream.url : `${settings.streaming.url}/${stream.infoHash}/${stream.fileIdx}`,
       group,
       title: title.replace('\n', ' '),
       filename,

@@ -1,5 +1,6 @@
 export type Stream = {
   id: string;
+  url: string;
   group: string;
   title: string;
   filename: string;

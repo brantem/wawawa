@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { PlayIcon } from '@heroicons/react/24/solid';
 import omit from 'just-omit';
@@ -9,9 +9,9 @@ import StreamingServerUnavailableBanner from 'components/StreamingServerUnavaila
 import Progress from 'components/Progress';
 
 import type { Stream } from '../types';
-import { useSettings } from 'lib/hooks';
+import { useDevice, useSettings } from 'lib/hooks';
 import { useStreams, useSelectedStream } from '../hooks';
-import { cn, generateItemPathFromParams } from 'lib/helpers';
+import { cn, generateExternalPlayerUrl, generateItemPathFromParams } from 'lib/helpers';
 import { getDisplayText } from '../helpers';
 
 export default function Streams() {
@@ -122,9 +122,21 @@ type CardProps = {
 };
 
 function Card({ index, stream }: CardProps) {
+  const settings = useSettings();
+  const device = useDevice();
+
+  const to = (() => {
+    if (!settings.externalPlayer) return stream.id;
+
+    const m = generateExternalPlayerUrl(settings.externalPlayer, stream.url);
+    if (!m) return stream.id;
+
+    return m[device.name] || stream.id;
+  })();
+
   return (
     <Link
-      to={encodeURIComponent(stream.id)}
+      to={to}
       className={cn(
         'group relative flex shrink-0 rounded-md bg-neutral-900 hover:bg-white hover:text-neutral-950 max-md:pr-3',
         !index && 'pl-3',
