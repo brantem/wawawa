@@ -3,11 +3,13 @@ import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { useParams } from 'react-router';
 import pick from 'just-pick';
+import { create } from 'zustand';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
 import type { Meta } from 'types';
 import { fetcher, metaToItem } from 'lib/helpers';
 import settings, { type SettingsState } from 'lib/settings';
+import * as device from 'lib/device';
 
 export function useSettings<U = SettingsState>(selector: (state: SettingsState) => U = (state) => state as U) {
   return useStoreWithEqualityFn(settings, selector);
@@ -28,6 +30,9 @@ export function useDebounce<T extends any>(value: T, delay: number): T {
 
   return debouncedValue;
 }
+
+// use zustand to make sure device.detect is only called once
+export const useDevice = create<{ name: string; isMobile: boolean }>()(device.detect);
 
 export function useWindowSize() {
   const [size, setSize] = useState<{ width: number | null; height: number | null }>({ width: null, height: null });
