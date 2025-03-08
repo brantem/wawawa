@@ -63,8 +63,8 @@ export default function Episodes({ items, streams }: EpisodesProps) {
         <Horizontal items={$items} streams={streams} />
       ) : (
         <>
-          {view === 'horizontal' ? <Horizontal items={$items} streams={streams} /> : null}
-          {view === 'vertical' ? <Vertical items={$items} streams={streams} /> : null}
+          {view === 'horizontal' ? <Horizontal key={season} items={$items} streams={streams} /> : null}
+          {view === 'vertical' ? <Vertical key={season} items={$items} streams={streams} /> : null}
         </>
       )}
     </div>
