@@ -39,7 +39,7 @@ export function metaToItem(meta: Meta) {
     logoUrl: meta.logo,
     posterUrl: meta.poster,
     backgroundUrl: meta.background,
-    release: meta.releaseInfo.replace('–', ' - '),
+    release: meta.releaseInfo?.replace('–', ' - ') || '',
     rating: meta.imdbRating || null,
     genres: meta.genres || [],
     directors: meta.director || [],

@@ -40,7 +40,7 @@ type BaseMeta = {
   id: string;
   name: string;
   description: string;
-  releaseInfo: string;
+  releaseInfo?: string;
   runtime: string;
   logo: string;
   poster: string;
