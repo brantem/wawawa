@@ -46,7 +46,7 @@ export default function StreamingServerUnavailableBanner() {
 }
 
 const KEY = 'streaming_server_unavailable_banner_dismissed';
-const EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+const EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 1 day
 
 type State = {
   isHidden: boolean;
