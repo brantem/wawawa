@@ -79,12 +79,12 @@ function Horizontal({ items, streams }: EpisodesProps) {
       <div className="no-scrollbar -mx-4 flex snap-x overflow-x-auto pt-1.25 md:-mx-8">
         <div className="mr-4 snap-start scroll-mx-4 md:mr-8 md:scroll-mx-8" />
         {items.map((item) => {
-          const stream = streams.find((stream) => stream.id.endsWith(item.id));
           const isUpcoming = dayjs(item.released).isAfter(new Date());
+          const stream = streams.find((stream) => stream.id.endsWith(item.id));
           return (
             <Card
               key={item.id}
-              to={stream ? stream.url : `${item.id}/watch`}
+              to={`${item.id}/watch`}
               className="mr-4 w-[304px] shrink-0 snap-start scroll-mx-4 md:scroll-mx-8"
               isUpcoming={isUpcoming}
             >
@@ -118,15 +118,10 @@ function Vertical({ items, streams }: EpisodesProps) {
   return (
     <div className="flex flex-col gap-6 pt-1.25">
       {items.map((item) => {
-        const stream = streams.find((stream) => stream.id.endsWith(item.id));
         const isUpcoming = dayjs(item.released).isAfter(new Date());
+        const stream = streams.find((stream) => stream.id.endsWith(item.id));
         return (
-          <Card
-            key={item.id}
-            to={stream ? stream.url : `${item.id}/watch`}
-            className="relative flex gap-4"
-            isUpcoming={isUpcoming}
-          >
+          <Card key={item.id} to={`${item.id}/watch`} className="relative flex gap-4" isUpcoming={isUpcoming}>
             <Thumbnail
               className="h-[171px] w-[304px]"
               src={item.thumbnailUrl.replace('/w780.jpg', '/w342.jpg')}
