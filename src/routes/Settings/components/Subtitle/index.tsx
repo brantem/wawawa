@@ -135,7 +135,7 @@ function RangeField({ label, name, ...props }: RangeFieldProps) {
           <Slider
             className="w-full md:w-56"
             value={[parseInt(value.replace('%', ''))]}
-            onValueChange={([value]) => onChange(`${value}%`)}
+            onValueChange={(value) => onChange(`${value}%`)}
             {...props}
           />
         </div>

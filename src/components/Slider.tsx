@@ -1,14 +1,14 @@
-import { Root, Track, Range, Thumb, SliderProps } from '@radix-ui/react-slider';
+import { Slider as S } from '@base-ui-components/react/slider';
 
-import { cn } from 'lib/helpers';
-
-export default function Slider({ className, ...props }: SliderProps) {
+export default function Slider(props: S.Root.Props) {
   return (
-    <Root className={cn('relative flex touch-none items-center select-none', className)} {...props}>
-      <Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-neutral-700">
-        <Range className="absolute h-full bg-white" />
-      </Track>
-      <Thumb className="block size-5 w-2.5 rounded-full border border-neutral-200 bg-white shadow transition-colors" />
-    </Root>
+    <S.Root {...props}>
+      <S.Control className="flex touch-none items-center px-1 py-3 select-none">
+        <S.Track className="h-1 w-full rounded bg-neutral-700 select-none">
+          <S.Indicator className="rounded bg-white select-none" />
+          <S.Thumb className="h-6 w-3 rounded-full border-2 border-neutral-950 bg-white select-none" />
+        </S.Track>
+      </S.Control>
+    </S.Root>
   );
 }

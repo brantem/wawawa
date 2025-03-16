@@ -11,8 +11,8 @@
     "typecheck": "tsc --incremental --pretty --noEmit"
   },
   "dependencies": {
+    "@base-ui-components/react": "^1.0.0-alpha.6",
     "@heroicons/react": "^2.2.0",
-    "@radix-ui/react-slider": "^1.2.3",
     "@vidstack/react": "^1.12.13",
     "bowser": "^2.11.0",
     "clsx": "^2.1.1",
