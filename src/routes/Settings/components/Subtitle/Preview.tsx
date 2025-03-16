@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react';
+import { Checkbox } from '@base-ui-components/react/checkbox';
+import { CheckIcon } from '@heroicons/react/16/solid';
 
 import * as constants from 'constants/settings';
 import { useWindowSize, useMediaQuery } from 'lib/hooks';
@@ -54,12 +56,14 @@ export default function Preview() {
 
       {!isSmall ? (
         <label className="mt-4 ml-9 flex w-fit items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            className="size-5 appearance-none rounded-sm border border-neutral-700 bg-neutral-950 text-white hover:border-neutral-600"
-            checked={useRealSize}
-            onChange={() => setUseRealSize((prev) => !prev)}
-          />
+          <Checkbox.Root
+            defaultChecked
+            className="flex size-5 items-center justify-center rounded-sm outline-none data-[checked]:bg-white data-[unchecked]:border data-[unchecked]:border-neutral-700 hover:data-[unchecked]:border-neutral-600"
+          >
+            <Checkbox.Indicator className="flex text-neutral-950 data-[unchecked]:hidden">
+              <CheckIcon className="size-4 stroke-neutral-950" />
+            </Checkbox.Indicator>
+          </Checkbox.Root>
           <span>Show real size</span>
         </label>
       ) : null}
