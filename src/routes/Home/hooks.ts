@@ -6,7 +6,7 @@ import type { ItemCardProps } from 'components/ItemCard';
 
 import type { Meta } from 'types';
 import type { Stream } from 'types/storage';
-import { fetcher, metaToItem } from 'lib/helpers';
+import { fetcher, metaToItem, getStreamProgress } from 'lib/helpers';
 import { useDebounce, useSettings } from 'lib/hooks';
 import storage from 'lib/storage';
 
@@ -24,13 +24,13 @@ export function useContinueWatching() {
     ]);
 
     const metas = new Map(feed!.map((item) => [item.id, item]));
-    const items = new Map<string, Pick<Stream, 'id' | 'watchedAt'>>();
+    const items = new Map<string, Pick<Stream, 'id' | 'time' | 'duration' | 'watchedAt'>>();
 
     for (const stream of streams) {
       const id = stream.id.split(':').shift()!;
       const item = items.get(id);
       if (!item || stream.watchedAt > item.watchedAt) {
-        items.set(id, { id, watchedAt: stream.watchedAt });
+        items.set(id, { id, ...pick(stream, ['watchedAt', 'time', 'duration']) });
       }
     }
 
@@ -49,6 +49,7 @@ export function useContinueWatching() {
               posterUrl: meta.poster,
               release: meta.releaseInfo?.replace('–', ' - ') || '',
               rating: meta.imdbRating || null,
+              progress: getStreamProgress(item),
             },
           ];
         },

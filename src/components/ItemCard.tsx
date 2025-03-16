@@ -1,19 +1,21 @@
 import { Link } from 'react-router';
 
 import Img from 'components/Img';
+import Progress from 'components/Progress';
 
 import type { Item } from 'types';
 import { cn } from 'lib/helpers';
 
 export type ItemCardProps = {
   className?: string;
-  item: Pick<Item, 'id' | 'url' | 'title' | 'posterUrl' | 'release'> & Partial<Pick<Item, 'rating' | 'runtime'>>;
+  item: Pick<Item, 'id' | 'url' | 'title' | 'posterUrl' | 'release'> &
+    Partial<Pick<Item, 'rating' | 'runtime'> & { progress: number | null }>;
 };
 
 export default function ItemCard({ className, item }: ItemCardProps) {
   return (
     <Link to={item.url} className={cn('group rounded-md transition-colors outline-none', className)} title={item.title}>
-      <div className="aspect-[2/3] w-full overflow-hidden rounded-md bg-neutral-900 outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3">
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-md bg-neutral-900 outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3">
         {item.posterUrl ? (
           <Img src={item.posterUrl} className="size-full object-cover" loading="lazy" />
         ) : (
@@ -21,6 +23,10 @@ export default function ItemCard({ className, item }: ItemCardProps) {
             {item.title}
           </div>
         )}
+
+        {typeof item.progress === 'number' ? (
+          <Progress value={item.progress} className="absolute right-2 bottom-2 left-2" />
+        ) : null}
       </div>
 
       <div className="mt-2">
