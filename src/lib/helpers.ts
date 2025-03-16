@@ -34,6 +34,7 @@ export async function fetcher<T extends any = any>(url: string): Promise<T | nul
 export function metaToItem(meta: Meta) {
   const item: Record<string, any> = {
     ...pick(meta, ['id', 'type', 'runtime']),
+    url: `${meta.type}/${meta.id}`,
     title: meta.name,
     synopsis: meta.description,
     logoUrl: meta.logo,

@@ -5,7 +5,12 @@ import Img from 'components/Img';
 import type { Item } from 'types';
 import { cn } from 'lib/helpers';
 
-export default function ItemCard({ className, item }: { className?: string; item: Item & { url: string } }) {
+export type ItemCardProps = {
+  className?: string;
+  item: Pick<Item, 'id' | 'url' | 'title' | 'posterUrl' | 'release'> & Partial<Pick<Item, 'rating' | 'runtime'>>;
+};
+
+export default function ItemCard({ className, item }: ItemCardProps) {
   return (
     <Link to={item.url} className={cn('group rounded-md transition-colors outline-none', className)} title={item.title}>
       <div className="aspect-[2/3] w-full overflow-hidden rounded-md bg-neutral-900 outline-0 outline-offset-2 outline-white transition-[outline] duration-100 group-hover:outline-3 group-focus:outline-3">

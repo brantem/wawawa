@@ -1,27 +1,25 @@
 import { Link } from 'react-router';
 import { ArrowRightIcon } from '@heroicons/react/16/solid';
 
-import ItemCard, { SkeletonItemCard } from 'components/ItemCard';
-
-import type { Item } from 'types';
+import ItemCard, { SkeletonItemCard, type ItemCardProps } from 'components/ItemCard';
 
 type ItemsProps = {
-  type: Item['type'];
   title: string;
-  items: Item[];
+  moreUrl?: string;
+  items: ItemCardProps['item'][];
   isLoading: boolean;
 };
 
-export default function Items({ type, title, items, isLoading }: ItemsProps) {
+export default function Items({ title, moreUrl, items, isLoading }: ItemsProps) {
   return (
     <div className="group/container">
       {!isLoading ? (
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-semibold">{title}</h2>
 
-          {items.length ? (
+          {items.length && moreUrl ? (
             <Link
-              to={`/${type}`}
+              to={moreUrl}
               className="flex items-center gap-2 text-sm text-neutral-500 transition-all hover:text-neutral-400"
             >
               <span className="relative -mr-6 bg-neutral-950 transition-[margin] group-hover/container:mr-0">
@@ -52,7 +50,7 @@ export default function Items({ type, title, items, isLoading }: ItemsProps) {
               <ItemCard
                 key={item.id}
                 className="mr-4 w-[calc(1024px/5-var(--spacing)*6-1.575px)] shrink-0 snap-start scroll-mx-4 md:scroll-mx-8"
-                item={{ ...item, url: `${type}/${item.id}` }}
+                item={item}
               />
             ))
           ) : (

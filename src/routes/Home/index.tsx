@@ -46,14 +46,14 @@ export default function Home() {
 
       <div className={cn('flex flex-col gap-12 md:gap-16', series.rank > movies.rank && 'flex-col-reverse')}>
         <Items
-          type="movie"
           title={isSearching ? 'Movies' : 'Popular Movies'}
+          moreUrl="/movie"
           items={movies.items}
           isLoading={movies.isLoading}
         />
         <Items
-          type="series"
           title={isSearching ? 'Series' : 'Popular Series'}
+          moreUrl="/series"
           items={series.items}
           isLoading={series.isLoading}
         />

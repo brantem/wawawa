@@ -72,6 +72,7 @@ export type MetaSeries = BaseMeta & {
 export type Meta = MetaMovie | MetaSeries;
 
 type BaseItem = Pick<Meta, 'id' | 'runtime'> & {
+  url: string;
   title: string;
   synopsis: string;
   logoUrl: string;
