@@ -9,13 +9,14 @@ import Search from './compoents/Search';
 import Items from './compoents/Items';
 
 import type { Item } from 'types';
-import { useSearchValue, useItems } from './hooks';
+import { useSearchValue, useContinueWatching, useItems } from './hooks';
 import { cn } from 'lib/helpers';
 import { getRandomInt } from './helpers';
 
 export default function Home() {
   const isSearching = Boolean(useSearchValue());
 
+  const cw = useContinueWatching();
   const movies = useItems('movie');
   const series = useItems('series');
 
@@ -45,6 +46,10 @@ export default function Home() {
       <StreamingServerUnavailableBanner />
 
       <div className={cn('flex flex-col gap-12 md:gap-16', series.rank > movies.rank && 'flex-col-reverse')}>
+        {!cw.isLoading && cw.items.length ? (
+          <Items title="Continue Watching" items={cw.items} isLoading={cw.isLoading} />
+        ) : null}
+
         <Items
           title={isSearching ? 'Movies' : 'Popular Movies'}
           moreUrl="/movie"

@@ -1,4 +1,4 @@
-import { openDB, IDBPDatabase, StoreNames, StoreValue, StoreKey } from 'idb';
+import { openDB, type IDBPDatabase, type StoreNames, type StoreValue, type StoreKey } from 'idb';
 
 import type { Schema } from 'types/storage';
 
@@ -18,7 +18,7 @@ class Storage {
     return db.get(name, query);
   }
 
-  async getAll<Name extends StoreNames<Schema>>(name: Name, query: StoreKey<Schema, Name> | IDBKeyRange) {
+  async getAll<Name extends StoreNames<Schema>>(name: Name, query?: StoreKey<Schema, Name> | IDBKeyRange) {
     const db = await this.db;
     return db.getAll(name, query);
   }
