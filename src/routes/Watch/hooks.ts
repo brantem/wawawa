@@ -135,29 +135,16 @@ export function useVideo() {
   const { data, isLoading } = useSWR(`${generateItemPathFromParams(params)}:streams:${params.streamId}`, async () => {
     // TODO: support magnet link
     let src = atob(decodeURIComponent(params.streamId!));
-    if (/^https?:\/\//.test(src)) return { raw: null, src, duration: null };
-
-    src = `${settings.streaming.url}/${src}`;
+    if (!/^https?:\/\//.test(src)) src = `${settings.streaming.url}/${src}`;
 
     const probe = await fetcher<Probe>(`${settings.streaming.url}/hlsv2/probe?mediaURL=${encodeURIComponent(src)}`);
-    if (!probe) return { raw: null, src: null, duration: null };
+    if (!probe) return { raw: null, src, duration: null };
 
-    const capabilities = media.getCapabilities();
-    const isFormatSupported = capabilities.formats.some((format) => probe.format.name.includes(format));
-    const areStreamsSupported = probe.streams.every((stream) => {
-      if (stream.track === 'audio') {
-        return stream.channels <= capabilities.maxAudioChannels && capabilities.audioCodecs.includes(stream.codec);
-      } else if (stream.track === 'video') {
-        return capabilities.videoCodecs.includes(stream.codec);
-      }
-      return true;
-    });
-
-    if (isFormatSupported && areStreamsSupported) {
-      src = `${settings.streaming.url}/hlsv2/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(src)}`; // HLS
-    }
-
-    return { raw: probe, src, duration: probe.format.duration || null };
+    return {
+      raw: probe,
+      src: `${settings.streaming.url}/hlsv2/${crypto.randomUUID()}/master.m3u8?mediaURL=${encodeURIComponent(src)}`,
+      duration: probe.format.duration || null,
+    };
   });
 
   return { ...data!, isLoading };

@@ -57,9 +57,7 @@ export default function Player() {
             }}
           >
             <MediaProvider>
-              <Subtitles
-                hasBuiltinSubtitle={(video.raw?.streams || []).some((stream) => stream.track === 'subtitle')}
-              />
+              <Subtitles />
             </MediaProvider>
             <DefaultVideoLayout icons={defaultLayoutIcons} download={false} noAudioGain />
           </MediaPlayer>
@@ -84,12 +82,12 @@ export default function Player() {
   );
 }
 
-function Subtitles({ hasBuiltinSubtitle }: { hasBuiltinSubtitle: boolean }) {
+function Subtitles() {
   const settings = useSettings();
   const server = useStreamingServer();
   const { subtitles } = useSubtitles();
 
-  let foundDefault = hasBuiltinSubtitle;
+  let foundDefault = false;
   return subtitles.map(({ id, url, lang, ...subtitle }) => {
     let isDefault = false;
     if (!foundDefault && lang === settings.language) {
