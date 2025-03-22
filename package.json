@@ -11,7 +11,7 @@
     "typecheck": "tsc --incremental --pretty --noEmit"
   },
   "dependencies": {
-    "@base-ui-components/react": "^1.0.0-alpha.6",
+    "@base-ui-components/react": "^1.0.0-alpha.7",
     "@heroicons/react": "^2.2.0",
     "@vidstack/react": "^1.12.13",
     "bowser": "^2.11.0",
@@ -24,23 +24,23 @@
     "langs": "^2.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.2.0",
-    "swr": "^2.3.2",
+    "react-router": "^7.4.0",
+    "swr": "^2.3.3",
     "tailwind-merge": "^3.0.2",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
-    "@tailwindcss/vite": "^4.0.8",
+    "@tailwindcss/vite": "^4.0.15",
     "@types/langs": "^2.0.5",
-    "@types/react": "^19.0.10",
+    "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
-    "prettier": "^3.5.2",
+    "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "tailwindcss": "^4.0.8",
-    "typescript": "^5.7.3",
-    "vite": "^6.2.0",
+    "tailwindcss": "^4.0.15",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }
