@@ -46,7 +46,7 @@ export default function Home() {
       <StreamingServerUnavailableBanner />
 
       <div className={cn('flex flex-col gap-12 md:gap-16', series.rank > movies.rank && 'flex-col-reverse')}>
-        {!cw.isLoading && cw.items.length ? (
+        {!isSearching && !cw.isLoading && cw.items.length ? (
           <Items title="Continue Watching" items={cw.items} isLoading={cw.isLoading} />
         ) : null}
 
