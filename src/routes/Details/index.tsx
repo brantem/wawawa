@@ -118,6 +118,7 @@ export default function Details() {
 function PlayButton({ className, item, lastWatched }: { className?: string; item: Item; lastWatched: Stream | null }) {
   const to = useMemo(() => {
     if (item.type === 'movie') return 'watch';
+    if (lastWatched) return lastWatched.url;
     return `${item.items.find((item) => item.season === 1 && item.episode === 1)!.id}/watch`;
   }, [item]);
 
