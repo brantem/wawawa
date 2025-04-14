@@ -101,7 +101,7 @@ function Subtitles() {
         key={id}
         kind="subtitles"
         type="srt"
-        src={server.isOnline ? `${settings.streaming.url}/subtitles.srt?from=${url}` : url}
+        src={server.isOnline ? `${settings.streaming.url}/subtitles.vtt?from=${url}` : url}
         {...subtitle}
         default={isDefault}
       />
